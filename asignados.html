@@ -1,0 +1,3083 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Casos Asignados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* ---------------------------------------------------- */
+        /* ALERTA ROJA FLOTANTE (ESTILO MODAL MEJORADO)         */
+        /* ---------------------------------------------------- */
+        
+        .modal-feriado-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6); /* Fondo oscuro desenfocado */
+            backdrop-filter: blur(5px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeInOverlay 0.3s ease-out;
+        }
+
+        .modal-feriado {
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(220, 38, 38, 0.15), 0 10px 10px -5px rgba(220, 38, 38, 0.1);
+            overflow: hidden;
+            border: 1px solid #fecaca; /* Borde rojo suave */
+            animation: floatUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        /* Header Rojo Impactante */
+        .modal-feriado-header {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            color: white;
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-feriado-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .modal-feriado-header i {
+            font-size: 1.5rem;
+            background: rgba(255,255,255,0.2);
+            padding: 8px;
+            border-radius: 8px;
+            animation: latido 2s infinite;
+        }
+
+        /* Botón cerrar */
+        .modal-feriado-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+        
+        .modal-feriado-close:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: rotate(90deg);
+        }
+
+        /* Cuerpo del mensaje */
+        .modal-feriado-body {
+            padding: 32px 24px;
+            text-align: center;
+            background: #fff;
+        }
+        
+        .modal-feriado-body p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #374151;
+            font-weight: 500;
+        }
+
+        /* Footer informativo */
+        .modal-feriado-footer {
+            padding: 16px 24px;
+            background: #fef2f2; /* Fondo rojo muy claro */
+            border-top: 1px solid #fee2e2;
+            text-align: center;
+        }
+        
+        .modal-feriado-footer p {
+            font-size: 0.85rem;
+            color: #991b1b;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        @keyframes floatUp {
+            from { opacity: 0; transform: translateY(20px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes latido {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @keyframes fadeInOverlay {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ---------------------------------------------------- */
+        /* FIN ESTILOS ALERTA ROJA                              */
+        /* ---------------------------------------------------- */
+        
+        /* Login */
+        .login-container {
+            min-height: 100vh;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(to right, #1e3a8a, #3b82f6);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+        }
+
+        .login-body {
+            padding: 35px 30px;
+        }
+
+        .login-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .login-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            outline: none;
+        }
+
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(to right, #1e3a8a, #3b82f6);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Notificación persistente */
+        .notification-persistent {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            animation: slideInPersistent 0.5s ease-out;
+            max-width: 400px;
+            border-left: 5px solid #3b82f6;
+            transform-origin: top right;
+        }
+        
+        .notification-persistent.warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-left-color: #f59e0b;
+        }
+        
+        .notification-persistent.success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-left-color: #10b981;
+        }
+        
+        .notification-persistent i.fa-bell {
+            animation: bellRing 1s ease-in-out;
+        }
+        
+        @keyframes slideInPersistent {
+            from { 
+                transform: translateX(100%) scale(0.8);
+                opacity: 0;
+            }
+            to { 
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes bellRing {
+            0%, 100% { transform: rotate(0); }
+            10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
+            20%, 40%, 60%, 80% { transform: rotate(10deg); }
+        }
+        
+        .notification-persistent-content {
+            flex: 1;
+        }
+        
+        .notification-persistent-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            transition: background 0.3s;
+        }
+        
+        .notification-persistent-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .pulse-new {
+            animation: pulseNew 2s infinite;
+        }
+        
+        @keyframes pulseNew {
+            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+        }
+        
+        /* Calendario días */
+        .calendar-day-nuevo {
+            cursor: pointer;
+        }
+        
+        .calendar-day-nuevo:hover:not(.disabled) {
+            background-color: #e6f7ff;
+        }
+        
+        .calendar-day-nuevo.selected {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .calendar-day-nuevo.disabled {
+            color: #d1d5db;
+            cursor: not-allowed;
+        }
+        
+        /* Estados */
+        .estado-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .estado-pendiente { background: #fef3c7; color: #92400e; }
+        .estado-proceso { background: #dbeafe; color: #1e40af; }
+        .estado-resuelto { background: #d1fae5; color: #065f46; }
+        .estado-derivado { background: #f3e8ff; color: #5b21b6; }
+        
+        /* Transiciones */
+        .transition-all-smooth {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Tabla responsiva */
+        @media (max-width: 768px) {
+            .table-responsive {
+                overflow-x: auto;
+            }
+            
+            .mobile-stack {
+                flex-direction: column;
+            }
+            
+            .mobile-stack > * {
+                margin-bottom: 0.5rem;
+            }
+        }
+        
+        /* Scroll personalizado */
+        .scrollbar-thin::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        
+        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        /* Alerta roja flotante (Límite de turnos) - Esta es la alerta pequeña para turnos */
+        .alerta-roja-flotante {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: #333;
+            padding: 0;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            animation: aparecerAlertaModal 0.3s ease-out;
+            width: 90%;
+            max-width: 500px;
+            min-width: 300px;
+            overflow: hidden;
+            border: none;
+        }
+        
+        @keyframes aparecerAlertaModal {
+            from { 
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            to { 
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        .alerta-roja-flotante-header {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .alerta-roja-flotante-header h3 {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .alerta-roja-flotante-header i {
+            font-size: 1.5rem;
+            animation: latido 1s infinite;
+        }
+        
+        .alerta-roja-flotante-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+            font-size: 1.25rem;
+        }
+        
+        .alerta-roja-flotante-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .alerta-roja-flotante-body {
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .alerta-roja-flotante-body p {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+        
+        .alerta-roja-flotante-footer {
+            padding: 15px 25px 25px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+        
+        .alerta-roja-flotante-footer p {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin: 0;
+        }
+        
+        .alerta-roja-flotante-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            animation: fadeInOverlay 0.3s ease-out;
+        }
+
+        /* Modal de comprobante */
+        .modal-comprobante {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-comprobante-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div id="system-unavailable-overlay" class="modal-feriado-overlay hidden">
+        <div class="modal-feriado">
+            <div class="modal-feriado-header">
+                <h3>
+                    <i class="fas fa-calendar-times"></i>
+                    Atención: Día Inhábil
+                </h3>
+                <button id="modal-feriado-close" class="modal-feriado-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-feriado-body">
+                <p id="system-unavailable-message"></p>
+            </div>
+            
+            <div class="modal-feriado-footer">
+                <p>
+                    <i class="fas fa-lock"></i>
+                    Esta función no está disponible fuera del horario de atención.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-persistent-container"></div>
+    
+    <div id="notification-temp-container" class="fixed top-4 right-4 z-40 space-y-2"></div>
+    
+    <div id="alerta-roja-flotante-container"></div>
+
+    <div id="modal-comprobante" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg">Comprobante de Turno</h3>
+                <button id="btn-cerrar-comprobante" class="text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6">
+                <div class="mb-6 text-center">
+                    <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-file-alt text-3xl"></i>
+                    </div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">COMPROBANTE DE TURNO ONLINE</h2>
+                    <p class="text-gray-600">Defensoría Civil y Comercial N6 - Posadas, Misiones</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-gray-800 mb-3">Información del Ciudadano</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Nombre:</span>
+                                <span id="comp-nombre" class="font-medium">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">DNI:</span>
+                                <span id="comp-dni" class="font-medium">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Teléfono:</span>
+                                <span id="comp-telefono" class="font-medium">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="font-bold text-gray-800 mb-3">Información del Turno</h4>
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Trámite:</span>
+                                <span id="comp-tramite" class="font-medium">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Fecha:</span>
+                                <span id="comp-fecha" class="font-medium">--</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Horario:</span>
+                                <span id="comp-horario" class="font-medium">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                    <h4 class="font-bold text-blue-800 mb-2">Instrucciones para el Ciudadano</h4>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li><i class="fas fa-check-circle mr-2"></i>Presentarse con DNI original y copia</li>
+                        <li><i class="fas fa-check-circle mr-2"></i>Llegar 15 minutos antes de la hora asignada</li>
+                        <li><i class="fas fa-check-circle mr-2"></i>Traer toda la documentación relacionada al trámite</li>
+                        <li><i class="fas fa-check-circle mr-2"></i>En caso de no poder asistir, comunicarse al 376-4420000</li>
+                    </ul>
+                </div>
+                
+                <div class="text-center text-gray-500 text-sm">
+                    <p>Av. Santa Catalina 1735 1° piso Posadas-Misiones (Edificio Palacio de Justicia)</p>
+                    <p>Horario de atención: Lunes a Viernes de 7 a 12 hs. Feria: 8 a 11 hs.</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 p-4">
+                <div class="flex flex-col sm:flex-row justify-end gap-3">
+                    <button id="btn-cerrar-comprobante-modal" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all-smooth">
+                        <i class="fas fa-times mr-2"></i>Cerrar
+                    </button>
+                    <button id="btn-descargar-comprobante" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all-smooth">
+                        <i class="fas fa-file-pdf mr-2"></i>Descargar PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-salir" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
+            <div class="bg-red-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+                <h3 class="font-bold text-lg">Confirmar Salida</h3>
+                <button id="btn-cerrar-salir" class="text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div class="p-6">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
+                    </div>
+                </div>
+                
+                <p class="text-center text-gray-700 mb-2 text-lg font-medium">¿Estás seguro de que deseas salir?</p>
+                <p class="text-center text-gray-600 mb-6">Se cerrará tu sesión y volverás a la pantalla de inicio.</p>
+                
+                <div class="flex flex-col sm:flex-row justify-center gap-3">
+                    <button id="btn-cancelar-salir" class="px-5 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-all-smooth">
+                        <i class="fas fa-times mr-2"></i>Cancelar
+                    </button>
+                    <button id="btn-confirmar-salir" class="px-5 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all-smooth">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Sí, salir del sistema
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-derivar" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
+            <div class="bg-purple-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+                <h3 class="font-bold text-lg">Derivar Caso</h3>
+                <button id="btn-cerrar-derivar" class="text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div class="p-6">
+                <p class="text-gray-700 mb-4">Selecciona el usuario al que deseas derivar este caso:</p>
+                
+                <div class="mb-6">
+                    <label for="select-usuario-derivar" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user-friends mr-2"></i>Usuario Destino
+                    </label>
+                    <select id="select-usuario-derivar" 
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all-smooth">
+                        <option value="">Seleccionar usuario...</option>
+                    </select>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button id="btn-cancelar-derivar" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all-smooth">
+                        Cancelar
+                    </button>
+                    <button id="btn-confirmar-derivar" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-all-smooth">
+                        <i class="fas fa-share-alt mr-2"></i>Derivar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-detalle" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg">Detalles y Actualización de Consulta</h3>
+                <button id="btn-cerrar-detalle" class="text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2">Información del Ciudadano</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-sm text-gray-600">Nombre Completo</p>
+                                <p id="detalle-nombre" class="font-medium text-gray-800">--</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">DNI</p>
+                                <p id="detalle-dni" class="font-medium text-gray-800">--</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Teléfono</p>
+                                <p id="detalle-telefono" class="font-medium text-gray-800">--</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2">Información del Caso</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <p class="text-sm text-gray-600">Tipo de Consulta</p>
+                                <p id="detalle-tipo" class="font-medium text-gray-800">--</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Estado Actual</p>
+                                <p id="detalle-estado" class="font-medium text-gray-800">--</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-600">Fecha de Registro</p>
+                                <p id="detalle-fecha" class="font-medium text-gray-800">--</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-800 mb-2">Descripción del Caso</h4>
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <p id="detalle-descripcion" class="text-gray-700">--</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-800 mb-2">Observaciones Anteriores</h4>
+                    <div id="detalle-observaciones" class="bg-gray-50 rounded-lg p-4 max-h-48 overflow-y-auto scrollbar-thin">
+                        <p class="text-gray-500 text-sm">No hay observaciones registradas.</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <h4 class="font-bold text-gray-800 mb-2">Nueva Observación</h4>
+                    <textarea id="nueva-observacion" 
+                              rows="4" 
+                              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all-smooth"
+                              placeholder="Escribe aquí las observaciones de seguimiento del caso..."></textarea>
+                    <p class="text-sm text-gray-500 mt-2">Esta observación será registrada con tu nombre y fecha actual.</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 p-4">
+                <div class="flex justify-end space-x-3">
+                    <button id="btn-cancelar-detalle" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all-smooth">
+                        Cancelar
+                    </button>
+                    <button id="btn-guardar-actualizacion" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all-smooth">
+                        <i class="fas fa-save mr-2"></i>Guardar Observación
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-nueva-consulta" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div class="bg-green-600 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold text-lg">Registrar Nueva Consulta</h3>
+                <button id="btn-cerrar-nueva-consulta" class="text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div class="flex-1 overflow-y-auto">
+                <form id="form-nueva-consulta" class="p-6 space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-user mr-2"></i>Nombre Completo *
+                            </label>
+                            <input type="text" id="input-nombre" placeholder="Ej: Juan Pérez" required 
+                                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-id-card mr-2"></i>DNI
+                            </label>
+                            <input type="text" id="input-dni" placeholder="Ej: 12345678" 
+                                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-phone mr-2"></i>Teléfono/WhatsApp
+                            </label>
+                            <input type="text" id="input-telefono" placeholder="Ej: 3764123456" 
+                                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-file-alt mr-2"></i>Tipo de Consulta *
+                            </label>
+                            <select id="select-tipo-consulta" required
+                                    class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
+                                <option value="">Seleccionar tipo...</option>
+                                <option value="Presencial">Presencial</option>
+                                <option value="Telefónica">Telefónica</option>
+                                <option value="WhatsApp">WhatsApp</option>
+                                <option value="Consulta Web: Alimentos">Consulta Web: Alimentos</option>
+                                <option value="Consulta Web: Regimen Comunicación">Consulta Web: Régimen Comunicación</option>
+                                <option value="Consulta Web: Cuidado Personal">Consulta Web: Cuidado Personal</option>
+                                <option value="Consulta Web: Divorcio">Consulta Web: Divorcio</option>
+                                <option value="Consulta Web: Otros">Consulta Web: Otros</option>
+                            </select>
+                        </div>
+                        
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-align-left mr-2"></i>Descripción
+                            </label>
+                            <textarea id="textarea-descripcion" rows="3" 
+                                      placeholder="Detalles de la consulta..."
+                                      class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-user-tie mr-2"></i>Usuario Asignado
+                            </label>
+                            <select id="select-usuario-asignar" disabled
+                                    class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth bg-gray-100">
+                                <option value="">Sin asignar</option>
+                            </select>
+                            <p class="text-sm text-gray-500 mt-1">La consulta será asignada automáticamente a tu usuario</p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">
+                            <i class="fas fa-calendar-alt mr-2"></i>Asignar Turno (Opcional)
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-3">Seleccione Fecha</label>
+                                <div class="bg-gray-50 p-4 rounded-lg border">
+                                    <div class="flex justify-between items-center mb-4">
+                                        <button type="button" id="prev-month" class="p-2 hover:bg-gray-200 rounded">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <h4 id="current-month" class="font-bold text-gray-800">Diciembre 2024</h4>
+                                        <button type="button" id="next-month" class="p-2 hover:bg-gray-200 rounded">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                    <div class="grid grid-cols-7 gap-1 mb-2">
+                                        <div class="text-center text-xs font-bold text-gray-500">Lun</div>
+                                        <div class="text-center text-xs font-bold text-gray-500">Mar</div>
+                                        <div class="text-center text-xs font-bold text-gray-500">Mié</div>
+                                        <div class="text-center text-xs font-bold text-gray-500">Jue</div>
+                                        <div class="text-center text-xs font-bold text-gray-500">Vie</div>
+                                        <div class="text-center text-xs font-bold text-gray-500">Sáb</div>
+                                        <div class="text-center text-xs font-bold text-gray-500">Dom</div>
+                                    </div>
+                                    <div id="calendar-grid-nuevo" class="grid grid-cols-7 gap-1"></div>
+                                </div>
+                                <input type="hidden" id="input-fecha-turno" value="">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-3">Horarios Disponibles</label>
+                                <div class="bg-gray-50 p-4 rounded-lg border h-full">
+                                    <div id="horarios-container-nuevo" class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Horario Personalizado</label>
+                                        <div class="flex gap-2">
+                                            <input type="time" id="input-hora-personalizada" 
+                                                   class="flex-1 border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth"
+                                                   min="07:00" max="11:30">
+                                            <button type="button" id="btn-usar-hora-personalizada" 
+                                                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 whitespace-nowrap transition-all-smooth">
+                                                Usar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <input type="hidden" id="input-horario-turno" value="">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                            <p class="text-sm text-gray-700">
+                                <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                                <span id="turno-seleccionado-texto">No se ha asignado turno</span>
+                            </p>
+                            <p class="text-xs text-gray-600 mt-1">
+                                <i class="fas fa-exclamation-triangle mr-1"></i>
+                                Límite de 2 turnos por horario. Si intentas registrar un tercero, se mostrará una alerta.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-6">
+                        <button type="submit" id="btn-guardar-nueva-consulta" 
+                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all-smooth">
+                            <i class="fas fa-save mr-2"></i>Guardar Consulta en Sistema
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <section id="login-section" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1 class="text-2xl font-bold text-white">Consultas y Turnos Clientes</h1>
+                <p class="text-white text-opacity-90 mt-2">Uso de empleados asignados</p>
+            </div>
+            
+            <div class="login-body">
+                <form id="login-form" class="space-y-6">
+                    <div>
+                        <label for="login-input" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-user mr-2"></i>Nombre de Usuario
+                        </label>
+                        <div class="relative">
+                            <input type="text" id="login-input" class="login-input"
+                                   placeholder="Ej: Bazante Nadia Romina" required
+                                   list="usuarios-lista">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-id-card text-gray-400"></i>
+                            </div>
+                        </div>
+                        <datalist id="usuarios-lista">
+                            <option value="Bazante Nadia Romina">
+                            <option value="Boillat Cesar Enrique">
+                            <option value="Cardozo Maria Raquel">
+                            <option value="Cedron Noelia Aurora">
+                            <option value="Corrales Alicia Mariela">
+                            <option value="Escobar Monica Graciela">
+                            <option value="Fioravante Romulo">
+                            <option value="Gonzalez Alberto Misael">
+                            <option value="Gonzalez Juan Jose">
+                            <option value="Gudiño Natalia Esther">
+                            <option value="Magnani Enzo Luciano">
+                            <option value="Pablos Patricia">
+                            <option value="Palacios Ana Gabriela">
+                            <option value="Ortega Lucia Noemi">
+                            <option value="Ramos Marcelo Gustavo">
+                            <option value="Riveros Patricia Soledad">
+                            <option value="Sosa Rita Cecilia">
+                        </datalist>
+                    </div>
+                    
+                    <div>
+                        <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">
+                            <i class="fas fa-key mr-2"></i>Clave de Acceso
+                        </label>
+                        <div class="relative">
+                            <input type="password" id="login-password" class="login-input"
+                                   placeholder="Ingresa tu clave" required>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Ingresar al Sistema
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <section id="dashboard-section" class="hidden min-h-screen">
+        <header class="bg-white shadow-sm border-b sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-3">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-user-shield text-white"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-lg font-bold text-gray-800">Mis Casos Asignados</h1>
+                                <p class="text-sm text-gray-600">Panel Personal de Gestión</p>
+                            </div>
+                        </div>
+                        
+                        <div class="md:hidden">
+                            <button class="btn-salir bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm transition-all-smooth">
+                                <i class="fas fa-home mr-1"></i>Salir
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="hidden md:block mr-6">
+                            <span class="text-sm text-gray-600">Bienvenido/a,</span>
+                            <span id="user-name-display" class="font-bold text-blue-700 ml-1"></span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg">
+                                <span class="font-bold" id="contador-pendientes">0</span>
+                                <span class="text-sm ml-1">pendientes</span>
+                            </div>
+                            
+                            <div class="hidden md:block">
+                                <button class="btn-salir bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm transition-all-smooth">
+                                    <i class="fas fa-home mr-2"></i>Salir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 flex space-x-2">
+                    <button id="btn-ver-casos" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
+                        <i class="fas fa-list mr-2"></i>Mis Casos
+                    </button>
+                    <button id="btn-ver-calendario" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
+                        <i class="fas fa-calendar-day mr-2"></i>Calendario Hoy
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="max-w-7xl mx-auto px-4 py-4">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="font-bold text-blue-800">Acciones Rápidas</h3>
+                        <p class="text-sm text-blue-600">Gestiona el caso seleccionado</p>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-3">
+                        <button id="btn-nueva-consulta"
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth transform hover:scale-[1.02]">
+                            <i class="fas fa-plus-circle mr-2"></i>Nueva Consulta
+                        </button>
+                        
+                        <button id="btn-marcar-resuelto" 
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all-smooth transform hover:scale-[1.02]"
+                                disabled>
+                            <i class="fas fa-check-circle mr-2"></i>Marcar como Resuelto
+                        </button>
+                        
+                        <button id="btn-actualizar-consulta"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all-smooth transform hover:scale-[1.02]"
+                                disabled>
+                            <i class="fas fa-edit mr-2"></i>Actualización de Consulta
+                        </button>
+                        
+                        <button id="btn-derivar-caso"
+                                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all-smooth transform hover:scale-[1.02]"
+                                disabled>
+                            <i class="fas fa-share-alt mr-2"></i>Derivar Caso
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" id="input-busqueda" 
+                           class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all-smooth"
+                           placeholder="Buscar por nombre, DNI, tipo, descripción...">
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        <button id="btn-limpiar-busqueda" class="text-gray-400 hover:text-gray-600 hidden">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Busca en todos los campos de la tabla. La búsqueda se realiza en tiempo real.</p>
+            </div>
+            
+            <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
+                <div class="px-6 py-4 border-b">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-800">Casos Asignados a Mí</h2>
+                            <p class="text-sm text-gray-600">Lista actualizada en tiempo real</p>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button id="btn-exportar-pdf" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
+                                <i class="fas fa-file-pdf mr-2"></i>Exportar a PDF
+                            </button>
+                            <span class="text-sm text-gray-500" id="ultima-actualizacion">--:--</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto table-responsive">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ciudadano</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo / Descripción</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Registro</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="casos-body" class="divide-y divide-gray-200">
+                        </tbody>
+                    </table>
+                    
+                    <div id="tabla-vacia" class="hidden p-8 text-center">
+                        <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">No tienes casos asignados en este momento</p>
+                        <p class="text-sm text-gray-400 mt-2">Los casos que te sean asignados aparecerán aquí automáticamente</p>
+                    </div>
+                    
+                    <div id="tabla-sin-resultados" class="hidden p-8 text-center">
+                        <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">No se encontraron casos que coincidan con la búsqueda</p>
+                        <p class="text-sm text-gray-400 mt-2">Intenta con otros términos de búsqueda</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="calendario-section" class="hidden min-h-screen">
+        <header class="bg-white shadow-sm border-b sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 py-3">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-3">
+                                <i class="fas fa-calendar-alt text-white"></i>
+                            </div>
+                            <div>
+                                <h1 class="text-lg font-bold text-gray-800">Mi Calendario</h1>
+                                <p id="fecha-actual-display" class="text-sm text-gray-600">--</p>
+                            </div>
+                        </div>
+                        
+                        <div class="md:hidden">
+                            <button class="btn-salir-cal bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm transition-all-smooth">
+                                <i class="fas fa-home mr-1"></i>Salir
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="hidden md:block mr-6">
+                            <span class="text-sm text-gray-600">Bienvenido/a,</span>
+                            <span id="user-name-cal" class="font-bold text-blue-700 ml-1"></span>
+                        </div>
+                        
+                        <div class="flex items-center space-x-2">
+                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg">
+                                <span class="font-bold" id="contador-pendientes-cal">0</span>
+                                <span class="text-sm ml-1">pendientes</span>
+                            </div>
+                            
+                            <div class="hidden md:block">
+                                <button class="btn-salir-cal bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm transition-all-smooth">
+                                    <i class="fas fa-home mr-2"></i>Salir
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4 flex space-x-2">
+                    <button id="btn-ver-casos-cal" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
+                        <i class="fas fa-list mr-2"></i>Mis Casos
+                    </button>
+                    <button id="btn-ver-calendario-cal" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
+                        <i class="fas fa-calendar-day mr-2"></i>Calendario Hoy
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="mb-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Turnos del Día de Hoy</h2>
+                <p class="text-gray-600">Visualiza todos los turnos asignados para hoy en tu agenda</p>
+            </div>
+            
+            <div id="calendario-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            </div>
+            
+            <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                        <i class="fas fa-info-circle text-blue-500 text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h3 class="font-bold text-blue-800">Información del Calendario</h3>
+                        <p class="text-blue-700 text-sm mt-1">
+                            Esta vista muestra solo los turnos asignados para hoy. Los horarios sin turnos aparecen como disponibles.
+                            Recuerda actualizar el estado de los casos una vez atendidos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { 
+            getDatabase,
+            ref,
+            onValue,
+            update,
+            set,
+            push,
+            remove,
+            query,
+            orderByChild,
+            equalTo,
+            get
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDgxLS98sk6GkLrjMu3BVS2cmZ9exdh4dY",
+            authDomain: "atencion-publico-def6.firebaseapp.com",
+            databaseURL: "https://atencion-publico-def6-default-rtdb.firebaseio.com",
+            projectId: "atencion-publico-def6"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        
+        // --- LISTA DE FERIADOS ARGENTINA 2026 ---
+        const feriados2026 = [
+            '2026-01-01', // 1 de enero - Año Nuevo
+            '2026-02-16', // 16 de febrero - Carnaval
+            '2026-02-17', // 17 de febrero - Carnaval
+            '2026-03-24', // 24 de marzo - Día Nacional de la Memoria por la Verdad y la Justicia
+            '2026-04-02', // 2 de abril - Día del Veterano y de los Caídos en la Guerra de Malvinas
+            '2026-04-03', // 3 de abril - Viernes Santo
+            '2026-05-01', // 1 de mayo - Día del Trabajador
+            '2026-05-25', // 25 de mayo - Día de la Revolución de Mayo
+            '2026-06-20', // 20 de junio - Paso a la Inmortalidad del Gral. Manuel Belgrano
+            '2026-07-09', // 9 de julio - Día de la Independencia
+            '2026-12-08', // 8 de diciembre - Día de la Inmaculada Concepción de María
+            '2026-12-25', // 25 de diciembre - Navidad
+            '2026-06-15', // 15 de junio - Paso a la Inmortalidad del Gral. Martín Miguel de Güemes
+            '2026-08-17', // 17 de agosto - Paso a la Inmortalidad del Gral. José de San Martín
+            '2026-10-12', // 12 de octubre - Día del Respeto a la Diversidad Cultural
+            '2026-11-23', // 23 de noviembre - Día de la Soberanía Nacional
+            '2026-03-23', // 23 de marzo - Puente previo al feriado del 24 de marzo
+            '2026-07-10', // 10 de julio - Puente posterior al feriado del 9 de julio
+            '2026-12-07'  // 7 de diciembre - Puente previo al feriado del 8 de diciembre
+        ];
+
+        // --- FUNCIONES DE RESTRICCIÓN DE TIEMPO ---
+        function isFeriaJudicial(date) {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            // Período 1: 26/12 al 31/01
+            if (month === 12 && day >= 26) return true;
+            if (month === 1 && day <= 31) return true;
+            
+            // Período 2: 13/07 al 24/07
+            if (month === 7 && day >= 13 && day <= 24) return true;
+            
+            return false;
+        }
+
+        // Variables de estado
+        let usuarioActual = null;
+        let casosAsignados = [];
+        let casoSeleccionado = null;
+        let casoSeleccionadoDetalle = null;
+        let casosVistos = new Set(); // Para controlar notificaciones
+        let ultimaNotificacionId = null;
+        let allCases = []; // Todos los casos de Firebase
+        let terminoBusqueda = ''; // Para el filtro de búsqueda
+        
+        // Variables para calendario
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let selectedDate = null;
+        let selectedTime = null;
+        let diasInactivos = [];
+        let capacidadHoraria = {};
+        
+        // Variables para comprobante
+        let casoParaComprobante = null;
+        
+        // Referencias a elementos DOM
+        const loginSection = document.getElementById('login-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const calendarioSection = document.getElementById('calendario-section');
+        const loginForm = document.getElementById('login-form');
+        const loginInput = document.getElementById('login-input');
+        const loginPassword = document.getElementById('login-password');
+        const userNameDisplay = document.getElementById('user-name-display');
+        const userNameCal = document.getElementById('user-name-cal');
+        const casosBody = document.getElementById('casos-body');
+        const tablaVacia = document.getElementById('tabla-vacia');
+        const tablaSinResultados = document.getElementById('tabla-sin-resultados');
+        const btnResuelto = document.getElementById('btn-marcar-resuelto');
+        const btnDerivar = document.getElementById('btn-derivar-caso');
+        const btnActualizar = document.getElementById('btn-actualizar-consulta');
+        const btnNuevaConsulta = document.getElementById('btn-nueva-consulta');
+        const modalDerivar = document.getElementById('modal-derivar');
+        const selectUsuarioDerivar = document.getElementById('select-usuario-derivar');
+        const btnCerrarDerivar = document.getElementById('btn-cerrar-derivar');
+        const btnConfirmarDerivar = document.getElementById('btn-confirmar-derivar');
+        const btnCancelarDerivar = document.getElementById('btn-cancelar-derivar');
+        const modalDetalle = document.getElementById('modal-detalle');
+        const btnCerrarDetalle = document.getElementById('btn-cerrar-detalle');
+        const btnCancelarDetalle = document.getElementById('btn-cancelar-detalle');
+        const btnGuardarActualizacion = document.getElementById('btn-guardar-actualizacion');
+        const detalleNombre = document.getElementById('detalle-nombre');
+        const detalleDNI = document.getElementById('detalle-dni');
+        const detalleTelefono = document.getElementById('detalle-telefono');
+        const detalleTipo = document.getElementById('detalle-tipo');
+        const detalleDescripcion = document.getElementById('detalle-descripcion');
+        const detalleEstado = document.getElementById('detalle-estado');
+        const detalleFecha = document.getElementById('detalle-fecha');
+        const detalleObservaciones = document.getElementById('detalle-observaciones');
+        const nuevaObservacion = document.getElementById('nueva-observacion');
+        const calendarioGrid = document.getElementById('calendario-grid');
+        const fechaActualDisplay = document.getElementById('fecha-actual-display');
+        const modalSalir = document.getElementById('modal-salir');
+        const btnConfirmarSalir = document.getElementById('btn-confirmar-salir');
+        const btnCancelarSalir = document.getElementById('btn-cancelar-salir');
+        const btnCerrarSalir = document.getElementById('btn-cerrar-salir');
+        const modalNuevaConsulta = document.getElementById('modal-nueva-consulta');
+        const btnCerrarNuevaConsulta = document.getElementById('btn-cerrar-nueva-consulta');
+        const formNuevaConsulta = document.getElementById('form-nueva-consulta');
+        const inputNombre = document.getElementById('input-nombre');
+        const inputDNI = document.getElementById('input-dni');
+        const inputTelefono = document.getElementById('input-telefono');
+        const selectTipoConsulta = document.getElementById('select-tipo-consulta');
+        const textareaDescripcion = document.getElementById('textarea-descripcion');
+        const selectUsuarioAsignar = document.getElementById('select-usuario-asignar');
+        const currentMonthElement = document.getElementById('current-month');
+        const calendarGridNuevo = document.getElementById('calendar-grid-nuevo');
+        const prevMonthBtn = document.getElementById('prev-month');
+        const nextMonthBtn = document.getElementById('next-month');
+        const horariosContainerNuevo = document.getElementById('horarios-container-nuevo');
+        const inputFechaTurno = document.getElementById('input-fecha-turno');
+        const inputHorarioTurno = document.getElementById('input-horario-turno');
+        const turnoSeleccionadoTexto = document.getElementById('turno-seleccionado-texto');
+        const inputHoraPersonalizada = document.getElementById('input-hora-personalizada');
+        const btnUsarHoraPersonalizada = document.getElementById('btn-usar-hora-personalizada');
+        const btnGuardarNuevaConsulta = document.getElementById('btn-guardar-nueva-consulta');
+        const ultimaActualizacionElement = document.getElementById('ultima-actualizacion');
+        const inputBusqueda = document.getElementById('input-busqueda');
+        const btnLimpiarBusqueda = document.getElementById('btn-limpiar-busqueda');
+        const alertaRojaFlotanteContainer = document.getElementById('alerta-roja-flotante-container');
+        const btnExportarPDF = document.getElementById('btn-exportar-pdf');
+        const systemUnavailableOverlay = document.getElementById('system-unavailable-overlay');
+        const systemUnavailableMessage = document.getElementById('system-unavailable-message');
+        const modalFeriadoClose = document.getElementById('modal-feriado-close');
+        
+        // Referencias para modal de comprobante
+        const modalComprobante = document.getElementById('modal-comprobante');
+        const btnCerrarComprobante = document.getElementById('btn-cerrar-comprobante');
+        const btnCerrarComprobanteModal = document.getElementById('btn-cerrar-comprobante-modal');
+        const btnDescargarComprobante = document.getElementById('btn-descargar-comprobante');
+        const compNombre = document.getElementById('comp-nombre');
+        const compDNI = document.getElementById('comp-dni');
+        const compTelefono = document.getElementById('comp-telefono');
+        const compTramite = document.getElementById('comp-tramite');
+        const compFecha = document.getElementById('comp-fecha');
+        const compHorario = document.getElementById('comp-horario');
+        
+        // Lista de usuarios del sistema (DEBE COINCIDIR con el archivo interno)
+        const listaUsuarios = [
+            "Bazante Nadia Romina", "Boillat Cesar Enrique", "Cardozo Maria Raquel",
+            "Cedron Noelia Aurora", "Corrales Alicia Mariela", "Escobar Monica Graciela",
+            "Fioravante Romulo", "Gonzalez Alberto Misael", "Gonzalez Juan Jose",
+            "Gudiño Natalia Esther", "Magnani Enzo Luciano", "Pablos Patricia",
+            "Palacios Ana Gabriela", "Ortega Lucia Noemi", "Ramos Marcelo Gustavo",
+            "Riveros Patricia Soledad", "Sosa Rita Cecilia"
+        ];
+
+        // Claves de acceso por usuario
+        const clavesUsuarios = {
+            "Bazante Nadia Romina": "bazante123",
+            "Boillat Cesar Enrique": "boillat123",
+            "Cardozo Maria Raquel": "cardozo123",
+            "Cedron Noelia Aurora": "cedron123",
+            "Corrales Alicia Mariela": "corrales123",
+            "Escobar Monica Graciela": "escobar123",
+            "Fioravante Romulo": "fioravante123",
+            "Gonzalez Alberto Misael": "gonzalez123",
+            "Gonzalez Juan Jose": "gonzalezjj123",
+            "Gudiño Natalia Esther": "gudino123",
+            "Magnani Enzo Luciano": "magnani123",
+            "Pablos Patricia": "pablos123",
+            "Palacios Ana Gabriela": "palacios123",
+            "Ortega Lucia Noemi": "ortega123",
+            "Ramos Marcelo Gustavo": "ramos123",
+            "Riveros Patricia Soledad": "riveros123",
+            "Sosa Rita Cecilia": "sosa123"
+        };
+
+        // Lista de feriados y días no laborables (2024) - Mantenemos para compatibilidad
+        const feriados = [
+            '2024-01-01', // 1 de enero - Año Nuevo
+            '2024-02-16', // 16 de febrero - Carnaval
+            '2024-02-17', // 17 de febrero - Carnaval
+            '2024-03-24', // 24 de marzo - Día Nacional de la Memoria por la Verdad y la Justicia
+            '2024-04-02', // 2 de abril - Día del Veterano y de los Caídos en la Guerra de Malvinas
+            '2024-04-03', // 3 de abril - Viernes Santo
+            '2024-05-01', // 1 de mayo - Día del Trabajador
+            '2024-05-25', // 25 de mayo - Día de la Revolución de Mayo
+            '2024-06-20', // 20 de junio - Paso a la Inmortalidad del Gral. Manuel Belgrano
+            '2024-07-09', // 9 de julio - Día de la Independencia
+            '2024-12-08', // 8 de diciembre - Día de la Inmaculada Concepción de María
+            '2024-12-25', // 25 de diciembre - Navidad
+            '2024-06-15', // 15 de junio - Paso a la Inmortalidad del Gral. Martín Miguel de Güemes
+            '2024-08-17', // 17 de agosto - Paso a la Inmortalidad del Gral. José de San Martín
+            '2024-10-12', // 12 de octubre - Día del Respeto a la Diversidad Cultural
+            '2024-11-23', // 23 de noviembre - Día de la Soberanía Nacional
+            '2024-03-23', // 23 de marzo - Puente previo al feriado del 24 de marzo
+            '2024-07-10', // 10 de julio - Puente posterior al feriado del 9 de julio
+            '2024-12-07'  // 7 de diciembre - Puente previo al feriado del 8 de diciembre
+        ];
+
+        // Función para verificar si una fecha está en período especial
+        function esPeriodoEspecial(fecha) {
+            return isFeriaJudicial(fecha);
+        }
+
+        // Función para verificar si una fecha es feriado
+        function esFeriado(fecha) {
+            const fechaStr = formatDateLocal(fecha);
+            return feriados.includes(fechaStr) || feriados2026.includes(fechaStr);
+        }
+
+        // Función para mostrar alerta de sistema no disponible - MODIFICADA A MODAL ROJO FLOTANTE
+        // NOTA: Esta función ya no oculta el resto de la interfaz, solo muestra el overlay sobre ella.
+        function mostrarAlertaSistemaNoDisponible(mensaje) {
+            systemUnavailableMessage.textContent = mensaje;
+            systemUnavailableOverlay.classList.remove('hidden');
+        }
+
+        // Función para ocultar alerta de sistema no disponible
+        function ocultarAlertaSistemaNoDisponible() {
+            systemUnavailableOverlay.classList.add('hidden');
+        }
+
+        // FUNCIÓN ESPECÍFICA PARA MODAL NUEVA CONSULTA - Restringe horarios y días
+        function verificarDisponibilidadParaNuevaConsulta() {
+            const ahora = new Date();
+            const diaSemana = ahora.getDay(); // 0 domingo, 6 sábado
+            const hora = ahora.getHours();
+            const minutos = ahora.getMinutes();
+            const horaDecimal = hora + minutos / 100;
+            
+            // Verificar si es feriado
+            const fechaString = ahora.toISOString().split('T')[0];
+            if (feriados2026.includes(fechaString)) {
+                return {
+                    disponible: false,
+                    mensaje: 'Hoy es día no laborable (Feriado). No se pueden registrar nuevas consultas.'
+                };
+            }
+            
+            // Verificar si es fin de semana
+            if (diaSemana === 0 || diaSemana === 6) {
+                return {
+                    disponible: false,
+                    mensaje: 'Hoy es día no laborable. Nuestro horario de recepción de consultas es de Lunes a Viernes de 07:00 a 11:30 hs.'
+                };
+            }
+            
+            // Verificar si estamos en feria judicial
+            const enFeria = isFeriaJudicial(ahora);
+            
+            // Definir horarios según período
+            let horaInicio, horaFin, mensajeHorario;
+            if (enFeria) {
+                horaInicio = 8.00; // 08:00
+                horaFin = 10.00;   // 10:00
+                mensajeHorario = 'Durante el período de feria judicial, nuestro horario de recepción de consultas es de 08:00 a 10:00 hs.';
+            } else {
+                horaInicio = 7.00; // 07:00
+                horaFin = 11.50;   // 11:30 (11.5 en decimal)
+                mensajeHorario = 'Nuestro horario de recepción de consultas es de Lunes a Viernes de 07:00 a 11:30 hs.';
+            }
+            
+            // Verificar horario
+            if (horaDecimal < horaInicio || horaDecimal > horaFin) {
+                return {
+                    disponible: false,
+                    mensaje: mensajeHorario
+                };
+            }
+            
+            return { disponible: true };
+        }
+
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            // YA NO verificamos disponibilidad global al inicio. El sistema inicia normal.
+            inicializarEventos();
+            verificarSesion();
+        });
+
+        function inicializarEventos() {
+            // Login
+            loginForm.addEventListener('submit', manejarLogin);
+            
+            // Botón para cerrar modal de feriado (Alerta Roja)
+            modalFeriadoClose.addEventListener('click', function() {
+                // Simplemente ocultamos el overlay. El usuario se queda en la pantalla actual (Dashboard).
+                systemUnavailableOverlay.classList.add('hidden');
+            });
+            
+            // Cerrar modal al hacer clic fuera del contenido
+            systemUnavailableOverlay.addEventListener('click', function(e) {
+                if (e.target === systemUnavailableOverlay) {
+                    systemUnavailableOverlay.classList.add('hidden');
+                }
+            });
+            
+            // Botones de salir
+            document.querySelectorAll('.btn-salir, .btn-salir-cal').forEach(boton => {
+                boton.addEventListener('click', mostrarConfirmacionSalir);
+            });
+            
+            // Botones de acción
+            btnResuelto.addEventListener('click', marcarComoResuelto);
+            btnDerivar.addEventListener('click', abrirModalDerivar);
+            btnActualizar.addEventListener('click', abrirModalDetalle);
+            
+            // AQUÍ ESTÁ EL CAMBIO CLAVE: Chequeo de restricción al hacer click en Nueva Consulta
+            btnNuevaConsulta.addEventListener('click', abrirModalNuevaConsulta);
+            
+            // Modal derivar
+            btnCerrarDerivar.addEventListener('click', cerrarModalDerivar);
+            btnCancelarDerivar.addEventListener('click', cerrarModalDerivar);
+            btnConfirmarDerivar.addEventListener('click', derivarCaso);
+            
+            // Modal detalle
+            btnCerrarDetalle.addEventListener('click', cerrarModalDetalle);
+            btnCancelarDetalle.addEventListener('click', cerrarModalDetalle);
+            btnGuardarActualizacion.addEventListener('click', guardarActualizacion);
+            
+            // Modal comprobante
+            btnCerrarComprobante.addEventListener('click', cerrarModalComprobante);
+            btnCerrarComprobanteModal.addEventListener('click', cerrarModalComprobante);
+            btnDescargarComprobante.addEventListener('click', descargarComprobantePDF);
+            
+            // Navegación
+            document.getElementById('btn-ver-casos').addEventListener('click', () => cambiarVista('casos'));
+            document.getElementById('btn-ver-calendario').addEventListener('click', () => cambiarVista('calendario'));
+            document.getElementById('btn-ver-casos-cal').addEventListener('click', () => cambiarVista('casos'));
+            document.getElementById('btn-ver-calendario-cal').addEventListener('click', () => cambiarVista('calendario'));
+            
+            // Modal de salida
+            btnConfirmarSalir.addEventListener('click', salirAInicio);
+            btnCancelarSalir.addEventListener('click', cerrarModalSalir);
+            btnCerrarSalir.addEventListener('click', cerrarModalSalir);
+            
+            // Modal nueva consulta
+            btnCerrarNuevaConsulta.addEventListener('click', cerrarModalNuevaConsulta);
+            formNuevaConsulta.addEventListener('submit', guardarNuevaConsulta);
+            prevMonthBtn.addEventListener('click', () => cambiarMes(-1));
+            nextMonthBtn.addEventListener('click', () => cambiarMes(1));
+            btnUsarHoraPersonalizada.addEventListener('click', usarHoraPersonalizada);
+            
+            // Filtro de búsqueda
+            inputBusqueda.addEventListener('input', function() {
+                terminoBusqueda = this.value.trim().toLowerCase();
+                btnLimpiarBusqueda.classList.toggle('hidden', !terminoBusqueda);
+                renderizarCasos();
+            });
+            
+            btnLimpiarBusqueda.addEventListener('click', function() {
+                inputBusqueda.value = '';
+                terminoBusqueda = '';
+                this.classList.add('hidden');
+                renderizarCasos();
+            });
+            
+            // Exportar a PDF
+            btnExportarPDF.addEventListener('click', exportarTablaPDF);
+            
+            // Llenar selects de usuarios
+            llenarSelectUsuarios();
+        }
+
+        function llenarSelectUsuarios() {
+            selectUsuarioAsignar.innerHTML = '<option value="">Sin asignar</option>';
+            selectUsuarioDerivar.innerHTML = '<option value="">Seleccionar usuario...</option>';
+            
+            listaUsuarios.forEach(usuario => {
+                const optionAsignar = document.createElement('option');
+                optionAsignar.value = usuario;
+                optionAsignar.textContent = usuario;
+                selectUsuarioAsignar.appendChild(optionAsignar);
+                
+                const optionDerivar = document.createElement('option');
+                optionDerivar.value = usuario;
+                optionDerivar.textContent = usuario;
+                selectUsuarioDerivar.appendChild(optionDerivar);
+            });
+        }
+
+        // Función para mostrar modal de comprobante
+        function mostrarComprobante(caso) {
+            casoParaComprobante = caso;
+            
+            // Llenar datos en el modal
+            compNombre.textContent = caso.personName || 'No especificado';
+            compDNI.textContent = caso.dni || 'No especificado';
+            compTelefono.textContent = caso.telefono || 'No especificado';
+            compTramite.textContent = caso.type || 'No especificado';
+            
+            if (caso.fechaTurno && caso.horarioTurno) {
+                // Formatear fecha para mostrar
+                const fecha = new Date(caso.fechaTurno + 'T00:00:00');
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const anio = fecha.getFullYear();
+                const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+                const diaSemana = dias[fecha.getDay()];
+                
+                compFecha.textContent = `${diaSemana}, ${dia}/${mes}/${anio}`;
+                compHorario.textContent = caso.horarioTurno;
+            } else {
+                compFecha.textContent = 'No asignada';
+                compHorario.textContent = 'No asignado';
+            }
+            
+            modalComprobante.classList.remove('hidden');
+        }
+
+        // Función para cerrar modal de comprobante
+        function cerrarModalComprobante() {
+            modalComprobante.classList.add('hidden');
+            casoParaComprobante = null;
+        }
+
+        // Función para descargar comprobante en PDF
+        function descargarComprobantePDF() {
+            if (!casoParaComprobante) {
+                mostrarNotificacionTemp('No hay caso seleccionado para generar comprobante', 'error');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const nombre = casoParaComprobante.personName || 'No especificado';
+            const dni = casoParaComprobante.dni || 'No especificado';
+            const telefono = casoParaComprobante.telefono || 'No especificado';
+            const tipo = casoParaComprobante.type || 'No especificado';
+            const fechaTurno = casoParaComprobante.fechaTurno;
+            const horarioTurno = casoParaComprobante.horarioTurno;
+            
+            // Configuración de texto
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18); 
+            doc.setTextColor(30, 58, 138);
+            doc.text("COMPROBANTE DE TURNO ONLINE", 105, 25, null, null, 'center');
+            
+            doc.setFontSize(10); 
+            doc.setTextColor(100);
+            doc.text("Defensoria Civil y Comercial N6 - Posadas, Misiones", 105, 32, null, null, 'center');
+            doc.text("Av. Santa Catalina 1735 1° piso Posadas-Misiones (Edificio Palacio de Justicia)", 105, 38, null, null, 'center');
+            doc.setFont("helvetica", "bold");
+            doc.text("Horario de atención: Lunes a Viernes de 7 a 12 hs. Feria: 8 a 11 hs.", 105, 44, null, null, 'center');
+            
+            doc.setDrawColor(200); 
+            doc.line(20, 50, 190, 50);
+            
+            doc.setFontSize(12); 
+            doc.setTextColor(0);
+            doc.text(`Solicitante: ${nombre.toUpperCase()}`, 20, 65);
+            doc.text(`DNI: ${dni}`, 20, 75);
+            doc.text(`Teléfono: ${telefono}`, 20, 85);
+            doc.text(`Trámite: ${tipo}`, 20, 95);
+            
+            if (fechaTurno && horarioTurno) {
+                // Formatear fecha para el PDF
+                const fecha = new Date(fechaTurno + 'T00:00:00');
+                const dia = fecha.getDate().toString().padStart(2, '0');
+                const mes = (fecha.getMonth() + 1).toString().padStart(2, '0');
+                const anio = fecha.getFullYear();
+                const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+                const diaSemana = dias[fecha.getDay()];
+                
+                doc.setTextColor(37, 99, 235);
+                doc.setFontSize(14);
+                doc.text(`TURNO ASIGNADO:`, 20, 115);
+                doc.setFontSize(12);
+                doc.text(`${diaSemana}, ${dia}/${mes}/${anio} a las ${horarioTurno} hs`, 20, 125);
+                
+                doc.setFontSize(9); 
+                doc.setTextColor(100);
+                doc.text("INSTRUCCIONES:", 20, 140);
+                doc.setFontSize(8);
+                doc.text("• Presentarse con DNI original y copia", 25, 147);
+                doc.text("• Llegar 15 minutos antes de la hora asignada", 25, 154);
+                doc.text("• Traer toda la documentación relacionada al trámite", 25, 161);
+                doc.text("• En caso de no poder asistir, comunicarse al 376-4420000", 25, 168);
+            } else {
+                doc.text("Modalidad: Sin turno asignado", 20, 115);
+            }
+            
+            // Fecha y hora de emisión
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            const ahora = new Date();
+            const diaEmision = ahora.getDate().toString().padStart(2, '0');
+            const mesEmision = (ahora.getMonth() + 1).toString().padStart(2, '0');
+            const anioEmision = ahora.getFullYear();
+            const horasEmision = ahora.getHours().toString().padStart(2, '0');
+            const minutosEmision = ahora.getMinutes().toString().padStart(2, '0');
+            const fechaEmision = `${diaEmision}/${mesEmision}/${anioEmision} ${horasEmision}:${minutosEmision}`;
+            doc.text(`Comprobante emitido el: ${fechaEmision}`, 20, 190);
+            doc.text(`Emitido por: ${usuarioActual}`, 20, 195);
+            
+            // Guardar PDF
+            const nombreArchivo = `Defensoria_Turno_${dni}_${fechaTurno || 'sinturno'}.pdf`;
+            doc.save(nombreArchivo);
+            
+            mostrarNotificacionTemp('Comprobante descargado exitosamente', 'success');
+            cerrarModalComprobante();
+        }
+
+        // Función para exportar tabla a PDF
+        async function exportarTablaPDF() {
+            try {
+                // Ocultar elementos que no queremos en el PDF
+                const elementosOcultar = document.querySelectorAll('.btn-seleccionar, .btn-ver, .btn-whatsapp, .pulse-new');
+                elementosOcultar.forEach(el => el.style.visibility = 'hidden');
+                
+                // Crear un clon de la tabla para modificar
+                const tabla = document.querySelector('.table-responsive');
+                const tablaClon = tabla.cloneNode(true);
+                
+                // Restaurar visibilidad de elementos ocultos
+                elementosOcultar.forEach(el => el.style.visibility = '');
+                
+                // Configurar html2canvas
+                const canvas = await html2canvas(tablaClon, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    backgroundColor: '#ffffff'
+                });
+                
+                // Configurar jsPDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const imgWidth = 190;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                // Añadir título
+                pdf.setFontSize(16);
+                pdf.setTextColor(0, 0, 0);
+                pdf.text('Reporte de Casos Asignados', 105, 15, { align: 'center' });
+                
+                // Añadir usuario y fecha
+                pdf.setFontSize(10);
+                pdf.text(`Usuario: ${usuarioActual}`, 10, 25);
+                pdf.text(`Fecha: ${new Date().toLocaleDateString('es-AR')}`, 10, 30);
+                pdf.text(`Total de casos: ${casosAsignados.length}`, 10, 35);
+                
+                // Añadir la imagen de la tabla
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', 10, 40, imgWidth, imgHeight);
+                
+                // Guardar el PDF
+                pdf.save(`Casos_Asignados_${usuarioActual.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+                
+                mostrarNotificacionTemp('PDF generado exitosamente', 'success');
+            } catch (error) {
+                console.error("Error al generar PDF:", error);
+                mostrarNotificacionTemp('Error al generar PDF', 'error');
+            }
+        }
+
+        function verificarSesion() {
+            const usuarioGuardado = localStorage.getItem('defensoriaUsuario');
+            if (usuarioGuardado) {
+                usuarioActual = usuarioGuardado;
+                iniciarSesion(usuarioGuardado);
+            } else {
+                mostrarLogin();
+            }
+        }
+
+        function manejarLogin(e) {
+            e.preventDefault();
+            
+            const usuario = loginInput.value.trim();
+            const clave = loginPassword.value.trim();
+            
+            if (!usuario || !clave) {
+                mostrarNotificacionTemp('Por favor ingresa tu nombre y clave', 'error');
+                return;
+            }
+            
+            if (!listaUsuarios.includes(usuario)) {
+                mostrarNotificacionTemp('Usuario no válido. Contacta al administrador.', 'error');
+                return;
+            }
+            
+            if (clavesUsuarios[usuario] !== clave) {
+                mostrarNotificacionTemp('Clave incorrecta. Intenta nuevamente.', 'error');
+                loginPassword.value = '';
+                return;
+            }
+            
+            usuarioActual = usuario;
+            localStorage.setItem('defensoriaUsuario', usuario);
+            iniciarSesion(usuario);
+        }
+
+        function mostrarConfirmacionSalir() {
+            modalSalir.classList.remove('hidden');
+        }
+
+        function cerrarModalSalir() {
+            modalSalir.classList.add('hidden');
+        }
+
+        function salirAInicio() {
+            localStorage.removeItem('defensoriaUsuario');
+            location.reload();
+        }
+
+        function mostrarLogin() {
+            loginSection.classList.remove('hidden');
+            dashboardSection.classList.add('hidden');
+            calendarioSection.classList.add('hidden');
+            loginInput.value = '';
+            loginPassword.value = '';
+        }
+
+        function iniciarSesion(usuario) {
+            // Ocultar modal de feriado si está visible
+            systemUnavailableOverlay.classList.add('hidden');
+            
+            loginSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            
+            userNameDisplay.textContent = usuario;
+            userNameCal.textContent = usuario;
+            
+            // Establecer el usuario actual como valor del select (pero deshabilitado)
+            selectUsuarioAsignar.value = usuario;
+            
+            // Inicializar casos vistos desde localStorage
+            const casosVistosGuardados = localStorage.getItem(`defensoriaCasosVistos_${usuario}`);
+            if (casosVistosGuardados) {
+                casosVistos = new Set(JSON.parse(casosVistosGuardados));
+            }
+            
+            cargarTodosLosCasos(); // Primero cargar todos los casos
+            cargarConfiguracionAgenda();
+            
+            mostrarNotificacionTemp(`¡Bienvenido/a, ${usuario}!`, 'success');
+        }
+
+        function cambiarVista(vista) {
+            document.getElementById('btn-ver-casos').classList.remove('bg-blue-600', 'text-white');
+            document.getElementById('btn-ver-casos').classList.add('bg-gray-200', 'text-gray-700');
+            document.getElementById('btn-ver-calendario').classList.remove('bg-blue-600', 'text-white');
+            document.getElementById('btn-ver-calendario').classList.add('bg-gray-200', 'text-gray-700');
+            
+            document.getElementById('btn-ver-casos-cal').classList.remove('bg-blue-600', 'text-white');
+            document.getElementById('btn-ver-casos-cal').classList.add('bg-gray-200', 'text-gray-700');
+            document.getElementById('btn-ver-calendario-cal').classList.remove('bg-blue-600', 'text-white');
+            document.getElementById('btn-ver-calendario-cal').classList.add('bg-gray-200', 'text-gray-700');
+            
+            if (vista === 'casos') {
+                dashboardSection.classList.remove('hidden');
+                calendarioSection.classList.add('hidden');
+                document.getElementById('btn-ver-casos').classList.add('bg-blue-600', 'text-white');
+                document.getElementById('btn-ver-casos').classList.remove('bg-gray-200', 'text-gray-700');
+                filtrarYMostrarCasosAsignados();
+            } else if (vista === 'calendario') {
+                dashboardSection.classList.add('hidden');
+                calendarioSection.classList.remove('hidden');
+                document.getElementById('btn-ver-calendario-cal').classList.add('bg-blue-600', 'text-white');
+                document.getElementById('btn-ver-calendario-cal').classList.remove('bg-gray-200', 'text-gray-700');
+                cargarCalendario();
+            }
+        }
+
+        // Función para cargar TODOS los casos de Firebase
+        function cargarTodosLosCasos() {
+            try {
+                const casosRef = ref(db, "atencion");
+                
+                onValue(casosRef, (snapshot) => {
+                    const data = snapshot.val();
+                    
+                    if (data) {
+                        // Convertir objeto a array y ordenar por fecha más reciente
+                        allCases = Object.entries(data).map(([id, value]) => ({
+                            id,
+                            ...value
+                        })).sort((a, b) => {
+                            const fechaA = a.timestamp ? new Date(a.timestamp) : new Date(0);
+                            const fechaB = b.timestamp ? new Date(b.timestamp) : new Date(0);
+                            return fechaB - fechaA;
+                        });
+                        
+                        // Filtrar y mostrar casos asignados al usuario actual
+                        filtrarYMostrarCasosAsignados();
+                        actualizarContadorPendientes();
+                        ultimaActualizacionElement.textContent = new Date().toLocaleTimeString('es-AR', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        });
+                    } else {
+                        allCases = [];
+                        renderizarCasos();
+                    }
+                });
+                
+            } catch (error) {
+                console.error("Error al cargar casos:", error);
+                mostrarNotificacionTemp('Error al cargar los casos asignados', 'error');
+            }
+        }
+
+        // Función para filtrar y mostrar solo los casos asignados al usuario actual
+        function filtrarYMostrarCasosAsignados() {
+            if (!usuarioActual) return;
+            
+            // Filtrar casos asignados al usuario actual - ACTUALIZACIÓN EN TIEMPO REAL
+            const nuevosCasosAsignados = allCases.filter(caso => 
+                caso.assignedUser === usuarioActual
+            );
+            
+            // Detectar casos nuevos (no vistos)
+            const casosNuevos = nuevosCasosAsignados.filter(caso => 
+                !casosVistos.has(caso.id)
+            );
+            
+            // Actualizar lista de casos asignados
+            casosAsignados = nuevosCasosAsignados;
+            
+            // Mostrar notificaciones para casos nuevos
+            casosNuevos.forEach(caso => {
+                mostrarNotificacionPersistente(caso);
+                casosVistos.add(caso.id);
+            });
+            
+            // Guardar casos vistos en localStorage
+            localStorage.setItem(`defensoriaCasosVistos_${usuarioActual}`, JSON.stringify([...casosVistos]));
+            
+            renderizarCasos();
+            cargarCalendario(); // Actualizar calendario también
+        }
+
+        function renderizarCasos() {
+            casosBody.innerHTML = '';
+            
+            // Filtrar casos según término de búsqueda
+            let casosFiltrados = casosAsignados;
+            
+            if (terminoBusqueda) {
+                casosFiltrados = casosAsignados.filter(caso => {
+                    return (
+                        (caso.personName && caso.personName.toLowerCase().includes(terminoBusqueda)) ||
+                        (caso.dni && caso.dni.toLowerCase().includes(terminoBusqueda)) ||
+                        (caso.type && caso.type.toLowerCase().includes(terminoBusqueda)) ||
+                        (caso.description && caso.description.toLowerCase().includes(terminoBusqueda)) ||
+                        (caso.estado && caso.estado.toLowerCase().includes(terminoBusqueda)) ||
+                        (caso.telefono && caso.telefono.includes(terminoBusqueda))
+                    );
+                });
+            }
+            
+            if (casosFiltrados.length === 0) {
+                if (terminoBusqueda) {
+                    tablaVacia.classList.add('hidden');
+                    tablaSinResultados.classList.remove('hidden');
+                } else {
+                    tablaVacia.classList.remove('hidden');
+                    tablaSinResultados.classList.add('hidden');
+                }
+                btnResuelto.disabled = true;
+                btnDerivar.disabled = true;
+                btnActualizar.disabled = true;
+                return;
+            }
+            
+            tablaVacia.classList.add('hidden');
+            tablaSinResultados.classList.add('hidden');
+            
+            casosFiltrados.forEach(caso => {
+                const fecha = caso.timestamp ? new Date(caso.timestamp) : new Date();
+                const fechaFormateada = formatoFecha(fecha);
+                const esNuevo = !casosVistos.has(caso.id);
+                
+                let infoTurno = '';
+                if (caso.fechaTurno) {
+                    // Formato YYYY-MM-DD ya viene de Firebase
+                    const fechaTurnoFormateada = formatoFechaCorta(new Date(caso.fechaTurno + 'T00:00:00'));
+                    infoTurno = `<div class="text-xs text-blue-600 mt-1">
+                        <i class="fas fa-calendar-day mr-1"></i>
+                        ${fechaTurnoFormateada} ${caso.horarioTurno || ''}
+                    </div>`;
+                }
+                
+                const estado = caso.estado || 'pendiente';
+                const colorEstado = obtenerColorEstado(estado);
+                
+                const row = document.createElement('tr');
+                row.className = `hover:bg-gray-50 transition-all-smooth ${esNuevo ? 'pulse-new bg-blue-50' : ''}`;
+                row.dataset.id = caso.id;
+                row.innerHTML = `
+                    <td class="px-4 py-3">
+                        <div class="font-medium text-gray-900 flex items-center">
+                            ${caso.personName || 'Sin nombre'}
+                            ${esNuevo ? '<span class="ml-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">NUEVO</span>' : ''}
+                        </div>
+                        <div class="text-xs text-gray-500">${caso.dni || 'Sin DNI'}</div>
+                        ${infoTurno}
+                    </td>
+                    <td class="px-4 py-3">
+                        <div class="text-sm">${caso.type || 'No especificado'}</div>
+                        <div class="text-xs text-gray-500 truncate max-w-[150px]">${caso.description || 'Sin descripción'}</div>
+                    </td>
+                    <td class="px-4 py-3 text-sm">${fechaFormateada}</td>
+                    <td class="px-4 py-3">
+                        <span class="estado-badge ${colorEstado}">
+                            ${estado.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">
+                        <div class="flex space-x-2">
+                            <button class="btn-seleccionar text-blue-600 hover:text-blue-800 transition-all-smooth" data-id="${caso.id}" title="Seleccionar caso">
+                                <i class="fas fa-check-circle"></i>
+                            </button>
+                            <button class="btn-ver text-green-600 hover:text-green-800 transition-all-smooth" data-id="${caso.id}" title="Ver detalles">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            ${caso.fechaTurno && caso.horarioTurno ? `
+                                <button class="btn-comprobante text-red-600 hover:text-red-800 transition-all-smooth" data-id="${caso.id}" title="Generar comprobante de turno">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                            ` : ''}
+                            ${caso.telefono ? `
+                                <button class="btn-whatsapp text-green-600 hover:text-green-800 transition-all-smooth" data-telefono="${caso.telefono}" data-nombre="${caso.personName}" title="Contactar por WhatsApp">
+                                    <i class="fab fa-whatsapp"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+                
+                casosBody.appendChild(row);
+                
+                row.querySelector('.btn-seleccionar').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    seleccionarCaso(caso.id);
+                });
+                
+                row.querySelector('.btn-ver').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    verDetalleCaso(caso.id);
+                });
+                
+                const btnComprobante = row.querySelector('.btn-comprobante');
+                if (btnComprobante && caso.fechaTurno && caso.horarioTurno) {
+                    btnComprobante.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        mostrarComprobante(caso);
+                    });
+                }
+                
+                const btnWhatsapp = row.querySelector('.btn-whatsapp');
+                if (btnWhatsapp && caso.telefono) {
+                    btnWhatsapp.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const mensaje = `Hola ${caso.personName || 'ciudadano'}, nos comunicamos de la Defensoría Civil y Comercial 6 respecto a su caso.`;
+                        window.open(`https://wa.me/${caso.telefono}?text=${encodeURIComponent(mensaje)}`, '_blank');
+                    });
+                }
+            });
+            
+            if (casoSeleccionado) {
+                const filaSeleccionada = document.querySelector(`tr[data-id="${casoSeleccionado}"]`);
+                if (filaSeleccionada) {
+                    filaSeleccionada.classList.add('bg-blue-50');
+                }
+            }
+        }
+
+        function verDetalleCaso(id) {
+            const caso = casosAsignados.find(c => c.id === id);
+            if (!caso) {
+                mostrarNotificacionTemp('No se encontró el caso seleccionado', 'error');
+                return;
+            }
+            
+            casoSeleccionadoDetalle = caso;
+            
+            detalleNombre.textContent = caso.personName || 'No especificado';
+            detalleDNI.textContent = caso.dni || 'No especificado';
+            detalleTelefono.textContent = caso.telefono || 'No especificado';
+            detalleTipo.textContent = caso.type || 'No especificado';
+            detalleDescripcion.textContent = caso.description || 'No especificado';
+            detalleEstado.textContent = caso.estado || 'pendiente';
+            
+            if (caso.timestamp) {
+                const fecha = new Date(caso.timestamp);
+                detalleFecha.textContent = formatoFecha(fecha);
+            } else {
+                detalleFecha.textContent = 'No especificada';
+            }
+            
+            if (caso.observaciones || caso.notas) {
+                detalleObservaciones.innerHTML = '';
+                const todasLasNotas = [...(caso.observaciones || []), ...(caso.notas || [])];
+                
+                if (todasLasNotas.length > 0) {
+                    todasLasNotas.sort((a, b) => {
+                        const fechaA = a.fecha ? new Date(a.fecha) : new Date(0);
+                        const fechaB = b.fecha ? new Date(b.fecha) : new Date(0);
+                        return fechaB - fechaA;
+                    }).forEach(obs => {
+                        const fechaObs = obs.fecha ? new Date(obs.fecha).toLocaleString('es-AR') : 'Fecha no especificada';
+                        const obsDiv = document.createElement('div');
+                        obsDiv.className = 'mb-3 pb-3 border-b border-gray-200 last:border-0';
+                        obsDiv.innerHTML = `
+                            <div class="flex justify-between">
+                                <span class="font-medium text-sm">${obs.usuario || obs.autor || 'Usuario desconocido'}</span>
+                                <span class="text-xs text-gray-500">${fechaObs}</span>
+                            </div>
+                            <p class="text-sm text-gray-700 mt-1">${obs.texto || ''}</p>
+                        `;
+                        detalleObservaciones.appendChild(obsDiv);
+                    });
+                } else {
+                    detalleObservaciones.innerHTML = '<p class="text-gray-500 text-sm">No hay observaciones registradas.</p>';
+                }
+            } else {
+                detalleObservaciones.innerHTML = '<p class="text-gray-500 text-sm">No hay observaciones registradas.</p>';
+            }
+            
+            nuevaObservacion.value = '';
+            modalDetalle.classList.remove('hidden');
+        }
+
+        function seleccionarCaso(id) {
+            casoSeleccionado = id;
+            
+            document.querySelectorAll('#casos-body tr').forEach(tr => {
+                tr.classList.remove('bg-blue-50');
+            });
+            
+            const filaSeleccionada = document.querySelector(`tr[data-id="${id}"]`);
+            if (filaSeleccionada) {
+                filaSeleccionada.classList.add('bg-blue-50');
+            }
+            
+            btnResuelto.disabled = false;
+            btnDerivar.disabled = false;
+            btnActualizar.disabled = false;
+            
+            mostrarNotificacionTemp('Caso seleccionado', 'info');
+        }
+
+        function abrirModalDetalle() {
+            if (!casoSeleccionado) {
+                mostrarNotificacionTemp('Por favor selecciona un caso primero', 'warning');
+                return;
+            }
+            
+            verDetalleCaso(casoSeleccionado);
+        }
+
+        function cerrarModalDetalle() {
+            modalDetalle.classList.add('hidden');
+            casoSeleccionadoDetalle = null;
+        }
+
+        async function guardarActualizacion() {
+            const observacionTexto = nuevaObservacion.value.trim();
+            
+            if (!observacionTexto) {
+                mostrarNotificacionTemp('Por favor ingresa una observación', 'warning');
+                return;
+            }
+            
+            if (!casoSeleccionadoDetalle) {
+                mostrarNotificacionTemp('No hay caso seleccionado', 'error');
+                return;
+            }
+            
+            try {
+                const casoRef = ref(db, `atencion/${casoSeleccionadoDetalle.id}`);
+                
+                const observacionesActuales = casoSeleccionadoDetalle.observaciones || [];
+                const notasActuales = casoSeleccionadoDetalle.notas || [];
+                
+                const nuevaObs = {
+                    fecha: new Date().toISOString(),
+                    usuario: usuarioActual,
+                    texto: observacionTexto
+                };
+                
+                // Actualizar tanto observaciones como notas para mantener compatibilidad
+                await update(casoRef, {
+                    observaciones: [...observacionesActuales, nuevaObs],
+                    notas: [...notasActuales, nuevaObs]
+                });
+                
+                mostrarNotificacionTemp('Observación guardada correctamente', 'success');
+                cerrarModalDetalle();
+                // Recargar datos después de actualizar
+                const casoIndex = allCases.findIndex(c => c.id === casoSeleccionadoDetalle.id);
+                if (casoIndex !== -1) {
+                    allCases[casoIndex] = {...allCases[casoIndex], ...{
+                        observaciones: [...observacionesActuales, nuevaObs],
+                        notas: [...notasActuales, nuevaObs]
+                    }};
+                    filtrarYMostrarCasosAsignados();
+                }
+                
+            } catch (error) {
+                console.error("Error al guardar observación:", error);
+                mostrarNotificacionTemp('Error al guardar la observación', 'error');
+            }
+        }
+
+        async function marcarComoResuelto() {
+            if (!casoSeleccionado) {
+                mostrarNotificacionTemp('Por favor selecciona un caso primero', 'warning');
+                return;
+            }
+            
+            if (!confirm('¿Estás seguro de marcar este caso como resuelto?')) {
+                return;
+            }
+            
+            try {
+                const casoRef = ref(db, `atencion/${casoSeleccionado}`);
+                
+                await update(casoRef, {
+                    estado: "resuelta",
+                    fechaResolucion: new Date().toISOString(),
+                    resueltoPor: usuarioActual
+                });
+                
+                mostrarNotificacionTemp('Caso marcado como resuelto correctamente', 'success');
+                casoSeleccionado = null;
+                btnResuelto.disabled = true;
+                btnDerivar.disabled = true;
+                btnActualizar.disabled = true;
+                
+                // Actualizar el caso en allCases
+                const casoIndex = allCases.findIndex(c => c.id === casoSeleccionado);
+                if (casoIndex !== -1) {
+                    allCases[casoIndex] = {...allCases[casoIndex], estado: "resuelta", fechaResolucion: new Date().toISOString(), resueltoPor: usuarioActual};
+                    filtrarYMostrarCasosAsignados();
+                }
+                
+            } catch (error) {
+                console.error("Error al marcar como resuelto:", error);
+                mostrarNotificacionTemp('Error al actualizar el caso', 'error');
+            }
+        }
+
+        function abrirModalDerivar() {
+            if (!casoSeleccionado) {
+                mostrarNotificacionTemp('Por favor selecciona un caso primero', 'warning');
+                return;
+            }
+            
+            selectUsuarioDerivar.innerHTML = '<option value="">Seleccionar usuario...</option>';
+            listaUsuarios.forEach(usuario => {
+                if (usuario !== usuarioActual) {
+                    const option = document.createElement('option');
+                    option.value = usuario;
+                    option.textContent = usuario;
+                    selectUsuarioDerivar.appendChild(option);
+                }
+            });
+            
+            modalDerivar.classList.remove('hidden');
+        }
+
+        function cerrarModalDerivar() {
+            modalDerivar.classList.add('hidden');
+            selectUsuarioDerivar.value = "";
+        }
+
+        async function derivarCaso() {
+            const nuevoUsuario = selectUsuarioDerivar.value;
+            
+            if (!nuevoUsuario) {
+                mostrarNotificacionTemp('Por favor selecciona un usuario', 'warning');
+                return;
+            }
+            
+            if (!confirm(`¿Estás seguro de derivar este caso a ${nuevoUsuario}?`)) {
+                return;
+            }
+            
+            try {
+                const casoRef = ref(db, `atencion/${casoSeleccionado}`);
+                
+                await update(casoRef, {
+                    assignedUser: nuevoUsuario,
+                    estado: "pendiente",
+                    derivadoPor: usuarioActual,
+                    derivadoEl: new Date().toISOString()
+                });
+                
+                mostrarNotificacionTemp(`Caso derivado a ${nuevoUsuario} correctamente`, 'success');
+                cerrarModalDerivar();
+                casoSeleccionado = null;
+                btnResuelto.disabled = true;
+                btnDerivar.disabled = true;
+                btnActualizar.disabled = true;
+                
+                // Actualizar el caso en allCases
+                const casoIndex = allCases.findIndex(c => c.id === casoSeleccionado);
+                if (casoIndex !== -1) {
+                    allCases[casoIndex] = {...allCases[casoIndex], assignedUser: nuevoUsuario, estado: "pendiente"};
+                    filtrarYMostrarCasosAsignados();
+                }
+                
+            } catch (error) {
+                console.error("Error al derivar caso:", error);
+                mostrarNotificacionTemp('Error al derivar el caso', 'error');
+            }
+        }
+
+        // Función para mostrar notificación persistente
+        function mostrarNotificacionPersistente(caso) {
+            const container = document.getElementById('notification-persistent-container');
+            
+            // Remover notificación anterior si existe
+            if (ultimaNotificacionId) {
+                const notifAnterior = document.getElementById(`notif-${ultimaNotificacionId}`);
+                if (notifAnterior) {
+                    notifAnterior.remove();
+                }
+            }
+            
+            ultimaNotificacionId = caso.id;
+            
+            const notificacion = document.createElement('div');
+            notificacion.id = `notif-${caso.id}`;
+            notificacion.className = 'notification-persistent';
+            
+            const tipoConsulta = caso.type || 'Consulta';
+            const esUrgente = caso.type && caso.type.includes('Alimentos');
+            
+            notificacion.innerHTML = `
+                <div class="notification-persistent-content">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mr-3">
+                            <i class="fas fa-bell text-xl ${esUrgente ? 'text-yellow-300' : 'text-white'}"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white mb-1">Nuevo Caso Asignado</h4>
+                            <p class="text-sm text-white mb-1"><strong>${caso.personName || 'Sin nombre'}</strong></p>
+                            <p class="text-xs text-blue-100 mb-2">${tipoConsulta}</p>
+                            ${caso.description ? `<p class="text-xs text-blue-100">${caso.description.substring(0, 60)}${caso.description.length > 60 ? '...' : ''}</p>` : ''}
+                            <p class="text-xs text-blue-200 mt-2">${new Date().toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'})}</p>
+                        </div>
+                    </div>
+                </div>
+                <button class="notification-persistent-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            
+            container.appendChild(notificacion);
+            
+            // Evento para cerrar notificación
+            notificacion.querySelector('.notification-persistent-close').addEventListener('click', () => {
+                notificacion.remove();
+                ultimaNotificacionId = null;
+            });
+            
+            // Auto-remover después de 30 segundos
+            setTimeout(() => {
+                if (notificacion.parentNode && notificacion.id === `notif-${caso.id}`) {
+                    notificacion.style.opacity = '0';
+                    notificacion.style.transform = 'translateX(100%) scale(0.8)';
+                    setTimeout(() => {
+                        if (notificacion.parentNode) {
+                            notificacion.remove();
+                            if (ultimaNotificacionId === caso.id) {
+                                ultimaNotificacionId = null;
+                            }
+                        }
+                    }, 300);
+                }
+            }, 30000);
+        }
+
+        // Función para mostrar alerta roja flotante - MODIFICADA
+        function mostrarAlertaRojaFlotante(mensaje) {
+            // Remover alerta anterior si existe
+            const alertaAnterior = alertaRojaFlotanteContainer.querySelector('.alerta-roja-flotante-overlay');
+            if (alertaAnterior) {
+                alertaAnterior.remove();
+            }
+            
+            // Crear overlay
+            const overlay = document.createElement('div');
+            overlay.className = 'alerta-roja-flotante-overlay';
+            
+            // Crear modal
+            const alerta = document.createElement('div');
+            alerta.className = 'alerta-roja-flotante';
+            alerta.innerHTML = `
+                <div class="alerta-roja-flotante-header">
+                    <h3>
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Límite de Turnos Alcanzado
+                    </h3>
+                    <button class="alerta-roja-flotante-close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="alerta-roja-flotante-body">
+                    <p>${mensaje}</p>
+                </div>
+                <div class="alerta-roja-flotante-footer">
+                    <p>Esta alerta desaparecerá en 5 segundos</p>
+                </div>
+            `;
+            
+            // Agregar al contenedor
+            alertaRojaFlotanteContainer.appendChild(overlay);
+            alertaRojaFlotanteContainer.appendChild(alerta);
+            
+            // Evento para cerrar manualmente
+            alerta.querySelector('.alerta-roja-flotante-close').addEventListener('click', () => {
+                cerrarAlertaRojaFlotante(overlay, alerta);
+            });
+            
+            // Cerrar al hacer clic en el overlay
+            overlay.addEventListener('click', () => {
+                cerrarAlertaRojaFlotante(overlay, alerta);
+            });
+            
+            // Auto-remover después de 5 segundos
+            setTimeout(() => {
+                cerrarAlertaRojaFlotante(overlay, alerta);
+            }, 5000);
+        }
+
+        // Función auxiliar para cerrar la alerta
+        function cerrarAlertaRojaFlotante(overlay, alerta) {
+            if (overlay.parentNode) {
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    if (overlay.parentNode) {
+                        overlay.remove();
+                    }
+                }, 300);
+            }
+            
+            if (alerta.parentNode) {
+                alerta.style.opacity = '0';
+                alerta.style.transform = 'translate(-50%, -50%) scale(0.9)';
+                setTimeout(() => {
+                    if (alerta.parentNode) {
+                        alerta.remove();
+                    }
+                }, 300);
+            }
+        }
+
+        // Función para notificaciones temporales
+        function mostrarNotificacionTemp(mensaje, tipo = 'info') {
+            const container = document.getElementById('notification-temp-container');
+            const notificacion = document.createElement('div');
+            notificacion.className = `bg-white rounded-lg shadow-lg p-4 border-l-4 ${tipo === 'success' ? 'border-green-500' : tipo === 'error' ? 'border-red-500' : tipo === 'warning' ? 'border-yellow-500' : 'border-blue-500'}`;
+            
+            let icono = 'info-circle';
+            let color = 'blue';
+            if (tipo === 'success') { icono = 'check-circle'; color = 'green'; }
+            if (tipo === 'error') { icono = 'exclamation-circle'; color = 'red'; }
+            if (tipo === 'warning') { icono = 'exclamation-triangle'; color = 'yellow'; }
+            
+            notificacion.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas fa-${icono} text-${color}-500 mr-3"></i>
+                    <div class="flex-1">${mensaje}</div>
+                    <button class="ml-2 text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            container.appendChild(notificacion);
+            
+            // Evento para cerrar
+            notificacion.querySelector('button').addEventListener('click', () => {
+                notificacion.style.opacity = '0';
+                notificacion.style.transform = 'translateY(-10px)';
+                setTimeout(() => notificacion.remove(), 300);
+            });
+            
+            // Auto-remover después de 5 segundos
+            setTimeout(() => {
+                if (notificacion.parentNode) {
+                    notificacion.style.opacity = '0';
+                    notificacion.style.transform = 'translateY(-10px)';
+                    setTimeout(() => notificacion.remove(), 300);
+                }
+            }, 5000);
+        }
+
+        function actualizarContadorPendientes() {
+            const pendientes = casosAsignados.filter(c => 
+                c.estado !== 'resuelta' && c.estado !== 'Resuelto'
+            ).length;
+            
+            document.getElementById('contador-pendientes').textContent = pendientes;
+            document.getElementById('contador-pendientes-cal').textContent = pendientes;
+        }
+
+        // Funciones para calendario
+        function cargarCalendario() {
+            const hoy = new Date();
+            const hoyString = hoy.getFullYear() + '-' + 
+                            String(hoy.getMonth() + 1).padStart(2, '0') + '-' + 
+                            String(hoy.getDate()).padStart(2, '0');
+            
+            const fechaHoy = formatoFechaCompleta(hoy);
+            fechaActualDisplay.textContent = fechaHoy;
+            
+            // Filtrar casos del usuario actual para hoy
+            const casosHoy = casosAsignados.filter(caso => {
+                if (!caso.fechaTurno || caso.estado === 'resuelta' || caso.estado === 'Resuelto') return false;
+                // Comparar en formato YYYY-MM-DD
+                return caso.fechaTurno === hoyString;
+            });
+            
+            casosHoy.sort((a, b) => {
+                const horaA = a.horarioTurno || "00:00";
+                const horaB = b.horarioTurno || "00:00";
+                return horaA.localeCompare(horaB);
+            });
+            
+            renderizarCalendario(casosHoy);
+        }
+
+        function renderizarCalendario(casos) {
+            calendarioGrid.innerHTML = '';
+            
+            if (casos.length === 0) {
+                calendarioGrid.innerHTML = `
+                    <div class="col-span-1 text-center py-8">
+                        <i class="fas fa-calendar-times text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500">No hay turnos para hoy</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const horarios = ["07:00", "07:30", "08:00", "08:30", "09:00", "09:30", 
+                            "10:00", "10:30", "11:00", "11:30"];
+            
+            horarios.forEach(horario => {
+                const casosEnHorario = casos.filter(c => c.horarioTurno === horario);
+                
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-lg shadow p-4 transition-all-smooth hover:shadow-md';
+                
+                if (casosEnHorario.length > 0) {
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="font-bold text-lg text-blue-600">${horario}</span>
+                            <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                                ${casosEnHorario.length} turno(s)
+                            </span>
+                        </div>
+                        <div class="space-y-2">
+                            ${casosEnHorario.map(caso => `
+                                <div class="border-l-4 border-blue-500 pl-3 py-2 hover:bg-blue-50 cursor-pointer transition-all-smooth" data-id="${caso.id}">
+                                    <div class="font-medium text-gray-900">${caso.personName || 'Sin nombre'}</div>
+                                    <div class="text-xs text-gray-500">${caso.type || 'Sin tipo'}</div>
+                                    <div class="text-xs text-gray-400 mt-1">${caso.dni || 'Sin DNI'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    card.querySelectorAll('[data-id]').forEach(el => {
+                        el.addEventListener('click', () => {
+                            seleccionarCaso(el.dataset.id);
+                            cambiarVista('casos');
+                        });
+                    });
+                } else {
+                    card.innerHTML = `
+                        <div class="text-center py-4">
+                            <span class="font-bold text-gray-400">${horario}</span>
+                            <div class="text-xs text-gray-400 mt-1">Disponible</div>
+                        </div>
+                    `;
+                    card.classList.add('opacity-70');
+                }
+                
+                calendarioGrid.appendChild(card);
+            });
+        }
+
+        // Funciones para nueva consulta - MODIFICADAS CON RESTRICCIÓN ESPECÍFICA
+        function abrirModalNuevaConsulta() {
+            // VERIFICACIÓN ESPECÍFICA PARA MODAL DE NUEVA CONSULTA
+            // Esta es la única restricción activa ahora.
+            const disponibilidad = verificarDisponibilidadParaNuevaConsulta();
+            if (!disponibilidad.disponible) {
+                // Muestra la alerta roja en lugar de solo una notificación, como estaba en el diseño original de alerta modal
+                mostrarAlertaSistemaNoDisponible(disponibilidad.mensaje);
+                return;
+            }
+            
+            formNuevaConsulta.reset();
+            
+            // Establecer el usuario actual como valor del select y deshabilitarlo
+            selectUsuarioAsignar.value = usuarioActual;
+            selectUsuarioAsignar.disabled = true;
+            
+            selectedDate = null;
+            selectedTime = null;
+            inputFechaTurno.value = '';
+            inputHorarioTurno.value = '';
+            inputHoraPersonalizada.value = '';
+            actualizarTextoSeleccionTurno();
+            
+            renderCalendarioNuevo();
+            actualizarHorariosDisponiblesNuevo();
+            
+            modalNuevaConsulta.classList.remove('hidden');
+        }
+
+        function cerrarModalNuevaConsulta() {
+            modalNuevaConsulta.classList.add('hidden');
+            selectUsuarioAsignar.disabled = false;
+        }
+
+        function cargarConfiguracionAgenda() {
+            try {
+                const diasInactivosRef = ref(db, "config/diasInactivos");
+                onValue(diasInactivosRef, (snapshot) => {
+                    diasInactivos = snapshot.val() || [];
+                    if (modalNuevaConsulta.classList.contains('hidden') === false) {
+                        renderCalendarioNuevo();
+                    }
+                });
+                
+                const capacidadHorariaRef = ref(db, "config/capacidadHoraria");
+                onValue(capacidadHorariaRef, (snapshot) => {
+                    capacidadHoraria = snapshot.val() || {};
+                    if (Object.keys(capacidadHoraria).length === 0) {
+                        const horariosDefault = {};
+                        for (let hour = 7; hour <= 11; hour++) {
+                            for (let minute = 0; minute < 60; minute += 30) {
+                                if (hour === 11 && minute > 30) break;
+                                const hora = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                                horariosDefault[hora] = 2;
+                            }
+                        }
+                        set(ref(db, "config/capacidadHoraria"), horariosDefault);
+                        capacidadHoraria = horariosDefault;
+                    }
+                    if (modalNuevaConsulta.classList.contains('hidden') === false) {
+                        actualizarHorariosDisponiblesNuevo();
+                    }
+                });
+                
+            } catch (error) {
+                console.error("Error al cargar configuración de agenda:", error);
+            }
+        }
+
+        function renderCalendarioNuevo() {
+            calendarGridNuevo.innerHTML = '';
+            
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                              "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'h-8';
+                calendarGridNuevo.appendChild(emptyDiv);
+            }
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day-nuevo h-8 flex items-center justify-center text-sm rounded';
+                
+                const date = new Date(currentYear, currentMonth, day);
+                const dateString = formatDateLocal(date);
+                const dayOfWeek = date.getDay();
+                
+                const isToday = date.getDate() === today.getDate() && 
+                               date.getMonth() === today.getMonth() && 
+                               date.getFullYear() === today.getFullYear();
+                
+                const isPast = date < today && !isToday;
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const isInactivo = diasInactivos.includes(dateString);
+                const isFeriadoFecha = esFeriado(date);
+                
+                const isSelected = selectedDate && 
+                                  selectedDate.getFullYear() === currentYear &&
+                                  selectedDate.getMonth() === currentMonth &&
+                                  selectedDate.getDate() === day;
+                
+                if (isToday) {
+                    dayElement.classList.add('bg-blue-100', 'text-blue-700', 'font-bold');
+                }
+                
+                if (isSelected) {
+                    dayElement.classList.add('selected');
+                }
+                
+                if (isPast || isWeekend || isInactivo || isFeriadoFecha) {
+                    dayElement.classList.add('disabled');
+                    if (isFeriadoFecha) {
+                        dayElement.title = 'Feriado o día no laborable';
+                        dayElement.innerHTML = `<span class="text-red-500 line-through">${day}</span>`;
+                    } else if (isInactivo) {
+                        dayElement.title = 'Día no laborable';
+                        dayElement.innerHTML = `<span class="line-through">${day}</span>`;
+                    } else {
+                        dayElement.textContent = day;
+                    }
+                } else {
+                    dayElement.textContent = day;
+                    dayElement.addEventListener('click', () => seleccionarDiaNuevo(day));
+                }
+                
+                calendarGridNuevo.appendChild(dayElement);
+            }
+        }
+
+        function formatDateLocal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        function seleccionarDiaNuevo(day) {
+            const date = new Date(currentYear, currentMonth, day);
+            const dateString = formatDateLocal(date);
+            
+            if (diasInactivos.includes(dateString) || esFeriado(date)) {
+                mostrarNotificacionTemp('Este día está marcado como no laborable o es feriado', 'warning');
+                return;
+            }
+            
+            selectedDate = date;
+            inputFechaTurno.value = dateString;
+            
+            renderCalendarioNuevo();
+            actualizarHorariosDisponiblesNuevo();
+            actualizarTextoSeleccionTurno();
+        }
+
+        function cambiarMes(delta) {
+            currentMonth += delta;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            renderCalendarioNuevo();
+            actualizarHorariosDisponiblesNuevo();
+        }
+
+        function actualizarHorariosDisponiblesNuevo() {
+            horariosContainerNuevo.innerHTML = '';
+            
+            // Obtener contadores actuales de turnos
+            const contadoresHorarios = {};
+            
+            if (inputFechaTurno.value) {
+                const fechaSeleccionada = inputFechaTurno.value;
+                
+                // Contar turnos existentes para la fecha seleccionada
+                const turnosEnFecha = allCases.filter(caso => 
+                    caso.fechaTurno === fechaSeleccionada && 
+                    caso.horarioTurno
+                );
+                
+                turnosEnFecha.forEach(caso => {
+                    if (!contadoresHorarios[caso.horarioTurno]) {
+                        contadoresHorarios[caso.horarioTurno] = 0;
+                    }
+                    contadoresHorarios[caso.horarioTurno]++;
+                });
+            }
+            
+            // Determinar horarios según período especial
+            let horariosAMostrar = [];
+            if (selectedDate && esPeriodoEspecial(selectedDate)) {
+                // Horarios de 8:00 a 10:00 para períodos especiales
+                for (let hour = 8; hour <= 10; hour++) {
+                    for (let minute = 0; minute < 60; minute += 30) {
+                        if (hour === 10 && minute > 0) break; // Solo hasta 10:00
+                        const hora = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        horariosAMostrar.push(hora);
+                    }
+                }
+            } else {
+                // Horarios normales de 7:00 a 11:30
+                horariosAMostrar = Object.keys(capacidadHoraria);
+            }
+            
+            horariosAMostrar.forEach(hora => {
+                const capacidad = capacidadHoraria[hora] || 2;
+                const turnosActuales = contadoresHorarios[hora] || 0;
+                const cuposDisponibles = capacidad - turnosActuales;
+                const estaLleno = cuposDisponibles <= 0;
+                
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `border p-2 rounded text-sm transition-all-smooth flex flex-col items-center justify-center ${estaLleno ? 'bg-red-100 border-red-300 text-red-700 cursor-not-allowed' : 'bg-white border-gray-300 text-gray-800 hover:bg-blue-50'}`;
+                btn.innerHTML = `
+                    <span>${hora}</span>
+                    <span class="text-xs ${estaLleno ? 'text-red-500' : 'text-gray-500'}">
+                        ${estaLleno ? 'Lleno' : `(${cuposDisponibles} cupos)`}
+                    </span>
+                `;
+                btn.dataset.hora = hora;
+                
+                if (!estaLleno) {
+                    btn.addEventListener('click', () => seleccionarHorarioNuevo(hora));
+                } else {
+                    btn.title = 'Este horario ya tiene el máximo de 2 turnos';
+                }
+                
+                horariosContainerNuevo.appendChild(btn);
+            });
+        }
+
+        function seleccionarHorarioNuevo(hora) {
+            selectedTime = hora;
+            inputHorarioTurno.value = hora;
+            
+            document.querySelectorAll('#horarios-container-nuevo button').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                if (!btn.classList.contains('bg-red-100')) {
+                    btn.classList.add('bg-white', 'text-gray-800');
+                }
+            });
+            
+            const btnSeleccionado = document.querySelector(`#horarios-container-nuevo button[data-hora="${hora}"]`);
+            if (btnSeleccionado) {
+                btnSeleccionado.classList.remove('bg-white', 'text-gray-800');
+                btnSeleccionado.classList.add('bg-blue-600', 'text-white');
+            }
+            
+            actualizarTextoSeleccionTurno();
+        }
+
+        function usarHoraPersonalizada() {
+            const horaPersonalizada = inputHoraPersonalizada.value;
+            if (horaPersonalizada) {
+                const hora = horaPersonalizada.substring(0, 5);
+                const horaNum = parseInt(hora.substring(0, 2));
+                const minuto = parseInt(hora.substring(3, 5));
+                
+                // Validar según período especial
+                if (selectedDate && esPeriodoEspecial(selectedDate)) {
+                    if (horaNum < 8 || horaNum > 10 || (horaNum === 10 && minuto > 0)) {
+                        mostrarNotificacionTemp('En este período especial, los horarios permitidos son de 8:00 a 10:00', 'warning');
+                        return;
+                    }
+                } else {
+                    if (horaNum < 7 || horaNum > 11 || (horaNum === 11 && minuto > 30)) {
+                        mostrarNotificacionTemp('Los horarios permitidos son de 7:00 a 11:30', 'warning');
+                        return;
+                    }
+                }
+                
+                seleccionarHorarioNuevo(hora);
+            } else {
+                mostrarNotificacionTemp('Por favor ingrese una hora válida', 'warning');
+            }
+        }
+
+        function actualizarTextoSeleccionTurno() {
+            if (selectedDate && selectedTime) {
+                const fechaFormateada = formatoFechaCorta(selectedDate);
+                turnoSeleccionadoTexto.textContent = `Turno asignado: ${fechaFormateada} a las ${selectedTime} hs`;
+                turnoSeleccionadoTexto.parentElement.classList.remove('bg-blue-50');
+                turnoSeleccionadoTexto.parentElement.classList.add('bg-green-50', 'border-green-200');
+            } else if (selectedDate) {
+                const fechaFormateada = formatoFechaCorta(selectedDate);
+                turnoSeleccionadoTexto.textContent = `Fecha seleccionada: ${fechaFormateada}. Falta seleccionar horario.`;
+                turnoSeleccionadoTexto.parentElement.classList.add('bg-blue-50', 'border-blue-200');
+            } else {
+                turnoSeleccionadoTexto.textContent = 'No se ha asignado turno';
+                turnoSeleccionadoTexto.parentElement.classList.remove('bg-green-50', 'border-green-200');
+                turnoSeleccionadoTexto.parentElement.classList.add('bg-blue-50', 'border-blue-200');
+            }
+        }
+
+        // Función para verificar límite de turnos - MEJORADA
+        async function verificarLimiteTurnos(fecha, horario) {
+            try {
+                // Consultar directamente en Firebase los casos con esa fecha y horario
+                const casosRef = ref(db, "atencion");
+                const snapshot = await get(query(casosRef, orderByChild('fechaTurno'), equalTo(fecha)));
+                
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    let contador = 0;
+                    Object.values(data).forEach(caso => {
+                        if (caso.horarioTurno === horario) {
+                            contador++;
+                        }
+                    });
+                    return contador >= 2;
+                }
+                return false;
+            } catch (error) {
+                console.error("Error al verificar límite de turnos:", error);
+                // En caso de error, usar allCases como respaldo
+                const turnosEnFechaHorario = allCases.filter(caso => 
+                    caso.fechaTurno === fecha && 
+                    caso.horarioTurno === horario
+                );
+                return turnosEnFechaHorario.length >= 2;
+            }
+        }
+
+        async function guardarNuevaConsulta(e) {
+            e.preventDefault();
+            
+            // VERIFICACIÓN FINAL DE DISPONIBILIDAD ESPECÍFICA PARA NUEVA CONSULTA
+            const disponibilidad = verificarDisponibilidadParaNuevaConsulta();
+            if (!disponibilidad.disponible) {
+                mostrarNotificacionTemp(disponibilidad.mensaje, 'error');
+                return;
+            }
+            
+            if (!inputNombre.value.trim()) {
+                mostrarNotificacionTemp('El nombre es obligatorio', 'error');
+                return;
+            }
+            
+            if (!selectTipoConsulta.value) {
+                mostrarNotificacionTemp('El tipo de consulta es obligatorio', 'error');
+                return;
+            }
+            
+            // Verificar límite de turnos si se está asignando uno
+            if (inputFechaTurno.value && inputHorarioTurno.value) {
+                const limiteAlcanzado = await verificarLimiteTurnos(inputFechaTurno.value, inputHorarioTurno.value);
+                
+                if (limiteAlcanzado) {
+                    mostrarAlertaRojaFlotante(`El horario ${inputHorarioTurno.value} del ${formatoFechaCorta(new Date(inputFechaTurno.value + 'T00:00:00'))} ya tiene 2 turnos asignados. No se pueden registrar más turnos en este horario.`);
+                    return;
+                }
+            }
+            
+            try {
+                const nuevoRegistro = {
+                    personName: inputNombre.value.trim(),
+                    dni: inputDNI.value.trim() || null,
+                    telefono: inputTelefono.value.trim() || null,
+                    type: selectTipoConsulta.value,
+                    assignedUser: usuarioActual, // SIEMPRE asignar al usuario actual - FORZADO
+                    description: textareaDescripcion.value.trim(),
+                    estado: 'pendiente',
+                    timestamp: new Date().toISOString(),
+                    observaciones: [],
+                    notas: []
+                };
+                
+                // Guardar fecha del turno en formato YYYY-MM-DD (ISO standard)
+                if (inputFechaTurno.value) {
+                    nuevoRegistro.fechaTurno = inputFechaTurno.value; // Ya está en formato YYYY-MM-DD
+                }
+                
+                if (inputHorarioTurno.value) {
+                    nuevoRegistro.horarioTurno = inputHorarioTurno.value;
+                }
+                
+                const nuevoRef = await push(ref(db, "atencion"), nuevoRegistro);
+                const nuevoId = nuevoRef.key;
+                
+                // Agregar el nuevo caso a allCases para actualización inmediata
+                allCases.unshift({
+                    id: nuevoId,
+                    ...nuevoRegistro
+                });
+                
+                mostrarNotificacionTemp('Consulta registrada exitosamente', 'success');
+                cerrarModalNuevaConsulta();
+                filtrarYMostrarCasosAsignados(); // Actualizar la lista
+                
+            } catch (error) {
+                console.error("Error al guardar nueva consulta:", error);
+                mostrarNotificacionTemp('Error al guardar la consulta', 'error');
+            }
+        }
+
+        // Funciones de utilidad
+        function formatoFecha(fecha) {
+            if (!fecha) return '--';
+            const dateObj = typeof fecha === 'string' ? new Date(fecha) : fecha;
+            return dateObj.toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function formatoFechaCorta(fecha) {
+            if (!fecha) return '--';
+            const dateObj = typeof fecha === 'string' ? new Date(fecha) : fecha;
+            return dateObj.toLocaleDateString('es-AR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function formatoFechaCompleta(fecha) {
+            if (!fecha) return '--';
+            const dateObj = typeof fecha === 'string' ? new Date(fecha) : fecha;
+            return dateObj.toLocaleDateString('es-AR', {
+                weekday: 'long',
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        function obtenerColorEstado(estado) {
+            const estadoLower = estado.toLowerCase();
+            
+            if (estadoLower.includes('resuelta') || estadoLower.includes('resuelto')) {
+                return 'estado-resuelto';
+            } else if (estadoLower.includes('proceso')) {
+                return 'estado-proceso';
+            } else if (estadoLower.includes('pendiente')) {
+                return 'estado-pendiente';
+            } else if (estadoLower.includes('derivada') || estadoLower.includes('derivado')) {
+                return 'estado-derivado';
+            } else {
+                return 'estado-pendiente';
+            }
+        }
+    </script>
+</body>
+</html>
