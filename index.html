@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultas y Turnos Online</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #3a6ea5;
+            --primary-dark: #2a5080;
+            --secondary: #6a9bd8;
+            --accent: #f8b500;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --gray-light: #e9ecef;
+            --success: #28a745;
+            --info: #17a2b8;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --border-radius: 1rem;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --box-shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow: hidden; /* Elimina barras de desplazamiento */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo-icon {
+            font-size: 2.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .logo-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .countdown-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+        }
+
+        .countdown-number {
+            background: white;
+            color: var(--primary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        /* Landing Page */
+        .landing-page {
+            height: calc(100vh - 90px); /* Altura exacta sin desplazamiento */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .landing-content {
+            max-width: 800px;
+            z-index: 2;
+        }
+
+        .landing-title {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .landing-subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 1rem;
+        }
+
+        .landing-subtitle::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        /* App Principal */
+        .app-main {
+            display: none;
+            height: calc(100vh - 90px); /* Altura exacta sin desplazamiento */
+            padding: 1rem;
+            overflow-y: auto; /* Permite desplazamiento interno si es necesario */
+        }
+
+        .app-main .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        .app-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .app-subtitle {
+            font-size: 1.2rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Tarjetas de módulos */
+        .modules-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: auto;
+            margin-bottom: auto;
+            padding: 1rem 0;
+        }
+
+        .module-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--primary);
+        }
+
+        .module-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .module-card:nth-child(1)::before {
+            background: var(--primary);
+        }
+
+        .module-card:nth-child(2)::before {
+            background: var(--secondary);
+        }
+
+        .module-card:nth-child(3)::before {
+            background: var(--accent);
+        }
+
+        .module-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .module-card:nth-child(1) .module-icon {
+            background: var(--primary);
+        }
+
+        .module-card:nth-child(2) .module-icon {
+            background: var(--secondary);
+        }
+
+        .module-card:nth-child(3) .module-icon {
+            background: var(--accent);
+        }
+
+        .module-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .module-description {
+            color: var(--gray);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            font-size: 0.95rem;
+        }
+
+        .module-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 2px solid transparent;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .module-link:hover {
+            border-color: var(--primary);
+            background: rgba(58, 110, 165, 0.05);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .developer-info {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .developer-name {
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .landing-title {
+                font-size: 2.2rem;
+            }
+            
+            .landing-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .app-title {
+                font-size: 2rem;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .modules-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .logo-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .module-card {
+                padding: 1.25rem;
+            }
+            
+            .module-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .landing-title {
+                font-size: 1.8rem;
+            }
+            
+            .landing-subtitle {
+                font-size: 1rem;
+            }
+            
+            .module-card {
+                padding: 1rem;
+            }
+            
+            .app-title {
+                font-size: 1.8rem;
+            }
+            
+            .app-subtitle {
+                font-size: 1rem;
+            }
+        }
+
+        /* Animaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        .decorative-element {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.05;
+            z-index: 1;
+        }
+
+        .decorative-1 {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: -150px;
+            right: -150px;
+        }
+
+        .decorative-2 {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            bottom: -100px;
+            left: -100px;
+        }
+
+        .decorative-3 {
+            width: 150px;
+            height: 150px;
+            background: var(--accent);
+            top: 50%;
+            left: -75px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container header-content">
+            <div class="logo-container">
+                <div class="logo-icon">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Defensoría Civil y Comercial 6</h1>
+                    <p>Sistema de Administración y Control de Consultas y Turnos Online</p>
+                </div>
+            </div>
+            <div class="countdown-container">
+                <span>Redirigiendo en:</span>
+                <div class="countdown-number" id="countdown">10</div>
+                <span>segundos</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Landing Page -->
+    <main class="landing-page" id="landingPage">
+        <div class="decorative-element decorative-1"></div>
+        <div class="decorative-element decorative-2"></div>
+        <div class="decorative-element decorative-3"></div>
+        
+        <div class="container landing-content fade-in">
+            <h1 class="landing-title">Consultas y Turnos Online</h1>
+            <h3 class="landing-subtitle">Administración y Control</h3>
+        </div>
+    </main>
+
+    <!-- App Principal (inicialmente oculta) -->
+    <section class="app-main" id="appMain">
+        <div class="container">
+            <div class="app-header fade-in">
+                <h1 class="app-title"></h1>
+                <p class="app-subtitle"></p>
+            </div>
+            
+            <div class="modules-container">
+                <!-- Módulo 1: App de Clientes -->
+                <div class="module-card fade-in" onclick="redirectToModule('clientes')">
+                    <div class="module-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="module-title">App de Clientes</h3>
+                    
+                    <a href="#" class="module-link" data-module="clientes">
+                        Acceder al módulo <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <!-- Módulo 2: App Defensor-Secretarios -->
+                <div class="module-card fade-in" onclick="redirectToModule('defensores')">
+                    <div class="module-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3 class="module-title">App Defensor-Secretarios</h3>
+                    
+                    <a href="#" class="module-link" data-module="defensores">
+                        Acceder al módulo <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+                
+                <!-- Módulo 3: App Empleados asignados -->
+                <div class="module-card fade-in" onclick="redirectToModule('empleados')">
+                    <div class="module-icon">
+                        <i class="fas fa-id-card"></i>
+                    </div>
+                    <h3 class="module-title">App Empleados asignados</h3>
+                    
+                    <a href="#" class="module-link" data-module="empleados">
+                        Acceder al módulo <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <p class="developer-info">Diseño y programación de:Rómulo Fioravante-Año 2026</p>
+            <p class="developer-name">Defensoría Civil y Comercial 6 Poder Judicial de Misiones</p>
+        </div>
+    </footer>
+
+    <script>
+        // Variables globales
+        let countdown = 10;
+        let countdownInterval;
+        
+        // Elementos DOM
+        const landingPage = document.getElementById('landingPage');
+        const appMain = document.getElementById('appMain');
+        const countdownElement = document.getElementById('countdown');
+        
+        // Iniciar countdown
+        function startCountdown() {
+            countdownInterval = setInterval(() => {
+                countdown--;
+                countdownElement.textContent = countdown;
+                
+                if (countdown <= 0) {
+                    clearInterval(countdownInterval);
+                    showApp();
+                }
+            }, 1000);
+        }
+        
+        // Mostrar la app principal
+        function showApp() {
+            landingPage.style.display = 'none';
+            appMain.style.display = 'block';
+            
+            // Animar los elementos de la app principal
+            const fadeElements = document.querySelectorAll('.fade-in');
+            fadeElements.forEach((el, index) => {
+                el.style.animationDelay = `${index * 0.2}s`;
+            });
+        }
+        
+        // Redirigir a un módulo específico
+        function redirectToModule(module) {
+            // Aquí se pueden colocar las URLs específicas para cada módulo
+            const urls = {
+                clientes: '#',
+                defensores: '#',
+                empleados: '#'
+            };
+            
+            // Simulación de redirección
+            alert(`Redirigiendo al módulo: ${module}\n\nURL del módulo: ${urls[module]}\n\n(En una implementación real, se redirigiría a la URL correspondiente)`);
+            
+            // Para una implementación real, usar:
+            // window.location.href = urls[module];
+        }
+        
+        // Configurar eventos de clic en las tarjetas
+        document.addEventListener('DOMContentLoaded', function() {
+            // Iniciar el countdown
+            startCountdown();
+            
+            // Configurar eventos para las tarjetas
+            const moduleLinks = document.querySelectorAll('.module-link');
+            
+            moduleLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const module = this.getAttribute('data-module');
+                    redirectToModule(module);
+                });
+            });
+            
+            // Permitir redirección manual antes del tiempo
+            const skipButton = document.querySelector('.countdown-container');
+            skipButton.addEventListener('click', function() {
+                clearInterval(countdownInterval);
+                showApp();
+            });
+            
+            // Añadir efecto de pulso al icono del header
+            const logoIcon = document.querySelector('.logo-icon');
+            logoIcon.classList.add('pulse');
+        });
+    </script>
+</body>
+</html>
