@@ -498,6 +498,76 @@
         .hidden {
             display: none !important;
         }
+        
+        /* Estilos de paginación */
+        .pagination-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            background-color: #f9fafb;
+        }
+        
+        .pagination-info {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+        
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .pagination-btn {
+            padding: 0.375rem 0.75rem;
+            border: 1px solid #d1d5db;
+            background-color: white;
+            color: #374151;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            background-color: #f3f4f6;
+        }
+        
+        .pagination-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .pagination-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        
+        .pagination-selector {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        
+        .pagination-selector select {
+            padding: 0.25rem 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            background-color: white;
+        }
+        
+        .pagination-ellipsis {
+            padding: 0.375rem 0.75rem;
+            color: #6b7280;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -523,7 +593,7 @@
                     Esta función no está disponible fuera del horario de atención.
                 </p>
             </div>
-        </div>
+</div>
     </div>
 
     <div id="notification-persistent-container"></div>
@@ -1110,6 +1180,38 @@
                         </tbody>
                     </table>
                     
+                    <!-- Contenedor de paginación -->
+                    <div id="pagination-container" class="pagination-container hidden">
+                        <div class="pagination-info">
+                            Mostrando <span id="pagination-start">0</span> - <span id="pagination-end">0</span> de <span id="pagination-total">0</span> registros
+                        </div>
+                        <div class="pagination-controls">
+                            <button id="pagination-first" class="pagination-btn">
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            <button id="pagination-prev" class="pagination-btn">
+                                <i class="fas fa-angle-left"></i>
+                            </button>
+                            <div id="pagination-numbers" class="flex items-center gap-1"></div>
+                            <button id="pagination-next" class="pagination-btn">
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <button id="pagination-last" class="pagination-btn">
+                                <i class="fas fa-angle-double-right"></i>
+                            </button>
+                        </div>
+                        <div class="pagination-selector">
+                            <span>Mostrar:</span>
+                            <select id="pagination-items-per-page">
+                                <option value="10">10</option>
+                                <option value="20">20</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                            <span>registros por página</span>
+                        </div>
+                    </div>
+                    
                     <div id="tabla-vacia" class="hidden p-8 text-center">
                         <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
                         <p class="text-gray-500">No tienes casos asignados en este momento</p>
@@ -1295,6 +1397,11 @@
         // Variables para comprobante
         let casoParaComprobante = null;
         
+        // Variables para paginación
+        let paginaActual = 1;
+        let registrosPorPagina = 10;
+        let casosFiltradosPaginados = [];
+        
         // Referencias a elementos DOM
         const loginSection = document.getElementById('login-section');
         const dashboardSection = document.getElementById('dashboard-section');
@@ -1363,6 +1470,18 @@
         const systemUnavailableOverlay = document.getElementById('system-unavailable-overlay');
         const systemUnavailableMessage = document.getElementById('system-unavailable-message');
         const modalFeriadoClose = document.getElementById('modal-feriado-close');
+        
+        // Referencias para paginación
+        const paginationContainer = document.getElementById('pagination-container');
+        const paginationStart = document.getElementById('pagination-start');
+        const paginationEnd = document.getElementById('pagination-end');
+        const paginationTotal = document.getElementById('pagination-total');
+        const paginationFirst = document.getElementById('pagination-first');
+        const paginationPrev = document.getElementById('pagination-prev');
+        const paginationNumbers = document.getElementById('pagination-numbers');
+        const paginationNext = document.getElementById('pagination-next');
+        const paginationLast = document.getElementById('pagination-last');
+        const paginationItemsPerPage = document.getElementById('pagination-items-per-page');
         
         // Referencias para modal de comprobante
         const modalComprobante = document.getElementById('modal-comprobante');
@@ -1578,6 +1697,7 @@
             inputBusqueda.addEventListener('input', function() {
                 terminoBusqueda = this.value.trim().toLowerCase();
                 btnLimpiarBusqueda.classList.toggle('hidden', !terminoBusqueda);
+                paginaActual = 1; // Resetear a primera página al buscar
                 renderizarCasos();
             });
             
@@ -1585,14 +1705,120 @@
                 inputBusqueda.value = '';
                 terminoBusqueda = '';
                 this.classList.add('hidden');
+                paginaActual = 1; // Resetear a primera página al limpiar
                 renderizarCasos();
             });
             
             // Exportar a PDF
             btnExportarPDF.addEventListener('click', exportarTablaPDF);
             
+            // Paginación
+            paginationFirst.addEventListener('click', () => cambiarPagina(1));
+            paginationPrev.addEventListener('click', () => cambiarPagina(paginaActual - 1));
+            paginationNext.addEventListener('click', () => cambiarPagina(paginaActual + 1));
+            paginationLast.addEventListener('click', () => {
+                const totalPaginas = Math.ceil(casosFiltradosPaginados.length / registrosPorPagina);
+                cambiarPagina(totalPaginas);
+            });
+            
+            paginationItemsPerPage.addEventListener('change', function() {
+                registrosPorPagina = parseInt(this.value);
+                paginaActual = 1;
+                renderizarCasos();
+            });
+            
             // Llenar selects de usuarios
             llenarSelectUsuarios();
+        }
+
+        // Funciones de paginación
+        function cambiarPagina(nuevaPagina) {
+            const totalPaginas = Math.ceil(casosFiltradosPaginados.length / registrosPorPagina);
+            
+            if (nuevaPagina < 1 || nuevaPagina > totalPaginas) return;
+            
+            paginaActual = nuevaPagina;
+            renderizarCasos();
+        }
+
+        function actualizarPaginacion() {
+            const totalRegistros = casosFiltradosPaginados.length;
+            const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
+            
+            if (totalRegistros === 0 || totalPaginas <= 1) {
+                paginationContainer.classList.add('hidden');
+                return;
+            }
+            
+            paginationContainer.classList.remove('hidden');
+            
+            // Calcular índices
+            const inicio = (paginaActual - 1) * registrosPorPagina + 1;
+            const fin = Math.min(paginaActual * registrosPorPagina, totalRegistros);
+            
+            // Actualizar información
+            paginationStart.textContent = inicio;
+            paginationEnd.textContent = fin;
+            paginationTotal.textContent = totalRegistros;
+            
+            // Actualizar botones de navegación
+            paginationFirst.disabled = paginaActual === 1;
+            paginationPrev.disabled = paginaActual === 1;
+            paginationNext.disabled = paginaActual === totalPaginas;
+            paginationLast.disabled = paginaActual === totalPaginas;
+            
+            // Actualizar números de página
+            paginationNumbers.innerHTML = '';
+            
+            const maxPaginasVisibles = 5;
+            let inicioPaginas = Math.max(1, paginaActual - Math.floor(maxPaginasVisibles / 2));
+            let finPaginas = Math.min(totalPaginas, inicioPaginas + maxPaginasVisibles - 1);
+            
+            // Ajustar si estamos cerca del final
+            if (finPaginas - inicioPaginas + 1 < maxPaginasVisibles) {
+                inicioPaginas = Math.max(1, finPaginas - maxPaginasVisibles + 1);
+            }
+            
+            // Página inicial si no mostramos la página 1
+            if (inicioPaginas > 1) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = 'pagination-btn';
+                pageBtn.textContent = '1';
+                pageBtn.addEventListener('click', () => cambiarPagina(1));
+                paginationNumbers.appendChild(pageBtn);
+                
+                if (inicioPaginas > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'pagination-ellipsis';
+                    ellipsis.textContent = '...';
+                    paginationNumbers.appendChild(ellipsis);
+                }
+            }
+            
+            // Páginas visibles
+            for (let i = inicioPaginas; i <= finPaginas; i++) {
+                const pageBtn = document.createElement('button');
+                pageBtn.className = `pagination-btn ${i === paginaActual ? 'active' : ''}`;
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => cambiarPagina(i));
+                paginationNumbers.appendChild(pageBtn);
+            }
+            
+            // Página final si no mostramos la última página
+            if (finPaginas < totalPaginas) {
+                if (finPaginas < totalPaginas - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'pagination-ellipsis';
+                    ellipsis.textContent = '...';
+                    paginationNumbers.appendChild(ellipsis);
+                }
+                
+                const lastPageBtn = document.createElement('button');
+                lastPageBtn.className = 'pagination-btn';
+                lastPageBtn.textContent = totalPaginas;
+                lastPageBtn.addEventListener('click', () => cambiarPagina(totalPaginas));
+                paginationNumbers.appendChild(lastPageBtn);
+            }
         }
 
         function llenarSelectUsuarios() {
@@ -1983,6 +2209,25 @@
                 });
             }
             
+            // Guardar para paginación
+            casosFiltradosPaginados = casosFiltrados;
+            
+            // Calcular paginación
+            const totalRegistros = casosFiltrados.length;
+            const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
+            
+            // Ajustar página actual si es necesario
+            if (paginaActual > totalPaginas && totalPaginas > 0) {
+                paginaActual = totalPaginas;
+            } else if (totalRegistros === 0) {
+                paginaActual = 1;
+            }
+            
+            // Calcular índices para la página actual
+            const inicio = (paginaActual - 1) * registrosPorPagina;
+            const fin = Math.min(inicio + registrosPorPagina, totalRegistros);
+            const casosPagina = casosFiltrados.slice(inicio, fin);
+            
             if (casosFiltrados.length === 0) {
                 if (terminoBusqueda) {
                     tablaVacia.classList.add('hidden');
@@ -1994,13 +2239,14 @@
                 btnResuelto.disabled = true;
                 btnDerivar.disabled = true;
                 btnActualizar.disabled = true;
+                paginationContainer.classList.add('hidden');
                 return;
             }
             
             tablaVacia.classList.add('hidden');
             tablaSinResultados.classList.add('hidden');
             
-            casosFiltrados.forEach(caso => {
+            casosPagina.forEach(caso => {
                 const fecha = caso.timestamp ? new Date(caso.timestamp) : new Date();
                 const fechaFormateada = formatoFecha(fecha);
                 const esNuevo = !casosVistos.has(caso.id);
@@ -2098,6 +2344,9 @@
                     filaSeleccionada.classList.add('bg-blue-50');
                 }
             }
+            
+            // Actualizar paginación
+            actualizarPaginacion();
         }
 
         function verDetalleCaso(id) {
@@ -3021,6 +3270,7 @@
                 
                 mostrarNotificacionTemp('Consulta registrada exitosamente', 'success');
                 cerrarModalNuevaConsulta();
+                paginaActual = 1; // Resetear a primera página después de agregar
                 filtrarYMostrarCasosAsignados(); // Actualizar la lista
                 
             } catch (error) {
