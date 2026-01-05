@@ -319,6 +319,10 @@
         .estado-resuelto { background: #d1fae5; color: #065f46; }
         .estado-derivado { background: #f3e8ff; color: #5b21b6; }
         
+        /* Estados de respuesta */
+        .respuesta-pendiente { background: #fee2e2; color: #dc2626; }
+        .respuesta-enviada { background: #d1fae5; color: #065f46; }
+        
         /* Transiciones */
         .transition-all-smooth {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -571,6 +575,7 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+    <!-- Modal de sistema no disponible -->
     <div id="system-unavailable-overlay" class="modal-feriado-overlay hidden">
         <div class="modal-feriado">
             <div class="modal-feriado-header">
@@ -593,15 +598,15 @@
                     Esta función no está disponible fuera del horario de atención.
                 </p>
             </div>
-</div>
+        </div>
     </div>
 
+    <!-- Contenedores de notificaciones -->
     <div id="notification-persistent-container"></div>
-    
     <div id="notification-temp-container" class="fixed top-4 right-4 z-40 space-y-2"></div>
-    
     <div id="alerta-roja-flotante-container"></div>
 
+    <!-- Modal de comprobante -->
     <div id="modal-comprobante" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
@@ -685,6 +690,7 @@
         </div>
     </div>
 
+    <!-- Modal de salir -->
     <div id="modal-salir" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
             <div class="bg-red-600 text-white p-4 rounded-t-xl flex justify-between items-center">
@@ -714,6 +720,7 @@
         </div>
     </div>
 
+    <!-- Modal de derivar -->
     <div id="modal-derivar" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
             <div class="bg-purple-600 text-white p-4 rounded-t-xl flex justify-between items-center">
@@ -746,6 +753,7 @@
         </div>
     </div>
 
+    <!-- Modal de detalle -->
     <div id="modal-detalle" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
@@ -829,6 +837,63 @@
         </div>
     </div>
 
+    <!-- Modal de respuesta al cliente -->
+    <div id="modal-respuesta" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
+            <div class="bg-green-600 text-white p-4 rounded-t-xl flex justify-between items-center">
+                <h3 class="font-bold text-lg">Responder al Cliente</h3>
+                <button id="btn-cerrar-respuesta" class="text-2xl leading-none">&times;</button>
+            </div>
+            
+            <div class="p-6">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-user mr-2"></i>Cliente
+                    </label>
+                    <p id="respuesta-nombre-cliente" class="font-medium text-gray-800">--</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-clock mr-2"></i>Tiempo transcurrido desde la asignación
+                    </label>
+                    <p id="respuesta-tiempo-transcurrido" class="font-medium text-red-600">Calculando...</p>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="select-modo-respuesta" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-paper-plane mr-2"></i>Modo de envío
+                    </label>
+                    <select id="select-modo-respuesta" 
+                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
+                        <option value="">Seleccionar modo...</option>
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="correo">Correo Electrónico</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="textarea-mensaje-respuesta" class="block text-sm font-medium text-gray-700 mb-2">
+                        <i class="fas fa-envelope mr-2"></i>Mensaje de respuesta
+                    </label>
+                    <textarea id="textarea-mensaje-respuesta" rows="4" 
+                              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth"
+                              placeholder="Escribe aquí tu respuesta al cliente..."></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button id="btn-cancelar-respuesta" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all-smooth">
+                        Cancelar
+                    </button>
+                    <button id="btn-enviar-respuesta" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-all-smooth">
+                        <i class="fas fa-paper-plane mr-2"></i>Enviar Respuesta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de nueva consulta -->
     <div id="modal-nueva-consulta" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
             <div class="bg-green-600 text-white p-4 flex justify-between items-center">
@@ -860,6 +925,14 @@
                                 <i class="fas fa-phone mr-2"></i>Teléfono/WhatsApp
                             </label>
                             <input type="text" id="input-telefono" placeholder="Ej: 3764123456" 
+                                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">
+                                <i class="fas fa-envelope mr-2"></i>Correo Electrónico
+                            </label>
+                            <input type="email" id="input-email" placeholder="ejemplo@correo.com" 
                                    class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
                         </div>
                         
@@ -980,6 +1053,7 @@
         </div>
     </div>
 
+    <!-- Sección de login -->
     <section id="login-section" class="login-container">
         <div class="login-card">
             <div class="login-header">
@@ -1043,6 +1117,7 @@
         </div>
     </section>
     
+    <!-- Sección del dashboard -->
     <section id="dashboard-section" class="hidden min-h-screen">
         <header class="bg-white shadow-sm border-b sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 py-3">
@@ -1173,6 +1248,7 @@
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo / Descripción</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Registro</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Respuesta</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                             </tr>
                         </thead>
@@ -1228,6 +1304,7 @@
         </div>
     </section>
     
+    <!-- Sección de calendario -->
     <section id="calendario-section" class="hidden min-h-screen">
         <header class="bg-white shadow-sm border-b sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 py-3">
@@ -1397,6 +1474,10 @@
         // Variables para comprobante
         let casoParaComprobante = null;
         
+        // Variables para respuesta
+        let casoParaResponder = null;
+        let intervaloContadorTiempo = null;
+        
         // Variables para paginación
         let paginaActual = 1;
         let registrosPorPagina = 10;
@@ -1448,6 +1529,7 @@
         const inputNombre = document.getElementById('input-nombre');
         const inputDNI = document.getElementById('input-dni');
         const inputTelefono = document.getElementById('input-telefono');
+        const inputEmail = document.getElementById('input-email');
         const selectTipoConsulta = document.getElementById('select-tipo-consulta');
         const textareaDescripcion = document.getElementById('textarea-descripcion');
         const selectUsuarioAsignar = document.getElementById('select-usuario-asignar');
@@ -1494,6 +1576,16 @@
         const compTramite = document.getElementById('comp-tramite');
         const compFecha = document.getElementById('comp-fecha');
         const compHorario = document.getElementById('comp-horario');
+        
+        // Referencias para modal de respuesta
+        const modalRespuesta = document.getElementById('modal-respuesta');
+        const btnCerrarRespuesta = document.getElementById('btn-cerrar-respuesta');
+        const btnCancelarRespuesta = document.getElementById('btn-cancelar-respuesta');
+        const btnEnviarRespuesta = document.getElementById('btn-enviar-respuesta');
+        const selectModoRespuesta = document.getElementById('select-modo-respuesta');
+        const textareaMensajeRespuesta = document.getElementById('textarea-mensaje-respuesta');
+        const respuestaNombreCliente = document.getElementById('respuesta-nombre-cliente');
+        const respuestaTiempoTranscurrido = document.getElementById('respuesta-tiempo-transcurrido');
         
         // Lista de usuarios del sistema (DEBE COINCIDIR con el archivo interno)
         const listaUsuarios = [
@@ -1560,8 +1652,7 @@
             return feriados.includes(fechaStr) || feriados2026.includes(fechaStr);
         }
 
-        // Función para mostrar alerta de sistema no disponible - MODIFICADA A MODAL ROJO FLOTANTE
-        // NOTA: Esta función ya no oculta el resto de la interfaz, solo muestra el overlay sobre ella.
+        // Función para mostrar alerta de sistema no disponible
         function mostrarAlertaSistemaNoDisponible(mensaje) {
             systemUnavailableMessage.textContent = mensaje;
             systemUnavailableOverlay.classList.remove('hidden');
@@ -1625,7 +1716,6 @@
 
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', function() {
-            // YA NO verificamos disponibilidad global al inicio. El sistema inicia normal.
             inicializarEventos();
             verificarSesion();
         });
@@ -1636,7 +1726,6 @@
             
             // Botón para cerrar modal de feriado (Alerta Roja)
             modalFeriadoClose.addEventListener('click', function() {
-                // Simplemente ocultamos el overlay. El usuario se queda en la pantalla actual (Dashboard).
                 systemUnavailableOverlay.classList.add('hidden');
             });
             
@@ -1657,7 +1746,7 @@
             btnDerivar.addEventListener('click', abrirModalDerivar);
             btnActualizar.addEventListener('click', abrirModalDetalle);
             
-            // AQUÍ ESTÁ EL CAMBIO CLAVE: Chequeo de restricción al hacer click en Nueva Consulta
+            // Chequeo de restricción al hacer click en Nueva Consulta
             btnNuevaConsulta.addEventListener('click', abrirModalNuevaConsulta);
             
             // Modal derivar
@@ -1674,6 +1763,11 @@
             btnCerrarComprobante.addEventListener('click', cerrarModalComprobante);
             btnCerrarComprobanteModal.addEventListener('click', cerrarModalComprobante);
             btnDescargarComprobante.addEventListener('click', descargarComprobantePDF);
+            
+            // Modal respuesta
+            btnCerrarRespuesta.addEventListener('click', cerrarModalRespuesta);
+            btnCancelarRespuesta.addEventListener('click', cerrarModalRespuesta);
+            btnEnviarRespuesta.addEventListener('click', enviarRespuesta);
             
             // Navegación
             document.getElementById('btn-ver-casos').addEventListener('click', () => cambiarVista('casos'));
@@ -1709,7 +1803,7 @@
                 renderizarCasos();
             });
             
-            // Exportar a PDF
+            // Exportar a PDF - FUNCIÓN CORREGIDA
             btnExportarPDF.addEventListener('click', exportarTablaPDF);
             
             // Paginación
@@ -1960,20 +2054,152 @@
             cerrarModalComprobante();
         }
 
-        // Función para exportar tabla a PDF
+        // Función para descargar PDF de respuesta
+        function descargarRespuestaPDF(caso) {
+            if (!caso || !caso.respuestas || caso.respuestas.length === 0) {
+                mostrarNotificacionTemp('No hay respuestas registradas para este caso', 'error');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Obtener la última respuesta
+            const ultimaRespuesta = caso.respuestas[caso.respuestas.length - 1];
+            
+            // Configuración de texto
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18); 
+            doc.setTextColor(30, 58, 138);
+            doc.text("COMPROBANTE DE RESPUESTA", 105, 25, null, null, 'center');
+            
+            doc.setFontSize(10); 
+            doc.setTextColor(100);
+            doc.text("Defensoria Civil y Comercial N6 - Posadas, Misiones", 105, 32, null, null, 'center');
+            
+            doc.setDrawColor(200); 
+            doc.line(20, 40, 190, 40);
+            
+            // Información del ciudadano
+            doc.setFontSize(12); 
+            doc.setTextColor(0);
+            doc.text(`Ciudadano: ${caso.personName || 'No especificado'}`, 20, 55);
+            doc.text(`DNI: ${caso.dni || 'No especificado'}`, 20, 65);
+            doc.text(`Teléfono: ${caso.telefono || 'No especificado'}`, 20, 75);
+            doc.text(`Tipo de consulta: ${caso.type || 'No especificado'}`, 20, 85);
+            
+            // Información de la respuesta
+            doc.setFontSize(14);
+            doc.setTextColor(37, 99, 235);
+            doc.text("INFORMACIÓN DE LA RESPUESTA:", 20, 105);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0);
+            doc.text(`Fecha de envío: ${new Date(ultimaRespuesta.fecha).toLocaleDateString('es-AR')} ${new Date(ultimaRespuesta.fecha).toLocaleTimeString('es-AR', {hour: '2-digit', minute:'2-digit'})}`, 20, 115);
+            doc.text(`Modo de envío: ${ultimaRespuesta.modo === 'whatsapp' ? 'WhatsApp' : 'Correo Electrónico'}`, 20, 125);
+            doc.text(`Enviado por: ${ultimaRespuesta.usuario || usuarioActual}`, 20, 135);
+            
+            // Calcular tiempo de demora
+            if (caso.timestamp && ultimaRespuesta.fecha) {
+                const fechaAsignacion = new Date(caso.timestamp);
+                const fechaRespuesta = new Date(ultimaRespuesta.fecha);
+                const diferencia = fechaRespuesta - fechaAsignacion;
+                
+                const segundos = Math.floor(diferencia / 1000);
+                const minutos = Math.floor(segundos / 60);
+                const horas = Math.floor(minutos / 60);
+                const dias = Math.floor(horas / 24);
+                
+                let textoDemora = '';
+                if (dias > 0) {
+                    textoDemora = `${dias} día(s), ${horas % 24} hora(s)`;
+                } else if (horas > 0) {
+                    textoDemora = `${horas} hora(s), ${minutos % 60} minuto(s)`;
+                } else if (minutos > 0) {
+                    textoDemora = `${minutos} minuto(s), ${segundos % 60} segundo(s)`;
+                } else {
+                    textoDemora = `${segundos} segundo(s)`;
+                }
+                
+                doc.text(`Tiempo de demora: ${textoDemora}`, 20, 145);
+            }
+            
+            // Mensaje de respuesta
+            doc.setFontSize(14);
+            doc.setTextColor(37, 99, 235);
+            doc.text("MENSAJE ENVIADO:", 20, 160);
+            
+            doc.setFontSize(10);
+            doc.setTextColor(0);
+            const mensaje = ultimaRespuesta.mensaje || 'Sin mensaje';
+            const lineas = doc.splitTextToSize(mensaje, 170);
+            doc.text(lineas, 20, 170);
+            
+            // Fecha y hora de emisión del PDF
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            const ahora = new Date();
+            const diaEmision = ahora.getDate().toString().padStart(2, '0');
+            const mesEmision = (ahora.getMonth() + 1).toString().padStart(2, '0');
+            const anioEmision = ahora.getFullYear();
+            const horasEmision = ahora.getHours().toString().padStart(2, '0');
+            const minutosEmision = ahora.getMinutes().toString().padStart(2, '0');
+            const fechaEmision = `${diaEmision}/${mesEmision}/${anioEmision} ${horasEmision}:${minutosEmision}`;
+            doc.text(`PDF generado el: ${fechaEmision}`, 20, 280);
+            
+            // Guardar PDF
+            const nombreArchivo = `Respuesta_${caso.dni || 'sindni'}_${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(nombreArchivo);
+            
+            mostrarNotificacionTemp('PDF de respuesta descargado exitosamente', 'success');
+        }
+
+        // FUNCIÓN CORREGIDA: Exportar tabla a PDF
         async function exportarTablaPDF() {
             try {
-                // Ocultar elementos que no queremos en el PDF
-                const elementosOcultar = document.querySelectorAll('.btn-seleccionar, .btn-ver, .btn-whatsapp, .pulse-new');
-                elementosOcultar.forEach(el => el.style.visibility = 'hidden');
-                
-                // Crear un clon de la tabla para modificar
-                const tabla = document.querySelector('.table-responsive');
+                // Obtener la tabla y su contenedor
+                const tabla = document.querySelector('.table-responsive table');
+                if (!tabla) {
+                    mostrarNotificacionTemp('No hay tabla para exportar', 'error');
+                    return;
+                }
+
+                // Ocultar los botones de acción y otros elementos que no deben aparecer en el PDF
+                const elementosOcultar = tabla.querySelectorAll('.btn-seleccionar, .btn-ver, .btn-whatsapp, .btn-responder, .btn-comprobante, .btn-pdf-respuesta, .pulse-new');
+                const estilosOriginales = [];
+                elementosOcultar.forEach(el => {
+                    estilosOriginales.push(el.style.display);
+                    el.style.display = 'none';
+                });
+
+                // Ocultar también el contador de turnos si existe
+                const contadoresTurnos = document.querySelectorAll('.text-xs.text-blue-600');
+                contadoresTurnos.forEach(el => {
+                    estilosOriginales.push(el.style.display);
+                    el.style.display = 'none';
+                });
+
+                // Ocultar el badge "NUEVO" si existe
+                const badgesNuevo = document.querySelectorAll('.bg-red-500');
+                badgesNuevo.forEach(el => {
+                    estilosOriginales.push(el.style.display);
+                    el.style.display = 'none';
+                });
+
+                // Crear un clon de la tabla para no modificar la original
                 const tablaClon = tabla.cloneNode(true);
-                
-                // Restaurar visibilidad de elementos ocultos
-                elementosOcultar.forEach(el => el.style.visibility = '');
-                
+                // Añadir estilos al clon para que se vea bien
+                tablaClon.style.width = '100%';
+                tablaClon.style.borderCollapse = 'collapse';
+
+                // Crear un div temporal para contener el clon y aplicar estilos
+                const divTemp = document.createElement('div');
+                divTemp.style.position = 'absolute';
+                divTemp.style.left = '-9999px';
+                divTemp.style.top = '0';
+                divTemp.appendChild(tablaClon);
+                document.body.appendChild(divTemp);
+
                 // Configurar html2canvas
                 const canvas = await html2canvas(tablaClon, {
                     scale: 2,
@@ -1981,31 +2207,49 @@
                     logging: false,
                     backgroundColor: '#ffffff'
                 });
-                
+
+                // Eliminar el div temporal
+                document.body.removeChild(divTemp);
+
+                // Restaurar los elementos ocultos
+                let index = 0;
+                elementosOcultar.forEach(el => {
+                    el.style.display = estilosOriginales[index];
+                    index++;
+                });
+                contadoresTurnos.forEach(el => {
+                    el.style.display = estilosOriginales[index];
+                    index++;
+                });
+                badgesNuevo.forEach(el => {
+                    el.style.display = estilosOriginales[index];
+                    index++;
+                });
+
                 // Configurar jsPDF
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
                 const imgWidth = 190;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
+
                 // Añadir título
                 pdf.setFontSize(16);
                 pdf.setTextColor(0, 0, 0);
                 pdf.text('Reporte de Casos Asignados', 105, 15, { align: 'center' });
-                
+
                 // Añadir usuario y fecha
                 pdf.setFontSize(10);
                 pdf.text(`Usuario: ${usuarioActual}`, 10, 25);
                 pdf.text(`Fecha: ${new Date().toLocaleDateString('es-AR')}`, 10, 30);
                 pdf.text(`Total de casos: ${casosAsignados.length}`, 10, 35);
-                
+
                 // Añadir la imagen de la tabla
                 const imgData = canvas.toDataURL('image/png');
                 pdf.addImage(imgData, 'PNG', 10, 40, imgWidth, imgHeight);
-                
+
                 // Guardar el PDF
                 pdf.save(`Casos_Asignados_${usuarioActual.replace(/ /g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
-                
+
                 mostrarNotificacionTemp('PDF generado exitosamente', 'success');
             } catch (error) {
                 console.error("Error al generar PDF:", error);
@@ -2204,7 +2448,8 @@
                         (caso.type && caso.type.toLowerCase().includes(terminoBusqueda)) ||
                         (caso.description && caso.description.toLowerCase().includes(terminoBusqueda)) ||
                         (caso.estado && caso.estado.toLowerCase().includes(terminoBusqueda)) ||
-                        (caso.telefono && caso.telefono.includes(terminoBusqueda))
+                        (caso.telefono && caso.telefono.includes(terminoBusqueda)) ||
+                        (caso.email && caso.email.toLowerCase().includes(terminoBusqueda))
                     );
                 });
             }
@@ -2264,6 +2509,11 @@
                 const estado = caso.estado || 'pendiente';
                 const colorEstado = obtenerColorEstado(estado);
                 
+                // Verificar si tiene respuestas
+                const tieneRespuestas = caso.respuestas && caso.respuestas.length > 0;
+                const estadoRespuesta = tieneRespuestas ? 'Enviada' : 'Pendiente';
+                const claseRespuesta = tieneRespuestas ? 'respuesta-enviada' : 'respuesta-pendiente';
+                
                 const row = document.createElement('tr');
                 row.className = `hover:bg-gray-50 transition-all-smooth ${esNuevo ? 'pulse-new bg-blue-50' : ''}`;
                 row.dataset.id = caso.id;
@@ -2286,6 +2536,18 @@
                             ${estado.toUpperCase()}
                         </span>
                     </td>
+                    <td class="px-4 py-3">
+                        <div class="flex items-center">
+                            <span class="estado-badge ${claseRespuesta}">
+                                ${estadoRespuesta}
+                            </span>
+                            ${tieneRespuestas ? `
+                                <button class="ml-2 text-red-600 hover:text-red-800 btn-pdf-respuesta" data-id="${caso.id}" title="Descargar PDF de respuesta">
+                                    <i class="fas fa-file-pdf"></i>
+                                </button>
+                            ` : ''}
+                        </div>
+                    </td>
                     <td class="px-4 py-3 text-sm">
                         <div class="flex space-x-2">
                             <button class="btn-seleccionar text-blue-600 hover:text-blue-800 transition-all-smooth" data-id="${caso.id}" title="Seleccionar caso">
@@ -2293,6 +2555,9 @@
                             </button>
                             <button class="btn-ver text-green-600 hover:text-green-800 transition-all-smooth" data-id="${caso.id}" title="Ver detalles">
                                 <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="btn-responder text-purple-600 hover:text-purple-800 transition-all-smooth" data-id="${caso.id}" title="Responder al cliente">
+                                <i class="fas fa-reply"></i>
                             </button>
                             ${caso.fechaTurno && caso.horarioTurno ? `
                                 <button class="btn-comprobante text-red-600 hover:text-red-800 transition-all-smooth" data-id="${caso.id}" title="Generar comprobante de turno">
@@ -2320,11 +2585,24 @@
                     verDetalleCaso(caso.id);
                 });
                 
+                row.querySelector('.btn-responder').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    abrirModalRespuesta(caso.id);
+                });
+                
                 const btnComprobante = row.querySelector('.btn-comprobante');
                 if (btnComprobante && caso.fechaTurno && caso.horarioTurno) {
                     btnComprobante.addEventListener('click', (e) => {
                         e.stopPropagation();
                         mostrarComprobante(caso);
+                    });
+                }
+                
+                const btnPdfRespuesta = row.querySelector('.btn-pdf-respuesta');
+                if (btnPdfRespuesta && caso.respuestas && caso.respuestas.length > 0) {
+                    btnPdfRespuesta.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        descargarRespuestaPDF(caso);
                     });
                 }
                 
@@ -2591,6 +2869,195 @@
             }
         }
 
+        // Función para abrir modal de respuesta
+        function abrirModalRespuesta(idCaso) {
+            const caso = casosAsignados.find(c => c.id === idCaso);
+            if (!caso) {
+                mostrarNotificacionTemp('No se encontró el caso seleccionado', 'error');
+                return;
+            }
+            
+            casoParaResponder = caso;
+            
+            // Llenar datos en el modal
+            respuestaNombreCliente.textContent = caso.personName || 'No especificado';
+            
+            // Configurar contador de tiempo
+            actualizarContadorTiempo(caso.timestamp);
+            
+            // Iniciar intervalo para actualizar el contador cada segundo
+            if (intervaloContadorTiempo) {
+                clearInterval(intervaloContadorTiempo);
+            }
+            intervaloContadorTiempo = setInterval(() => {
+                actualizarContadorTiempo(caso.timestamp);
+            }, 1000);
+            
+            // Restablecer el formulario
+            selectModoRespuesta.value = '';
+            textareaMensajeRespuesta.value = '';
+            
+            modalRespuesta.classList.remove('hidden');
+        }
+
+        // Función para actualizar el contador de tiempo
+        function actualizarContadorTiempo(timestamp) {
+            if (!timestamp) {
+                respuestaTiempoTranscurrido.textContent = 'Sin fecha de asignación';
+                return;
+            }
+            
+            const ahora = new Date();
+            const fechaAsignacion = new Date(timestamp);
+            const diferencia = ahora - fechaAsignacion;
+            
+            // Calcular días, horas, minutos y segundos
+            const segundos = Math.floor(diferencia / 1000);
+            const minutos = Math.floor(segundos / 60);
+            const horas = Math.floor(minutos / 60);
+            const dias = Math.floor(horas / 24);
+            
+            let texto = '';
+            if (dias > 0) {
+                const horasRestantes = horas % 24;
+                const minutosRestantes = minutos % 60;
+                const segundosRestantes = segundos % 60;
+                texto = `${dias}d ${horasRestantes}h ${minutosRestantes}m ${segundosRestantes}s`;
+            } else if (horas > 0) {
+                const minutosRestantes = minutos % 60;
+                const segundosRestantes = segundos % 60;
+                texto = `${horas}h ${minutosRestantes}m ${segundosRestantes}s`;
+            } else if (minutos > 0) {
+                const segundosRestantes = segundos % 60;
+                texto = `${minutos}m ${segundosRestantes}s`;
+            } else {
+                texto = `${segundos}s`;
+            }
+            
+            respuestaTiempoTranscurrido.textContent = texto;
+            
+            // Cambiar color según el tiempo transcurrido
+            if (dias > 0 || horas > 24) {
+                respuestaTiempoTranscurrido.classList.remove('text-yellow-600');
+                respuestaTiempoTranscurrido.classList.add('text-red-600');
+            } else if (horas > 2) {
+                respuestaTiempoTranscurrido.classList.remove('text-green-600');
+                respuestaTiempoTranscurrido.classList.add('text-yellow-600');
+            } else {
+                respuestaTiempoTranscurrido.classList.remove('text-red-600', 'text-yellow-600');
+                respuestaTiempoTranscurrido.classList.add('text-green-600');
+            }
+        }
+
+        // Función para cerrar modal de respuesta
+        function cerrarModalRespuesta() {
+            modalRespuesta.classList.add('hidden');
+            casoParaResponder = null;
+            
+            if (intervaloContadorTiempo) {
+                clearInterval(intervaloContadorTiempo);
+                intervaloContadorTiempo = null;
+            }
+        }
+
+        // Función para enviar respuesta
+        function enviarRespuesta() {
+            const modo = selectModoRespuesta.value;
+            const mensaje = textareaMensajeRespuesta.value.trim();
+            
+            if (!modo) {
+                mostrarNotificacionTemp('Por favor selecciona un modo de envío', 'warning');
+                return;
+            }
+            
+            if (!mensaje) {
+                mostrarNotificacionTemp('Por favor escribe un mensaje', 'warning');
+                return;
+            }
+            
+            if (!casoParaResponder) {
+                mostrarNotificacionTemp('No hay caso seleccionado para responder', 'error');
+                return;
+            }
+            
+            if (modo === 'whatsapp') {
+                // Enviar por WhatsApp
+                const telefono = casoParaResponder.telefono;
+                if (!telefono) {
+                    mostrarNotificacionTemp('El cliente no tiene un número de teléfono registrado', 'error');
+                    return;
+                }
+                
+                const texto = encodeURIComponent(`Hola ${casoParaResponder.personName || ''}. ${mensaje}\n\nAtte: ${usuarioActual}\nDefensoría Civil y Comercial N6`);
+                window.open(`https://wa.me/${telefono}?text=${texto}`, '_blank');
+                
+            } else if (modo === 'correo') {
+                // Enviar por correo electrónico
+                const correo = casoParaResponder.email;
+                if (!correo) {
+                    mostrarNotificacionTemp('El cliente no tiene un correo electrónico registrado', 'error');
+                    return;
+                }
+                
+                const asunto = encodeURIComponent(`Respuesta a su consulta - Defensoría Civil y Comercial N6`);
+                const cuerpo = encodeURIComponent(`Estimado/a ${casoParaResponder.personName || 'ciudadano/a'}:\n\n${mensaje}\n\nAtentamente,\n${usuarioActual}\nDefensoría Civil y Comercial N6\nPosadas, Misiones`);
+                window.open(`mailto:${correo}?subject=${asunto}&body=${cuerpo}`, '_blank');
+            }
+            
+            // Registrar la respuesta en el historial del caso
+            registrarRespuestaEnCaso(mensaje, modo);
+            
+            mostrarNotificacionTemp('Respuesta enviada correctamente', 'success');
+            cerrarModalRespuesta();
+        }
+
+        // Función para registrar la respuesta en el historial del caso
+        async function registrarRespuestaEnCaso(mensaje, modo) {
+            try {
+                const casoRef = ref(db, `atencion/${casoParaResponder.id}`);
+                
+                const respuestasActuales = casoParaResponder.respuestas || [];
+                const notasActuales = casoParaResponder.notas || [];
+                
+                const nuevaRespuesta = {
+                    fecha: new Date().toISOString(),
+                    usuario: usuarioActual,
+                    mensaje: mensaje,
+                    modo: modo,
+                    tipo: 'respuesta'
+                };
+                
+                // Actualizar respuestas y notas para mantener compatibilidad
+                await update(casoRef, {
+                    respuestas: [...respuestasActuales, nuevaRespuesta],
+                    notas: [...notasActuales, {
+                        fecha: new Date().toISOString(),
+                        usuario: usuarioActual,
+                        texto: `Respuesta enviada por ${modo}: ${mensaje}`
+                    }]
+                });
+                
+                // Actualizar el caso en allCases
+                const casoIndex = allCases.findIndex(c => c.id === casoParaResponder.id);
+                if (casoIndex !== -1) {
+                    allCases[casoIndex] = {...allCases[casoIndex], 
+                        respuestas: [...respuestasActuales, nuevaRespuesta],
+                        notas: [...notasActuales, {
+                            fecha: new Date().toISOString(),
+                            usuario: usuarioActual,
+                            texto: `Respuesta enviada por ${modo}: ${mensaje}`
+                        }]
+                    };
+                }
+                
+                // Actualizar la tabla inmediatamente
+                filtrarYMostrarCasosAsignados();
+                
+            } catch (error) {
+                console.error("Error al registrar respuesta:", error);
+            }
+        }
+
         // Función para mostrar notificación persistente
         function mostrarNotificacionPersistente(caso) {
             const container = document.getElementById('notification-persistent-container');
@@ -2657,7 +3124,7 @@
             }, 30000);
         }
 
-        // Función para mostrar alerta roja flotante - MODIFICADA
+        // Función para mostrar alerta roja flotante
         function mostrarAlertaRojaFlotante(mensaje) {
             // Remover alerta anterior si existe
             const alertaAnterior = alertaRojaFlotanteContainer.querySelector('.alerta-roja-flotante-overlay');
@@ -2869,13 +3336,12 @@
             });
         }
 
-        // Funciones para nueva consulta - MODIFICADAS CON RESTRICCIÓN ESPECÍFICA
+        // Funciones para nueva consulta
         function abrirModalNuevaConsulta() {
             // VERIFICACIÓN ESPECÍFICA PARA MODAL DE NUEVA CONSULTA
-            // Esta es la única restricción activa ahora.
             const disponibilidad = verificarDisponibilidadParaNuevaConsulta();
             if (!disponibilidad.disponible) {
-                // Muestra la alerta roja en lugar de solo una notificación, como estaba en el diseño original de alerta modal
+                // Muestra la alerta roja en lugar de solo una notificación
                 mostrarAlertaSistemaNoDisponible(disponibilidad.mensaje);
                 return;
             }
@@ -3241,13 +3707,15 @@
                     personName: inputNombre.value.trim(),
                     dni: inputDNI.value.trim() || null,
                     telefono: inputTelefono.value.trim() || null,
+                    email: inputEmail.value.trim() || null,
                     type: selectTipoConsulta.value,
                     assignedUser: usuarioActual, // SIEMPRE asignar al usuario actual - FORZADO
                     description: textareaDescripcion.value.trim(),
                     estado: 'pendiente',
                     timestamp: new Date().toISOString(),
                     observaciones: [],
-                    notas: []
+                    notas: [],
+                    respuestas: []
                 };
                 
                 // Guardar fecha del turno en formato YYYY-MM-DD (ISO standard)
