@@ -230,6 +230,34 @@
             border-left-color: #8b5cf6;
         }
         
+        /* Contador de tiempo mejorado */
+        .tiempo-transcurrido {
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .tiempo-normal {
+            background-color: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #93c5fd;
+        }
+        
+        .tiempo-medio {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 2px solid #fbbf24;
+        }
+        
+        .tiempo-alto {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+        }
+        
         @media (max-width: 640px) {
             .modal > div { margin: 1rem; max-height: 90vh; overflow-y: auto; }
             .modal-content-grid { grid-template-columns: 1fr !important; }
@@ -389,6 +417,178 @@
             </div>
         </div>
 
+        <!-- Modal de Respuesta al Cliente -->
+        <div id="modal-respuesta-cliente" class="modal">
+            <div class="bg-white rounded-xl w-full max-w-4xl mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+                <div class="bg-blue-800 text-white p-4 flex justify-between items-center font-bold sticky top-0 z-10">
+                    <span class="text-sm sm:text-base"><i class="fas fa-reply mr-2"></i>Respuesta al Cliente</span>
+                    <button id="btn-cerrar-respuesta" class="text-2xl leading-none">&times;</button>
+                </div>
+                
+                <div class="p-4 sm:p-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Columna izquierda: Información del cliente -->
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                                <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center">
+                                    <i class="fas fa-user-circle mr-2 text-blue-600"></i>
+                                    Información del Cliente
+                                </h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre Completo</label>
+                                        <p id="resp-nombre" class="p-3 bg-white rounded border text-sm font-medium"></p>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1">DNI</label>
+                                            <p id="resp-dni" class="p-3 bg-white rounded border text-sm"></p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-semibold text-gray-700 mb-1">Teléfono</label>
+                                            <p id="resp-telefono" class="p-3 bg-white rounded border text-sm"></p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Email (si está disponible)</label>
+                                        <p id="resp-email" class="p-3 bg-white rounded border text-sm">No registrado</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Consulta</label>
+                                        <p id="resp-tipo" class="p-3 bg-white rounded border text-sm font-bold text-blue-600"></p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Fecha de Registro</label>
+                                        <p id="resp-fecha-registro" class="p-3 bg-white rounded border text-sm"></p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Estado Actual</label>
+                                        <p id="resp-estado" class="p-3 bg-white rounded border text-sm">
+                                            <span id="resp-estado-texto" class="px-3 py-1 rounded-full text-xs font-bold"></span>
+                                        </p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción Inicial</label>
+                                        <p id="resp-descripcion" class="p-3 bg-white rounded border text-sm h-24 overflow-y-auto"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contador de tiempo mejorado -->
+                            <div id="contador-tiempo" class="tiempo-transcurrido tiempo-normal">
+                                <div class="flex items-center justify-center mb-2">
+                                    <i class="fas fa-clock text-2xl mr-3"></i>
+                                    <div>
+                                        <p class="text-sm font-semibold">Tiempo Transcurrido</p>
+                                        <p id="tiempo-texto" class="text-2xl font-bold">0 días, 0 horas</p>
+                                    </div>
+                                </div>
+                                <p id="tiempo-detalle" class="text-xs">Desde el registro del caso</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Columna derecha: Formulario de respuesta -->
+                        <div class="space-y-6">
+                            <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                                <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center">
+                                    <i class="fas fa-comment-dots mr-2 text-green-600"></i>
+                                    Enviar Respuesta
+                                </h3>
+                                
+                                <div class="space-y-4">
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Asunto</label>
+                                        <select id="resp-asunto" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                            <option value="confirmacion_turno">Confirmación de Turno</option>
+                                            <option value="informacion_adicional">Información Adicional Solicitada</option>
+                                            <option value="resolucion_caso">Resolución del Caso</option>
+                                            <option value="derivacion">Derivación a Otro Área</option>
+                                            <option value="actualizacion_estado">Actualización de Estado</option>
+                                            <option value="otros">Otros</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Mensaje Personalizado</label>
+                                        <textarea id="resp-mensaje" rows="6" class="w-full border p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm" placeholder="Escriba aquí el mensaje para el cliente..."></textarea>
+                                        <p class="text-xs text-gray-500 mt-1">Este mensaje se enviará al cliente a través del canal seleccionado.</p>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-sm font-semibold text-gray-700 mb-1">Canal de Envío</label>
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <button id="btn-enviar-whatsapp" class="p-3 bg-green-600 text-white rounded-lg font-bold hover:bg-green-700 transition flex items-center justify-center">
+                                                <i class="fab fa-whatsapp mr-2 text-xl"></i> WhatsApp
+                                            </button>
+                                            <button id="btn-enviar-email" class="p-3 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition flex items-center justify-center">
+                                                <i class="fas fa-envelope mr-2 text-xl"></i> Correo
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                                        <div class="flex items-start">
+                                            <i class="fas fa-lightbulb text-yellow-500 mt-1 mr-3"></i>
+                                            <div>
+                                                <p class="text-sm font-semibold text-gray-800">Plantillas Rápidas</p>
+                                                <div class="flex flex-wrap gap-2 mt-2">
+                                                    <button class="plantilla-rapida text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 transition" data-plantilla="confirmacion">
+                                                        Confirmar turno
+                                                    </button>
+                                                    <button class="plantilla-rapida text-xs bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200 transition" data-plantilla="informacion">
+                                                        Solicitar información
+                                                    </button>
+                                                    <button class="plantilla-rapida text-xs bg-purple-100 text-purple-700 px-3 py-1 rounded hover:bg-purple-200 transition" data-plantilla="resolucion">
+                                                        Caso resuelto
+                                                    </button>
+                                                    <button class="plantilla-rapida text-xs bg-amber-100 text-amber-700 px-3 py-1 rounded hover:bg-amber-200 transition" data-plantilla="recordatorio">
+                                                        Recordatorio
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="pt-4 border-t">
+                                        <div class="flex justify-between">
+                                            <button id="btn-guardar-borrador" class="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg font-bold hover:bg-gray-400 transition">
+                                                <i class="fas fa-save mr-2"></i> Guardar Borrador
+                                            </button>
+                                            <button id="btn-enviar-respuesta" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition">
+                                                <i class="fas fa-paper-plane mr-2"></i> Enviar Respuesta
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Historial de respuestas anteriores -->
+                            <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                                <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center">
+                                    <i class="fas fa-history mr-2 text-gray-600"></i>
+                                    Historial de Comunicaciones
+                                </h3>
+                                
+                                <div id="historial-respuestas" class="space-y-3 max-h-60 overflow-y-auto">
+                                    <div class="text-center py-4 text-gray-500">
+                                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                                        <p>No hay comunicaciones registradas</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <header class="bg-gradient-to-r from-blue-900 to-blue-800 text-white shadow-lg">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row md:items-center md:justify-between">
                 <div class="flex items-center">
@@ -430,7 +630,7 @@
                     <button id="btn-ver-calendario" class="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-blue-800">
                         <i class="fas fa-calendar-alt mr-1"></i> Calendario
                     </button>
-                    <button id="btn-gestion-agenda" class="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-sm hover:bg-blue-800">
+                    <button id="btn-gestion-agenda" class="bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-blue-800">
                         <i class="fas fa-cog mr-1"></i> Configurar
                     </button>
                 </div>
@@ -1209,6 +1409,18 @@
         const btnDescargarComprobante = document.getElementById('btn-descargar-comprobante');
         let comprobanteActualId = null;
         
+        // Elementos para modal de respuesta al cliente
+        const modalRespuestaCliente = document.getElementById('modal-respuesta-cliente');
+        const btnCerrarRespuesta = document.getElementById('btn-cerrar-respuesta');
+        const btnEnviarWhatsapp = document.getElementById('btn-enviar-whatsapp');
+        const btnEnviarEmail = document.getElementById('btn-enviar-email');
+        const btnGuardarBorrador = document.getElementById('btn-guardar-borrador');
+        const btnEnviarRespuesta = document.getElementById('btn-enviar-respuesta');
+        const respAsunto = document.getElementById('resp-asunto');
+        const respMensaje = document.getElementById('resp-mensaje');
+        let respuestaActualId = null;
+        let intervaloContador = null;
+
         // ========== FUNCIONES DE AUTENTICACIÓN ==========
         
         /**
@@ -1555,7 +1767,272 @@
             
             return false;
         }
+
+        // ========== MODAL DE RESPUESTA AL CLIENTE ==========
         
+        /**
+         * Abre el modal de respuesta al cliente
+         * @param {string} id - ID del caso
+         */
+        function abrirModalRespuestaCliente(id) {
+            const caso = rawData.find(r => r.id === id);
+            if (!caso) return;
+            
+            respuestaActualId = id;
+            
+            // Cargar información del cliente
+            document.getElementById('resp-nombre').textContent = caso.personName || 'No registrado';
+            document.getElementById('resp-dni').textContent = caso.dni || 'No registrado';
+            document.getElementById('resp-telefono').textContent = caso.telefono || 'No registrado';
+            document.getElementById('resp-tipo').textContent = caso.type || 'No especificado';
+            document.getElementById('resp-fecha-registro').textContent = caso.timestamp ? 
+                formatDateTimeForDisplay(new Date(caso.timestamp)) : 'No registrada';
+            document.getElementById('resp-descripcion').textContent = caso.description || 'Sin descripción';
+            
+            // Mostrar estado
+            const estado = caso.estado || 'pendiente';
+            const badgeColor = getBadgeColor(estado);
+            const respEstadoTexto = document.getElementById('resp-estado-texto');
+            respEstadoTexto.textContent = estado.toUpperCase();
+            respEstadoTexto.className = `px-3 py-1 rounded-full text-xs font-bold ${badgeColor}`;
+            
+            // Verificar si tiene email (normalmente no está en los registros)
+            // En un sistema real, esto vendría de una base de datos
+            document.getElementById('resp-email').textContent = 'No registrado';
+            
+            // Iniciar contador de tiempo
+            iniciarContadorTiempo(caso.timestamp);
+            
+            // Cargar historial de comunicaciones
+            cargarHistorialComunicaciones(caso);
+            
+            // Resetear formulario
+            respAsunto.value = 'confirmacion_turno';
+            respMensaje.value = '';
+            
+            // Mostrar modal
+            modalRespuestaCliente.classList.add('active');
+        }
+        
+        /**
+         * Inicia el contador de tiempo transcurrido
+         * @param {string} fechaInicio - Fecha de inicio del caso
+         */
+        function iniciarContadorTiempo(fechaInicio) {
+            if (intervaloContador) {
+                clearInterval(intervaloContador);
+            }
+            
+            if (!fechaInicio) {
+                document.getElementById('tiempo-texto').textContent = 'Fecha no disponible';
+                return;
+            }
+            
+            const actualizarContador = () => {
+                const inicio = new Date(fechaInicio);
+                const ahora = new Date();
+                const diferencia = ahora - inicio;
+                
+                // Calcular días, horas, minutos
+                const dias = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+                const horas = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutos = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+                
+                // Actualizar texto
+                document.getElementById('tiempo-texto').textContent = `${dias} días, ${horas} horas`;
+                document.getElementById('tiempo-detalle').textContent = 
+                    `Registrado el ${formatShortDateForDisplay(inicio)}`;
+                
+                // Cambiar color según el tiempo transcurrido
+                const contador = document.getElementById('contador-tiempo');
+                if (dias < 2) {
+                    contador.className = 'tiempo-transcurrido tiempo-normal';
+                } else if (dias < 7) {
+                    contador.className = 'tiempo-transcurrido tiempo-medio';
+                } else {
+                    contador.className = 'tiempo-transcurrido tiempo-alto';
+                }
+            };
+            
+            // Actualizar inmediatamente y luego cada minuto
+            actualizarContador();
+            intervaloContador = setInterval(actualizarContador, 60000);
+        }
+        
+        /**
+         * Carga el historial de comunicaciones del caso
+         * @param {Object} caso - Caso del que cargar comunicaciones
+         */
+        function cargarHistorialComunicaciones(caso) {
+            const historialRespuestas = document.getElementById('historial-respuestas');
+            historialRespuestas.innerHTML = '';
+            
+            // En un sistema real, esto vendría de una base de datos
+            // Por ahora, simulamos algunas comunicaciones de ejemplo
+            const comunicaciones = caso.notas?.filter(n => n.tipo === 'comunicacion') || [];
+            
+            if (comunicaciones.length === 0) {
+                historialRespuestas.innerHTML = `
+                    <div class="text-center py-4 text-gray-500">
+                        <i class="fas fa-inbox text-2xl mb-2"></i>
+                        <p>No hay comunicaciones registradas</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            comunicaciones.forEach((com, index) => {
+                const fecha = com.fecha ? formatDateTimeForDisplay(new Date(com.fecha)) : 'Sin fecha';
+                const div = document.createElement('div');
+                div.className = 'bg-white rounded-lg p-3 border';
+                div.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-bold ${com.canal === 'whatsapp' ? 'text-green-600' : 'text-blue-600'}">
+                            <i class="fas ${com.canal === 'whatsapp' ? 'fa-whatsapp' : 'fa-envelope'} mr-1"></i>
+                            ${com.canal === 'whatsapp' ? 'WhatsApp' : 'Correo'}
+                        </span>
+                        <span class="text-xs text-gray-500">${fecha}</span>
+                    </div>
+                    <p class="text-sm text-gray-800">${com.texto || 'Sin mensaje'}</p>
+                `;
+                historialRespuestas.appendChild(div);
+            });
+        }
+        
+        /**
+         * Envía respuesta por WhatsApp
+         */
+        function enviarPorWhatsApp() {
+            const caso = rawData.find(r => r.id === respuestaActualId);
+            if (!caso || !caso.telefono) {
+                mostrarAlertaSincronizacion(false, 'No hay número de teléfono disponible para enviar por WhatsApp');
+                return;
+            }
+            
+            const mensaje = respMensaje.value.trim();
+            if (!mensaje) {
+                mostrarAlertaSincronizacion(false, 'Por favor escriba un mensaje antes de enviar');
+                return;
+            }
+            
+            const asuntoTexto = respAsunto.options[respAsunto.selectedIndex].text;
+            const mensajeCompleto = `*${asuntoTexto}*\n\n${mensaje}\n\nAtentamente,\nDefensoría Civil y Comercial 6`;
+            
+            // Abrir WhatsApp
+            window.open(`https://wa.me/${caso.telefono}?text=${encodeURIComponent(mensajeCompleto)}`, '_blank');
+            
+            // Registrar la comunicación
+            registrarComunicacion('whatsapp', mensaje);
+            
+            mostrarAlertaSincronizacion(true, 'Mensaje preparado para WhatsApp. Complete el envío en la ventana que se abrió.');
+        }
+        
+        /**
+         * Envía respuesta por correo
+         */
+        function enviarPorCorreo() {
+            const caso = rawData.find(r => r.id === respuestaActualId);
+            
+            const mensaje = respMensaje.value.trim();
+            if (!mensaje) {
+                mostrarAlertaSincronizacion(false, 'Por favor escriba un mensaje antes de enviar');
+                return;
+            }
+            
+            const asuntoTexto = respAsunto.options[respAsunto.selectedIndex].text;
+            const asunto = `${asuntoTexto} - Defensoría Civil y Comercial 6`;
+            
+            // En un sistema real, aquí se integraría con un servicio de correo
+            // Por ahora, mostramos un mensaje informativo
+            mostrarAlertaSincronizacion(true, 
+                `Correo preparado para enviar a ${caso?.personName || 'el cliente'}. ` +
+                `En un sistema real, se enviaría a través de un servicio de correo.`);
+            
+            // Registrar la comunicación
+            registrarComunicacion('email', mensaje);
+        }
+        
+        /**
+         * Registra una comunicación en el historial del caso
+         * @param {string} canal - Canal de comunicación (whatsapp/email)
+         * @param {string} mensaje - Mensaje enviado
+         */
+        async function registrarComunicacion(canal, mensaje) {
+            try {
+                const casoRef = ref(db, `atencion/${respuestaActualId}`);
+                const caso = rawData.find(r => r.id === respuestaActualId);
+                const notasActuales = caso.notas || [];
+                
+                const asuntoTexto = respAsunto.options[respAsunto.selectedIndex].text;
+                
+                const nuevaComunicacion = {
+                    texto: `[${asuntoTexto}] ${mensaje.substring(0, 100)}${mensaje.length > 100 ? '...' : ''}`,
+                    fecha: new Date().toISOString(),
+                    autor: usuarioLogueado || 'Sistema',
+                    tipo: 'comunicacion',
+                    canal: canal
+                };
+                
+                const notasActualizadas = [...notasActuales, nuevaComunicacion];
+                await update(casoRef, { notas: notasActualizadas });
+                
+                // Recargar historial
+                cargarHistorialComunicaciones({...caso, notas: notasActualizadas});
+                
+            } catch (error) {
+                console.error('Error registrando comunicación:', error);
+            }
+        }
+        
+        /**
+         * Guarda un borrador de la respuesta
+         */
+        function guardarBorrador() {
+            const mensaje = respMensaje.value.trim();
+            if (!mensaje) {
+                mostrarAlertaSincronizacion(false, 'No hay mensaje para guardar como borrador');
+                return;
+            }
+            
+            // En un sistema real, aquí se guardaría en Firebase o localStorage
+            localStorage.setItem(`borrador_respuesta_${respuestaActualId}`, JSON.stringify({
+                asunto: respAsunto.value,
+                mensaje: mensaje,
+                fecha: new Date().toISOString()
+            }));
+            
+            mostrarAlertaSincronizacion(true, 'Borrador guardado correctamente');
+        }
+        
+        /**
+         * Carga plantillas rápidas
+         */
+        function inicializarPlantillasRapidas() {
+            document.querySelectorAll('.plantilla-rapida').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const plantilla = e.target.dataset.plantilla;
+                    let mensaje = '';
+                    
+                    switch(plantilla) {
+                        case 'confirmacion':
+                            mensaje = 'Le confirmamos su turno asignado. Por favor, asegúrese de llegar con 10 minutos de anticipación y traer toda la documentación necesaria.';
+                            break;
+                        case 'informacion':
+                            mensaje = 'Para continuar con su caso, necesitamos que nos proporcione la siguiente información/documentación: [especificar qué se necesita].';
+                            break;
+                        case 'resolucion':
+                            mensaje = 'Nos complace informarle que su caso ha sido resuelto. Puede acercarse a nuestras oficinas para retirar la documentación correspondiente.';
+                            break;
+                        case 'recordatorio':
+                            mensaje = 'Le recordamos su turno programado para mañana. En caso de no poder asistir, por favor notifíquenos con anticipación.';
+                            break;
+                    }
+                    
+                    respMensaje.value = mensaje;
+                });
+            });
+        }
+
         // ========== CONFIGURACIÓN INICIAL ==========
         
         // Llenar selects de usuarios con TODOS los usuarios disponibles
@@ -1611,6 +2088,31 @@
         
         // Event listener para descargar comprobante
         btnDescargarComprobante.addEventListener('click', descargarComprobantePDF);
+        
+        // Event listeners para modal de respuesta al cliente
+        btnCerrarRespuesta.addEventListener('click', () => {
+            modalRespuestaCliente.classList.remove('active');
+            if (intervaloContador) {
+                clearInterval(intervaloContador);
+                intervaloContador = null;
+            }
+        });
+        
+        btnEnviarWhatsapp.addEventListener('click', enviarPorWhatsApp);
+        btnEnviarEmail.addEventListener('click', enviarPorCorreo);
+        btnGuardarBorrador.addEventListener('click', guardarBorrador);
+        btnEnviarRespuesta.addEventListener('click', () => {
+            // Por defecto, enviar por WhatsApp si hay teléfono
+            const caso = rawData.find(r => r.id === respuestaActualId);
+            if (caso && caso.telefono) {
+                enviarPorWhatsApp();
+            } else {
+                enviarPorCorreo();
+            }
+        });
+        
+        // Inicializar plantillas rápidas
+        inicializarPlantillasRapidas();
         
         // ========== GESTIÓN DE AGENDA Y CALENDARIO ==========
         
@@ -2854,6 +3356,9 @@
                         <button class="btn-ver-detalles text-blue-500 hover:text-blue-700" data-id="${r.id}" title="Ver detalles">
                             <i class="fas fa-eye text-lg"></i>
                         </button>
+                        <button class="btn-respuesta-cliente text-green-500 hover:text-green-700" data-id="${r.id}" title="Responder al cliente">
+                            <i class="fas fa-reply text-lg"></i>
+                        </button>
                         ${r.fechaTurno && r.horarioTurno ? `
                             <button class="btn-comprobante text-red-500 hover:text-red-700" data-id="${r.id}" title="Comprobante PDF">
                                 <i class="fas fa-file-pdf text-lg"></i>
@@ -2884,6 +3389,11 @@
                 row.querySelector('.btn-ver-detalles').addEventListener('click', (e) => {
                     e.stopPropagation();
                     verDetalles(r.id);
+                });
+                
+                row.querySelector('.btn-respuesta-cliente').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    abrirModalRespuestaCliente(r.id);
                 });
                 
                 row.querySelector('.btn-comprobante')?.addEventListener('click', (e) => {
@@ -2947,6 +3457,9 @@
                         <button class="btn-ver-detalles text-blue-500 hover:text-blue-700" data-id="${r.id}" title="Ver detalles">
                             <i class="fas fa-eye text-lg"></i>
                         </button>
+                        <button class="btn-respuesta-cliente text-green-500 hover:text-green-700" data-id="${r.id}" title="Responder al cliente">
+                            <i class="fas fa-reply text-lg"></i>
+                        </button>
                         <button class="btn-comprobante text-red-500 hover:text-red-700" data-id="${r.id}" title="Comprobante PDF">
                             <i class="fas fa-file-pdf text-lg"></i>
                         </button>
@@ -2973,6 +3486,11 @@
                 row.querySelector('.btn-ver-detalles').addEventListener('click', (e) => {
                     e.stopPropagation();
                     verDetalles(r.id);
+                });
+                
+                row.querySelector('.btn-respuesta-cliente').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    abrirModalRespuestaCliente(r.id);
                 });
                 
                 row.querySelector('.btn-comprobante').addEventListener('click', (e) => {
@@ -3028,6 +3546,9 @@
                         <button class="btn-ver-detalles text-blue-500 hover:text-blue-700" data-id="${r.id}" title="Ver detalles">
                             <i class="fas fa-eye text-lg"></i>
                         </button>
+                        <button class="btn-respuesta-cliente text-green-500 hover:text-green-700" data-id="${r.id}" title="Responder al cliente">
+                            <i class="fas fa-reply text-lg"></i>
+                        </button>
                         <button class="btn-comprobante text-red-500 hover:text-red-700" data-id="${r.id}" title="Comprobante PDF">
                             <i class="fas fa-file-pdf text-lg"></i>
                         </button>
@@ -3043,6 +3564,11 @@
                 row.querySelector('.btn-ver-detalles').addEventListener('click', (e) => {
                     e.stopPropagation();
                     verDetalles(r.id);
+                });
+                
+                row.querySelector('.btn-respuesta-cliente').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    abrirModalRespuestaCliente(r.id);
                 });
                 
                 row.querySelector('.btn-comprobante').addEventListener('click', (e) => {
