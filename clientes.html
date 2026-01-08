@@ -10,7 +10,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         
-        /* Estilos para el landing page */
+        /* Estilos optimizados para el landing page */
         #landing-page {
             position: fixed;
             top: 0;
@@ -23,6 +23,7 @@
             justify-content: center;
             z-index: 9999;
             transition: opacity 0.5s ease-out;
+            overflow: hidden; /* Evita scroll en el landing */
         }
         
         #landing-page.fade-out {
@@ -32,13 +33,23 @@
         
         .landing-container {
             background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
-            padding: 4rem 3rem;
+            padding: clamp(2rem, 8vw, 4rem) clamp(1.5rem, 5vw, 3rem);
             border-radius: 2rem;
             text-align: center;
-            max-width: 800px;
-            width: 90%;
+            max-width: 90%;
+            width: 800px;
             box-shadow: 0 20px 60px rgba(37, 99, 235, 0.3);
             animation: pulse 2s infinite alternate;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .landing-logo {
+            width: clamp(120px, 30vw, 220px);
+            height: auto;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
         }
         
         @keyframes pulse {
@@ -47,7 +58,8 @@
         }
         
         .landing-title {
-            font-size: 2.5rem;
+            /* Texto responsivo dinámico */
+            font-size: clamp(1.4rem, 5vw, 2.5rem);
             font-weight: 800;
             color: white;
             margin-bottom: 1.5rem;
@@ -56,7 +68,8 @@
         }
         
         .landing-subtitle {
-            font-size: 1.25rem;
+            /* Subtítulo responsivo dinámico */
+            font-size: clamp(0.95rem, 3vw, 1.25rem);
             font-weight: 400;
             color: rgba(255, 255, 255, 0.95);
             line-height: 1.5;
@@ -68,7 +81,7 @@
         }
         
         .loading-bar {
-            width: 200px;
+            width: min(200px, 80%);
             height: 4px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 2px;
@@ -92,6 +105,9 @@
         /* Estilos originales de la aplicación */
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         
+        /* Oculta scroll lateral global si es necesario */
+        body.landing-active { overflow: hidden; }
+
         .form-input { 
             width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.75rem;
             outline: none; transition: all 0.2s; background: #fdfdfd;
@@ -151,17 +167,17 @@
             opacity: 0.6;
         }
         
-        /* Ocultar la aplicación principal inicialmente */
         #main-app {
             display: none;
         }
     </style>
 </head>
-<body class="bg-white">
+<body class="bg-white landing-active">
 
-    <!-- Landing Page Temporario -->
     <div id="landing-page">
         <div class="landing-container">
+            <img src="https://github.com/sistemadigital/ingreso-sistema/blob/main/MP.png?raw=true" alt="Ministerio Público" class="landing-logo">
+            
             <h1 class="landing-title">Bienvenido a nuestro canal de Consultas y Turnos Online</h1>
             <div class="landing-subtitle">
                 Somos la <strong>Defensoria Civil y Comercial 6</strong><br>
@@ -173,10 +189,8 @@
         </div>
     </div>
 
-    <!-- Aplicación Principal (inicialmente oculta) -->
     <div id="main-app" class="bg-slate-50 min-h-screen pb-12">
 
-        <!-- Overlay de sistema no disponible -->
         <div id="system-unavailable-overlay">
             <div class="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-lg">
                 <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
@@ -399,6 +413,7 @@
                 setTimeout(() => {
                     landingPage.style.display = 'none';
                     mainApp.style.display = 'block';
+                    document.body.classList.remove('landing-active'); // Habilitar scroll de la app
                     
                     // Verificar disponibilidad del sistema (código original)
                     const disponibilidad = verificarDisponibilidadSistema();
