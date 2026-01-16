@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Defensoría Civil y Comercial 6 - Misiones</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -40,7 +40,7 @@
 
         .container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1300px;
         }
 
         header {
@@ -64,12 +64,28 @@
             text-transform: uppercase;
         }
 
-        /* Layout de 3 columnas */
+        /* Layout con imagen lateral */
         .grid {
             display: grid;
-            grid-template-columns: 1.5fr 1.5fr 1fr;
+            grid-template-columns: 1fr 1.3fr 1.3fr 0.8fr;
             gap: 25px;
             align-items: center;
+        }
+
+        /* Estilo para la imagen lateral */
+        .brand-image {
+            width: 100%;
+            max-width: 380px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 25px rgba(37, 99, 235, 0.15));
+            transition: transform 0.3s ease;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .brand-image:hover {
+            transform: scale(1.02);
         }
 
         /* Estilo general de módulos */
@@ -190,18 +206,25 @@
             color: white;
         }
 
+        /* FOOTER MODIFICADO: Negrita y Azul */
         footer {
             text-align: center;
             margin-top: 60px;
-            font-size: 0.8rem;
-            color: #94a3b8;
+            font-size: 0.85rem; /* Ligeramente más grande para que se lea mejor en negrita */
+            color: var(--accent-blue); /* Texto Azul */
+            font-weight: 700; /* Texto Negrita */
             letter-spacing: 0.05em;
         }
 
         /* Responsividad */
-        @media (max-width: 1024px) {
+        @media (max-width: 1200px) {
             .grid {
                 grid-template-columns: 1fr 1fr;
+            }
+            .brand-image {
+                grid-column: span 2;
+                max-width: 250px;
+                margin-bottom: 20px;
             }
             .circle-container {
                 grid-column: span 2;
@@ -213,6 +236,7 @@
             .grid {
                 grid-template-columns: 1fr;
             }
+            .brand-image,
             .circle-container {
                 grid-column: span 1;
             }
@@ -230,6 +254,8 @@
         </header>
 
         <main class="grid">
+            <img src="https://github.com/sistemadigital/iconos/blob/main/MP.png?raw=true" alt="Escudo Ministerio Público" class="brand-image">
+
             <section class="module">
                 <div class="module-header">
                     <i class="far fa-clock"></i>
