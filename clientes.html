@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensoría Civil y Comercial 6 - Registro de Consultas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        /* --- ESTILOS REFACTORIZADOS DEL LANDING PAGE (FONDO BLANCO) --- */
+        #landing-page {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            /* Imagen de fondo solicitada */
+            background-image: url('https://github.com/sistemadigital/iconos/blob/main/azulfondo.jpg?raw=true');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+            padding: 1rem; /* Pequeño margen en móviles */
+        }
+        
+        /* Capa oscura de fondo para resaltar la tarjeta */
+        #landing-page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4); 
+            z-index: -1;
+            backdrop-filter: blur(3px); /* Leve desenfoque a la imagen de fondo */
+        }
+        
+        #landing-page.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Contenedor Central Blanco */
+        .landing-card {
+            background: #ffffff; /* Fondo BLANCO sólido */
+            padding: clamp(2rem, 6vw, 3.5rem); /* Padding responsivo */
+            border-radius: 2rem;
+            text-align: center;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Sombra elegante */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: cardEntrance 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Decoración superior sutil */
+        .landing-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #1e3a8a, #3b82f6);
+        }
+
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .landing-gif {
+            width: 80px;
+            height: auto;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Tipografía Landing (Colores oscuros para fondo blanco) */
+        .landing-title {
+            /* Tamaño de fuente fluido entre 1.5rem (móvil) y 2.2rem (escritorio) */
+            font-size: clamp(1.5rem, 5vw, 2.2rem); 
+            font-weight: 800;
+            color: #1e3a8a; /* Azul oscuro */
+            margin-bottom: 0.5rem;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .landing-subtitle {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            font-weight: 600;
+            color: #334155; /* Gris oscuro */
+            margin-bottom: 0.5rem;
+        }
+
+        .landing-desc {
+            font-size: clamp(0.75rem, 2.5vw, 0.875rem);
+            font-weight: 500;
+            color: #64748b; /* Gris medio */
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Botón de Ingreso */
+        .btn-ingreso {
+            background: #1e3a8a;
+            color: white;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px -5px rgba(30, 58, 138, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%; /* Botón ancho en móviles */
+            justify-content: center;
+            max-width: 300px;
+        }
+
+        .btn-ingreso:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px -5px rgba(30, 58, 138, 0.5);
+            background: #172554;
+        }
+
+        .btn-ingreso:active {
+            transform: translateY(0);
+        }
+
+        /* Animación de textos */
+        .slow-reveal {
+            opacity: 0;
+            transform: translateY(10px);
+            animation: revealUp 1s ease-out forwards;
+        }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+
+        @keyframes revealUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* --- FIN ESTILOS LANDING --- */
+
+        /* Estilos originales de la aplicación */
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        
+        /* Oculta scroll lateral global si es necesario */
+        body.landing-active { overflow: hidden; }
+
+        .form-input { 
+            width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.75rem;
+            outline: none; transition: all 0.2s; background: #fdfdfd;
+        }
+        .form-input:focus { border-color: #2563eb; ring: 3px; ring-color: #bfdbfe; background: white; }
+        
+        .step-card { display: none; }
+        .step-card.active { display: block; animation: slideIn 0.4s ease-out; }
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateX(20px); } 
+            to { opacity: 1; transform: translateX(0); } 
+        }
+
+        .radio-option {
+            display: flex; align-items: center; padding: 1.25rem; border: 2px solid #e2e8f0;
+            border-radius: 1rem; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .radio-option:hover { border-color: #bfdbfe; background-color: #f8fafc; }
+        .radio-option.selected { border-color: #2563eb; background-color: #eff6ff; box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1); }
+        .radio-input { display: none; }
+
+        .input-error { border-color: #ef4444 !important; background-color: #fef2f2 !important; }
+        .error-label { color: #ef4444; font-size: 0.75rem; margin-top: 0.25rem; display: none; }
+
+        #custom-alert, #loading-overlay, #system-unavailable-overlay { 
+            display: none; position: fixed; inset: 0; z-index: 100; 
+            align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(4px); padding: 1rem;
+        }
+        #custom-alert.flex, #loading-overlay.flex, #system-unavailable-overlay.flex { display: flex; }
+
+        .alert-content {
+            background: white; padding: 2.5rem; border-radius: 1.5rem; max-width: 420px; width: 100%;
+            border-top: 6px solid #ef4444; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        @keyframes bounceIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .breadcrumb-item { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #94a3b8; cursor: default; }
+        .breadcrumb-item.active { color: #2563eb; }
+        .breadcrumb-item.valid { color: #10b981; cursor: pointer; }
+        
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+
+        .hour-btn.disabled {
+            background-color: #f1f5f9 !important;
+            color: #94a3b8 !important;
+            border-color: #e2e8f0 !important;
+            cursor: not-allowed !important;
+            opacity: 0.6;
+        }
+        
+        #main-app {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-white landing-active">
+
+    <div id="landing-page">
+        <div class="landing-card">
+            <img src="https://github.com/sistemadigital/iconos/blob/main/whatsapp.gif?raw=true" alt="Consultas" class="landing-gif">
+            
+            <h1 class="landing-title slow-reveal delay-1">Consultas y Turnos</h1>
+            <h2 class="landing-subtitle slow-reveal delay-2">Defensoría Civil y Comercial 6</h2>
+            <p class="landing-desc slow-reveal delay-3">Ministerio Público de Misiones</p>
+            
+            <button id="btn-entrar" class="btn-ingreso slow-reveal delay-3">
+                Ingresa ahora <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="main-app" class="bg-slate-50 min-h-screen pb-12">
+
+        <div id="system-unavailable-overlay">
+            <div class="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-lg">
+                <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Fuera de horario de atención</h3>
+                <p class="text-gray-600 mb-8" id="system-unavailable-message"></p>
+                <button onclick="location.reload()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-black transition shadow-lg">
+                    Reintentar
+                </button>
+            </div>
+        </div>
+
+        <div id="loading-overlay">
+            <div class="bg-white p-8 rounded-3xl shadow-2xl text-center">
+                <div class="inline-block w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p class="font-bold text-slate-700">Procesando solicitud...</p>
+            </div>
+        </div>
+
+        <div id="custom-alert">
+            <div class="alert-content">
+                <div class="w-20 h-20 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-5 text-3xl">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-3" id="alert-title">¡Atención!</h3>
+                <p class="text-gray-600 mb-8" id="alert-message"></p>
+                <button onclick="closeAlert()" class="w-full bg-slate-900 text-white py-4 rounded-xl font-bold hover:bg-black transition shadow-lg">
+                    Entendido
+                </button>
+            </div>
+        </div>
+
+        <header class="bg-white border-b sticky top-0 z-40">
+            <div class="max-w-4xl mx-auto px-6 py-5 text-center">
+                <h1 class="font-bold text-blue-800 text-xl sm:text-2xl tracking-tight">Defensoría Civil y Comercial 6</h1>
+                <p class="text-blue-800 font-bold text-xl sm:text-2xl uppercase tracking-[0.2em]">CONSULTAS Y TURNOS</p>
+                <p class="text-gray-500 text-[10px] uppercase font-bold tracking-[0.2em] mt-1">MINISTERIO PÚBLICO DE MISIONES</p>
+            </div>
+        </header>
+
+        <main class="max-w-3xl mx-auto px-6 mt-8">
+            
+            <nav class="flex justify-between items-center mb-8 px-2 overflow-x-auto" role="tablist">
+                <div id="nav-1" class="breadcrumb-item active" onclick="jumpToStep(1)" role="tab">1. Mis Datos</div>
+                <div class="h-px w-8 bg-slate-200"></div>
+                <div id="nav-2" class="breadcrumb-item" onclick="jumpToStep(2)" role="tab">2. Mi Consulta</div>
+                <div class="h-px w-8 bg-slate-200"></div>
+                <div id="nav-3" class="breadcrumb-item" role="tab">3. Confirmación</div>
+            </nav>
+
+            <div id="form-container" class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+                <div class="h-2 bg-slate-100">
+                    <div id="progress-bar" class="bg-blue-600 h-full transition-all duration-700 ease-out" style="width: 33%"></div>
+                </div>
+
+                <form id="consult-form" class="p-8 sm:p-10">
+                    
+                    <div id="step-1" class="step-card active space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Nombre y Apellido *</label>
+                                <input type="text" id="nombreCompleto" required placeholder="Como figura en DNI" class="form-input">
+                                <span class="error-label" id="err-nombreCompleto">Ingrese su nombre completo.</span>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">DNI *</label>
+                                <input type="text" id="dni" required placeholder="8 números, sin puntos" class="form-input" maxlength="8" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 8)">
+                                <span class="error-label" id="err-dni">DNI inválido (debe tener 8 dígitos).</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">WhatsApp / Teléfono *</label>
+                            <input type="text" id="telefono" required placeholder="Ej: 3764000000" class="form-input" maxlength="10" pattern="[0-9]*" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)">
+                            <span class="error-label" id="err-telefono">Se requiere un número válido (10 dígitos).</span>
+                            </div>
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Correo Electrónico</label>
+                            <input type="email" id="correoElectronico" placeholder="opcional@correo.com" class="form-input">
+                        </div>
+                        <div class="pt-4">
+                            <button type="button" onclick="nextStep(2)" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 transition shadow-lg flex items-center justify-center">
+                                Continuar <i class="fas fa-chevron-right ml-3 text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="step-2" class="step-card space-y-6">
+                        <div>
+                            <label class="block text-sm font-bold text-slate-700 mb-2">Tipo de Trámite</label>
+                            <select id="tipoConsulta" class="form-input bg-slate-50">
+                                <option value="Alimentos">Cuota Alimentaria</option>
+                                <option value="Regimen Comunicación">Régimen de Comunicación</option>
+                                <option value="Cuidado Personal">Cuidado Personal</option>
+                                <option value="Divorcio">Divorcio</option>
+                                <option value="Otros">Otros Temas</option>
+                            </select>
+                        </div>
+
+                        <div class="space-y-4">
+                            <label class="block text-sm font-bold text-slate-700">¿Cómo prefiere ser atendido?</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <label class="radio-option selected" id="opt-sin_turno">
+                                    <input type="radio" name="tipoAtencion" value="sin_turno" class="radio-input" checked onchange="updateRadioSelection()">
+                                    <div class="w-10 h-10 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </div>
+                                    <div class="flex-1 text-left">
+                                        <p class="font-bold text-sm">Enviar Mensaje</p>
+                                        <p class="text-[10px] text-slate-500">Respondemos en 72hs.</p>
+                                    </div>
+                                </label>
+                                <label class="radio-option" id="opt-con_turno">
+                                    <input type="radio" name="tipoAtencion" value="con_turno" class="radio-input" onchange="updateRadioSelection()">
+                                    <div class="w-10 h-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center mr-4">
+                                        <i class="fas fa-calendar-check"></i>
+                                    </div>
+                                    <div class="flex-1 text-left">
+                                        <p class="font-bold text-sm">Turno Presencial</p>
+                                        <p class="text-[10px] text-slate-500">Asistir a la oficina.</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <label class="text-sm font-bold text-slate-700">Resumen de su caso *</label>
+                                <span id="char-counter" class="text-[10px] font-bold text-slate-400">0 / 500</span> </div>
+                            <textarea id="descripcion" required maxlength="500" class="form-input h-32 resize-none" placeholder="Explique brevemente su situación..." oninput="updateCharCount()"></textarea>
+                            <span class="error-label" id="err-descripcion">La descripción debe tener al menos 10 caracteres.</span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-4">
+                            <button type="button" onclick="nextStep(1)" class="bg-slate-100 text-slate-500 font-bold py-4 rounded-2xl hover:bg-slate-200 transition">Volver</button>
+                            <button type="button" onclick="nextStep(3)" class="bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 transition shadow-lg">Siguiente</button>
+                        </div>
+                    </div>
+
+                    <div id="step-3" class="step-card space-y-6">
+                        <div id="turno-selector" class="hidden space-y-6">
+                            <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl">
+                                <p class="text-xs text-amber-800 leading-relaxed font-medium">
+                                    <i class="fas fa-info-circle mr-1"></i> Solo días hábiles de 7:30 a 11:30.
+                                </p>
+                            </div>
+                            <div id="feria-message" class="hidden bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-xl">
+                                <p class="text-xs text-blue-800 leading-relaxed font-medium">
+                                    <i class="fas fa-info-circle mr-1"></i> <span id="feria-text"></span>
+                                </p>
+                            </div>
+                            <div id="no-available-message" class="hidden bg-red-50 border-l-4 border-red-400 p-4 rounded-r-xl">
+                                <p class="text-xs text-red-800 leading-relaxed font-medium">
+                                    <i class="fas fa-calendar-times mr-1"></i> No hay cupos disponibles para esta fecha.
+                                </p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-2">Seleccione una Fecha</label>
+                                <input type="date" id="fechaTurno" class="form-input" onchange="validateDateSelection()">
+                            </div>
+                            <div id="hours-grid" class="grid grid-cols-3 gap-3"></div>
+                            <input type="hidden" id="horarioSeleccionado">
+                        </div>
+
+                        <div id="message-only" class="bg-blue-50 p-8 rounded-3xl text-center border border-blue-100">
+                            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-envelope-open-text text-2xl"></i>
+                            </div>
+                            <h3 class="font-bold text-slate-800 mb-2">Modo Consulta Directa</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed">Su mensaje será procesado por nuestro equipo y recibirá respuesta vía WhatsApp.</p>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 pt-4">
+                            <button type="button" onclick="nextStep(2)" class="bg-slate-100 text-slate-500 font-bold py-4 rounded-2xl hover:bg-slate-200 transition">Volver</button>
+                            <button type="submit" id="submit-btn" class="bg-green-600 text-white font-bold py-4 rounded-2xl hover:bg-green-700 transition shadow-lg flex items-center justify-center">
+                                Confirmar Envío <i class="fas fa-check-circle ml-3"></i> </button>
+                        </div>
+                    </div>
+                </form>
+
+                <div id="success-view" class="hidden p-10 text-center space-y-8 animate-bounce-in">
+                    <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-check text-4xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-black text-slate-800 mb-2 tracking-tight">¡Todo listo!</h2>
+                        <p class="text-slate-500 max-w-xs mx-auto">Tu solicitud ha sido registrada correctamente.</p>
+                    </div>
+                    
+                    <div class="bg-slate-50 rounded-3xl p-6 text-left space-y-3 border border-slate-100 max-w-sm mx-auto">
+                        <p class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Resumen del registro</p>
+                        <div class="flex justify-between text-sm"><span class="text-slate-500">ID Solicitud:</span><span class="font-bold" id="res-id">---</span></div>
+                        <div class="flex justify-between text-sm"><span class="text-slate-500">Trámite:</span><span class="font-bold" id="res-tipo">---</span></div>
+                        <div id="res-turno-cont" class="flex justify-between text-sm hidden"><span class="text-slate-500">Cita:</span><span class="font-bold text-blue-600" id="res-cita">---</span></div>
+                    </div>
+
+                    <div class="flex flex-col gap-3 max-w-xs mx-auto">
+                        <button onclick="downloadPDF()" class="w-full bg-red-600 text-white py-4 rounded-xl font-bold hover:bg-red-700 transition flex items-center justify-center">
+                            <i class="fas fa-file-pdf mr-2"></i> Descargar Comprobante
+                        </button>
+                        <button onclick="resetForm()" class="text-sm font-bold text-slate-400 hover:text-slate-600 py-2">Realizar otra consulta</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        // --- LOGICA DEL LANDING PAGE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnEntrar = document.getElementById('btn-entrar');
+            const landingPage = document.getElementById('landing-page');
+            const mainApp = document.getElementById('main-app');
+
+            // Función para ingresar al sistema
+            btnEntrar.addEventListener('click', () => {
+                // Efecto de desvanecimiento
+                landingPage.classList.add('fade-out');
+                
+                // Mostrar la aplicación principal después del fade-out
+                setTimeout(() => {
+                    landingPage.style.display = 'none';
+                    mainApp.style.display = 'block';
+                    document.body.classList.remove('landing-active'); // Habilitar scroll de la app
+                    
+                    // Verificar disponibilidad del sistema (código original)
+                    const disponibilidad = verificarDisponibilidadSistema();
+                    if (!disponibilidad.disponible) {
+                        document.getElementById('system-unavailable-message').textContent = disponibilidad.mensaje;
+                        document.getElementById('system-unavailable-overlay').classList.add('flex');
+                        document.querySelector('main').style.display = 'none';
+                        document.querySelector('header').style.display = 'none';
+                    }
+                }, 600); // 600ms para coincidir con el CSS transition
+            });
+        });
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getDatabase, ref, push, set, serverTimestamp, get, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDgxLS98sk6GkLrjMu3BVS2cmZ9exdh4dY",
+            authDomain: "atencion-publico-def6.firebaseapp.com",
+            databaseURL: "https://atencion-publico-def6-default-rtdb.firebaseio.com",
+            projectId: "atencion-publico-def6"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- ESTADO GLOBAL ---
+        window.currentStep = 1;
+        let isFormDirty = false;
+        let capacidadHoraria = 2;
+        let diasInactivos = {};
+
+        // --- LISTA DE FERIADOS ARGENTINA 2026 ---
+        const feriados2026 = [
+            '2026-01-01', // 1 de enero - Año Nuevo
+            '2026-02-16', // 16 de febrero - Carnaval
+            '2026-02-17', // 17 de febrero - Carnaval
+            '2026-03-24', // 24 de marzo - Día Nacional de la Memoria por la Verdad y la Justicia
+            '2026-04-02', // 2 de abril - Día del Veterano y de los Caídos en la Guerra de Malvinas
+            '2026-04-03', // 3 de abril - Viernes Santo
+            '2026-05-01', // 1 de mayo - Día del Trabajador
+            '2026-05-25', // 25 de mayo - Día de la Revolución de Mayo
+            '2026-06-20', // 20 de junio - Paso a la Inmortalidad del Gral. Manuel Belgrano
+            '2026-07-09', // 9 de julio - Día de la Independencia
+            '2026-12-08', // 8 de diciembre - Día de la Inmaculada Concepción de María
+            '2026-12-25', // 25 de diciembre - Navidad
+            '2026-06-15', // 15 de junio - Paso a la Inmortalidad del Gral. Martín Miguel de Güemes
+            '2026-08-17', // 17 de agosto - Paso a la Inmortalidad del Gral. José de San Martín
+            '2026-10-12', // 12 de octubre - Día del Respeto a la Diversidad Cultural
+            '2026-11-23', // 23 de noviembre - Día de la Soberanía Nacional
+            '2026-03-23', // 23 de marzo - Puente previo al feriado del 24 de marzo
+            '2026-07-10', // 10 de julio - Puente posterior al feriado del 9 de julio
+            '2026-12-07'  // 7 de diciembre - Puente previo al feriado del 8 de diciembre
+        ];
+
+        // --- VERIFICACIÓN DE DISPONIBILIDAD DEL SISTEMA ---
+        function verificarDisponibilidadSistema() {
+            const ahora = new Date();
+            const diaSemana = ahora.getDay(); // 0 domingo, 6 sábado
+            const hora = ahora.getHours();
+            const minutos = ahora.getMinutes();
+            const horaDecimal = hora + minutos / 100;
+            
+            // Verificar si es feriado
+            const fechaString = ahora.toISOString().split('T')[0];
+            if (feriados2026.includes(fechaString)) {
+                return {
+                    disponible: false,
+                    mensaje: 'Hoy es día no laborable. El sistema de consultas estará disponible el próximo día hábil.'
+                };
+            }
+            
+            // Verificar si es fin de semana
+            if (diaSemana === 0 || diaSemana === 6) {
+                return {
+                    disponible: false,
+                    mensaje: 'Nuestro horario de recepción de consultas es de Lunes a Viernes de 07:00 a 11:30 hs.'
+                };
+            }
+            
+            // Verificar si estamos en feria judicial
+            const enFeria = isFeriaJudicial(ahora);
+            
+            // Definir horarios según período
+            let horaInicio, horaFin, mensajeHorario;
+            if (enFeria) {
+                horaInicio = 8.00; // 08:00
+                horaFin = 10.00;   // 10:00
+                mensajeHorario = 'Durante el período de feria judicial, nuestro horario de recepción de consultas es de 08:00 a 10:00 hs.';
+            } else {
+                horaInicio = 7.00; // 07:00
+                horaFin = 11.50;   // 11:30 (11.5 en decimal)
+                mensajeHorario = 'Nuestro horario de recepción de consultas es de Lunes a Viernes de 07:00 a 11:30 hs.';
+            }
+            
+            // Verificar horario
+            if (horaDecimal < horaInicio || horaDecimal > horaFin) {
+                return {
+                    disponible: false,
+                    mensaje: mensajeHorario
+                };
+            }
+            
+            return { disponible: true };
+        }
+
+        // --- FUNCIONES DE FORMATO ---
+        function formatDateToDDMMYYYY(dateString) {
+            if (!dateString) return '';
+            const [year, month, day] = dateString.split('-');
+            return `${day}/${month}/${year}`;
+        }
+
+        function formatTimeTo24Hours(timeString) {
+            if (!timeString) return '';
+            const [hours, minutes] = timeString.split(':');
+            return `${hours}:${minutes}`;
+        }
+
+        function formatDateWithWeekday(dateString, timeString) {
+            if (!dateString || !timeString) return '';
+            const date = new Date(`${dateString}T${timeString}`);
+            const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            const dayName = days[date.getDay()];
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            const hours = timeString.slice(0,2);
+            const minutes = timeString.slice(3,5);
+            return `${dayName}, ${day}/${month}/${year} ${hours}:${minutes} hs`;
+        }
+
+        // --- INICIALIZACIÓN Y CONFIGURACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Configuración inicial (solo se ejecutará después de que se muestre la aplicación principal)
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('fechaTurno').setAttribute('min', hoy);
+            
+            loadConfigFromFirebase();
+            
+            window.onbeforeunload = (e) => {
+                if (isFormDirty) return "¿Estás seguro de que quieres salir? Se perderán los datos ingresados.";
+            };
+        });
+
+        async function loadConfigFromFirebase() {
+            try {
+                const capacidadRef = ref(db, "config/capacidadHoraria");
+                const capacidadSnap = await get(capacidadRef);
+                if (capacidadSnap.exists()) {
+                    capacidadHoraria = capacidadSnap.val();
+                }
+                
+                const diasInactivosRef = ref(db, "config/diasInactivos");
+                const diasInactivosSnap = await get(diasInactivosRef);
+                if (diasInactivosSnap.exists()) {
+                    diasInactivos = diasInactivosSnap.val();
+                }
+                
+                console.log("Configuración cargada:", { capacidadHoraria, diasInactivos });
+            } catch (error) {
+                console.error("Error cargando configuración:", error);
+            }
+        }
+
+        // --- NAVEGACIÓN ---
+        window.nextStep = (step) => {
+            // Verificar disponibilidad antes de avanzar
+            if (step > window.currentStep) {
+                const disponibilidad = verificarDisponibilidadSistema();
+                if (!disponibilidad.disponible) {
+                    showAlert(disponibilidad.mensaje);
+                    return;
+                }
+                
+                if (!validateStep(window.currentStep)) return;
+                isFormDirty = true;
+            }
+            
+            document.querySelectorAll('.step-card').forEach(c => c.classList.remove('active'));
+            document.getElementById(`step-${step}`).classList.add('active');
+            
+            const progress = (step === 1) ? 33 : (step === 2) ? 66 : 100;
+            document.getElementById('progress-bar').style.width = `${progress}%`;
+
+            document.querySelectorAll('.breadcrumb-item').forEach((el, idx) => {
+                el.classList.remove('active', 'valid');
+                if (idx + 1 === step) el.classList.add('active');
+                if (idx + 1 < step) el.classList.add('valid');
+            });
+
+            if (step === 3) {
+                const modo = document.querySelector('input[name="tipoAtencion"]:checked').value;
+                document.getElementById('turno-selector').classList.toggle('hidden', modo === 'sin_turno');
+                document.getElementById('message-only').classList.toggle('hidden', modo === 'con_turno');
+                
+                if (modo === 'con_turno') {
+                    document.getElementById('fechaTurno').value = '';
+                    document.getElementById('hours-grid').innerHTML = '';
+                    document.getElementById('no-available-message').classList.add('hidden');
+                    document.getElementById('feria-message').classList.add('hidden');
+                }
+            }
+
+            window.currentStep = step;
+            window.scrollTo(0, 0);
+        };
+
+        window.jumpToStep = (step) => {
+            if (step < window.currentStep) nextStep(step);
+            else if (step === window.currentStep + 1) nextStep(step);
+        };
+
+        // --- VALIDACIONES ---
+        const validateField = (id, condition) => {
+            const el = document.getElementById(id);
+            const err = document.getElementById(`err-${id}`);
+            const isValid = condition(el.value.trim());
+            
+            if (!isValid) {
+                el.classList.add('input-error');
+                if (err) err.style.display = 'block';
+            } else {
+                el.classList.remove('input-error');
+                if (err) err.style.display = 'none';
+            }
+            return isValid;
+        };
+
+        const validateStep = (s) => {
+            if (s === 1) {
+                const v1 = validateField('nombreCompleto', val => val.length > 3);
+                const v2 = validateField('dni', val => val.length === 8);
+                const v3 = validateField('telefono', val => val.length === 10);
+                return v1 && v2 && v3;
+            }
+            if (s === 2) {
+                return validateField('descripcion', val => val.length >= 10);
+            }
+            return true;
+        };
+
+        const isFeriaJudicial = (date) => {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            // Período 1: 26/12 al 31/01
+            if (month === 12 && day >= 26) return true;
+            if (month === 1 && day <= 31) return true;
+            
+            // Período 2: 13/07 al 24/07
+            if (month === 7 && day >= 13 && day <= 24) return true;
+            
+            return false;
+        };
+
+        const getFeriaMessage = (date) => {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            
+            if ((month === 12 && day >= 26) || (month === 1 && day <= 31)) {
+                return '<strong>PERIODO DE FERIA JUDICIAL</strong> (26/12 al 31/01): Horario reducido de 8:00 a 10:00 hs.';
+            } else if (month === 7 && day >= 13 && day <= 24) {
+                return '<strong>PERIODO DE FERIA JUDICIAL</strong> (13/07 al 24/07): Horario reducido de 8:00 a 10:00 hs.';
+            }
+            return '';
+        };
+
+        window.validateDateSelection = async () => {
+            // Verificar disponibilidad antes de continuar
+            const disponibilidad = verificarDisponibilidadSistema();
+            if (!disponibilidad.disponible) {
+                showAlert(disponibilidad.mensaje);
+                return;
+            }
+            
+            const dateInput = document.getElementById('fechaTurno');
+            const date = new Date(dateInput.value + 'T00:00:00');
+            const day = date.getDay();
+            const dateString = dateInput.value;
+
+            document.getElementById('no-available-message').classList.add('hidden');
+            document.getElementById('feria-message').classList.add('hidden');
+
+            if (day === 0 || day === 6) {
+                showAlert("Por favor, elija un día hábil (Lunes a Viernes).");
+                dateInput.value = '';
+                document.getElementById('hours-grid').innerHTML = '';
+                return;
+            }
+
+            if (diasInactivos && diasInactivos[dateString]) {
+                showAlert("Esta fecha está marcada como día inactivo. Por favor, seleccione otra fecha.");
+                dateInput.value = '';
+                document.getElementById('hours-grid').innerHTML = '';
+                return;
+            }
+
+            // Verificar si es feriado
+            if (feriados2026.includes(dateString)) {
+                showAlert("Esta fecha es un día feriado. Por favor, seleccione otra fecha.");
+                dateInput.value = '';
+                document.getElementById('hours-grid').innerHTML = '';
+                return;
+            }
+
+            const feriaMessage = getFeriaMessage(date);
+            if (feriaMessage) {
+                document.getElementById('feria-text').innerHTML = feriaMessage;
+                document.getElementById('feria-message').classList.remove('hidden');
+            } else {
+                document.getElementById('feria-message').classList.add('hidden');
+            }
+
+            await loadHours(date);
+        };
+
+        // --- UI HELPERS ---
+        window.updateRadioSelection = () => {
+            document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
+            const selected = document.querySelector('input[name="tipoAtencion"]:checked').value;
+            document.getElementById(`opt-${selected}`).classList.add('selected');
+        };
+
+        window.updateCharCount = () => {
+            const len = document.getElementById('descripcion').value.length;
+            document.getElementById('char-counter').textContent = `${len} / 500`;
+        };
+
+        window.showAlert = (msg) => {
+            document.getElementById('alert-message').textContent = msg;
+            document.getElementById('custom-alert').classList.add('flex');
+        };
+
+        window.closeAlert = () => {
+            document.getElementById('custom-alert').classList.remove('flex');
+        };
+
+        async function countTurnosPorHorario(fechaString) {
+            try {
+                const turnosRef = ref(db, "atencion");
+                const q = query(turnosRef, orderByChild("fechaTurno"), equalTo(fechaString));
+                const snapshot = await get(q);
+                
+                const turnosPorHorario = {};
+                
+                if (snapshot.exists()) {
+                    const turnos = snapshot.val();
+                    Object.values(turnos).forEach(turno => {
+                        if (turno.horarioTurno) {
+                            const hora = turno.horarioTurno;
+                            turnosPorHorario[hora] = (turnosPorHorario[hora] || 0) + 1;
+                        }
+                    });
+                }
+                
+                return turnosPorHorario;
+            } catch (error) {
+                console.error("Error contando turnos:", error);
+                return {};
+            }
+        }
+
+        window.loadHours = async (date) => {
+            const grid = document.getElementById('hours-grid');
+            grid.innerHTML = '<div class="col-span-3 text-center py-8 text-slate-400">Cargando disponibilidad...</div>';
+            
+            let hours = [];
+            if (date && isFeriaJudicial(date)) {
+                hours = ["08:00", "08:30", "09:00", "09:30"];
+            } else {
+                hours = ["07:30", "08:15", "09:00", "09:45", "10:30", "11:15"];
+            }
+            
+            const fechaString = date.toISOString().split('T')[0];
+            const turnosPorHorario = await countTurnosPorHorario(fechaString);
+            
+            grid.innerHTML = '';
+            
+            let hayHorariosDisponibles = false;
+            
+            hours.forEach(h => {
+                const turnosEnEstaHora = turnosPorHorario[h] || 0;
+                const estaLleno = turnosEnEstaHora >= capacidadHoraria;
+                
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                
+                if (estaLleno) {
+                    btn.className = "hour-btn disabled p-4 border-2 border-slate-200 rounded-2xl font-bold text-slate-400 h-16 flex items-center justify-center cursor-not-allowed";
+                    btn.disabled = true;
+                    btn.innerHTML = `
+                        <div class="text-center">
+                            <div class="text-sm">${formatTimeTo24Hours(h)}</div>
+                            <div class="text-[10px]">Lleno</div>
+                        </div>
+                    `;
+                } else {
+                    hayHorariosDisponibles = true;
+                    btn.className = "p-4 border-2 border-slate-100 rounded-2xl font-bold text-slate-600 hover:border-blue-500 transition h-16 flex items-center justify-center";
+                    btn.textContent = formatTimeTo24Hours(h);
+                    btn.onclick = () => {
+                        document.querySelectorAll('#hours-grid button:not(.disabled)').forEach(b => {
+                            b.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+                        });
+                        btn.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+                        document.getElementById('horarioSeleccionado').value = h;
+                    };
+                }
+                
+                grid.appendChild(btn);
+            });
+            
+            if (!hayHorariosDisponibles) {
+                document.getElementById('no-available-message').classList.remove('hidden');
+            }
+        };
+
+        // --- ENVÍO Y FIREBASE ---
+        document.getElementById('consult-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // VERIFICACIÓN FINAL DE DISPONIBILIDAD ANTES DE ENVIAR
+            const disponibilidad = verificarDisponibilidadSistema();
+            if (!disponibilidad.disponible) {
+                showAlert(disponibilidad.mensaje);
+                return;
+            }
+            
+            const modo = document.querySelector('input[name="tipoAtencion"]:checked').value;
+            
+            if (modo === 'con_turno') {
+                if (!document.getElementById('horarioSeleccionado').value) {
+                    return showAlert("Por favor, selecciona un horario para tu turno presencial.");
+                }
+                
+                const fechaString = document.getElementById('fechaTurno').value;
+                const horarioSeleccionado = document.getElementById('horarioSeleccionado').value;
+                const turnosPorHorario = await countTurnosPorHorario(fechaString);
+                const turnosEnEstaHora = turnosPorHorario[horarioSeleccionado] || 0;
+                
+                if (turnosEnEstaHora >= capacidadHoraria) {
+                    return showAlert("Lo sentimos, este horario ya no está disponible. Por favor, selecciona otro horario.");
+                }
+            }
+
+            document.getElementById('loading-overlay').classList.add('flex');
+
+            try {
+                const tipoConsulta = document.getElementById('tipoConsulta').value;
+                const data = {
+                    personName: document.getElementById('nombreCompleto').value.trim(),
+                    dni: document.getElementById('dni').value.trim(),
+                    telefono: document.getElementById('telefono').value.trim(),
+                    type: `Consulta Web: ${tipoConsulta}`,
+                    assignedUser: null,
+                    description: document.getElementById('descripcion').value.trim(),
+                    estado: 'pendiente',
+                    timestamp: new Date().toISOString(),
+                    notas: [],
+                    origen: 'web',
+                };
+
+                if (modo === 'con_turno') {
+                    const fechaInput = document.getElementById('fechaTurno').value;
+                    const horarioInput = document.getElementById('horarioSeleccionado').value;
+                    
+                    data.fechaTurno = fechaInput;
+                    data.horarioTurno = horarioInput;
+                    data.fechaTurnoISO = fechaInput;
+                    data.horarioTurnoISO = horarioInput;
+                }
+
+                const newRef = push(ref(db, "atencion"));
+                await set(newRef, data);
+
+                isFormDirty = false;
+                document.getElementById('loading-overlay').classList.remove('flex');
+                
+                document.getElementById('consult-form').classList.add('hidden');
+                document.getElementById('success-view').classList.remove('hidden');
+                
+                document.getElementById('res-id').textContent = newRef.key.slice(-6).toUpperCase();
+                document.getElementById('res-tipo').textContent = tipoConsulta;
+                if(modo === 'con_turno') {
+                    document.getElementById('res-turno-cont').classList.remove('hidden');
+                    const fechaStr = formatDateWithWeekday(
+                        data.fechaTurnoISO, 
+                        data.horarioTurnoISO
+                    );
+                    document.getElementById('res-cita').textContent = fechaStr;
+                }
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById('loading-overlay').classList.remove('flex');
+                showAlert("Hubo un problema al conectar con el servidor. Revise su conexión.");
+            }
+        });
+
+        // --- PDF Y REINICIO ---
+        window.downloadPDF = () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const nombre = document.getElementById('nombreCompleto').value.toUpperCase();
+            const dni = document.getElementById('dni').value;
+            const modo = document.querySelector('input[name="tipoAtencion"]:checked').value;
+            
+            const titulo = modo === 'con_turno' 
+                ? "COMPROBANTE DE TURNO ONLINE" 
+                : "COMPROBANTE DE CONSULTA ONLINE";
+            
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18); doc.setTextColor(30, 58, 138);
+            doc.text(titulo, 105, 25, null, null, 'center');
+            
+            doc.setFontSize(10); doc.setTextColor(100);
+            doc.text("Defensoria Civil y Comercial N6 - Posadas, Misiones", 105, 32, null, null, 'center');
+            doc.text("Av. Santa Catalina 1735 1° piso Posadas-Misiones (Edificio Palacio de Justicia)", 105, 38, null, null, 'center');
+            doc.setFont("helvetica", "bold");
+            doc.text("Horario de atención: Lunes a Viernes de 7 a 12 hs. Feria: 8 a 11 hs.", 105, 44, null, null, 'center');
+            
+            doc.setDrawColor(200); doc.line(20, 50, 190, 50);
+            
+            doc.setFontSize(12); doc.setTextColor(0);
+            doc.text(`Solicitante: ${nombre}`, 20, 65);
+            doc.text(`DNI: ${dni}`, 20, 75);
+            doc.text(`Tramite: ${document.getElementById('tipoConsulta').value}`, 20, 85);
+            
+            const fechaISO = document.getElementById('fechaTurno').value;
+            const horario = document.getElementById('horarioSeleccionado').value;
+            
+            if(fechaISO && horario && modo === 'con_turno') {
+                const fechaFormateada = formatDateWithWeekday(fechaISO, horario);
+                doc.setTextColor(37, 99, 235);
+                doc.text(`TURNO ASIGNADO: ${fechaFormateada}`, 20, 100);
+                doc.setFontSize(9); doc.setTextColor(100);
+                doc.text("Presentarse con DNI y documentacion original.", 20, 110);
+            } else {
+                doc.text("Modalidad: Consulta a distancia (Respuesta via WhatsApp).", 20, 100);
+                doc.text("Plazo de respuesta: 72 horas habiles.", 20, 110);
+            }
+            
+            doc.setFontSize(8);
+            doc.setTextColor(150);
+            const ahora = new Date();
+            const dia = ahora.getDate().toString().padStart(2, '0');
+            const mes = (ahora.getMonth() + 1).toString().padStart(2, '0');
+            const anio = ahora.getFullYear();
+            const horas = ahora.getHours().toString().padStart(2, '0');
+            const minutos = ahora.getMinutes().toString().padStart(2, '0');
+            const fechaEnvio = `${dia}/${mes}/${anio} ${horas}:${minutos}`;
+            doc.text(`Consulta enviada el: ${fechaEnvio}`, 20, 140);
+            
+            const nombreArchivo = modo === 'con_turno' 
+                ? `Defensoria_C6_Turno_${dni}.pdf` 
+                : `Defensoria_C6_Consulta_${dni}.pdf`;
+            
+            doc.save(nombreArchivo);
+        };
+
+        window.resetForm = () => {
+            isFormDirty = false;
+            window.location.reload();
+        };
+
+    </script>
+</body>
+</html>
