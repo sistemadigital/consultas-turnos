@@ -742,29 +742,29 @@
         </div>
     </div>
 
-    <div id="modal-salir" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
-            <div class="bg-red-600 text-white p-4 rounded-t-xl flex justify-between items-center">
-                <h3 class="font-bold text-lg">Confirmar Salida</h3>
-                <button id="btn-cerrar-salir" class="text-2xl leading-none">&times;</button>
+    <div id="modal-salir" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full border-2 border-red-500 overflow-hidden transform transition-all scale-100">
+            <div class="bg-red-600 text-white p-3 flex justify-between items-center">
+                <h3 class="font-bold text-base"><i class="fas fa-power-off mr-2"></i>Cerrar Sesión</h3>
+                <button id="btn-cerrar-salir" class="text-white hover:text-red-200 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
             
-            <div class="p-6">
-                <div class="flex items-center justify-center mb-4">
-                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-                        <i class="fas fa-exclamation-triangle text-red-600 text-2xl"></i>
-                    </div>
+            <div class="p-5 text-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-sign-out-alt text-red-600 text-xl"></i>
                 </div>
                 
-                <p class="text-center text-gray-700 mb-2 text-lg font-medium">¿Estás seguro de que deseas salir?</p>
-                <p class="text-center text-gray-600 mb-6">Se cerrará tu sesión y volverás a la pantalla de inicio.</p>
+                <p class="text-gray-800 font-bold mb-1">¿Deseas salir?</p>
+                <p class="text-sm text-gray-500 mb-4">Tu sesión actual se cerrará.</p>
                 
-                <div class="flex flex-col sm:flex-row justify-center gap-3">
-                    <button id="btn-cancelar-salir" class="px-5 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-medium transition-all-smooth">
-                        <i class="fas fa-times mr-2"></i>Cancelar
+                <div class="flex justify-center gap-2">
+                    <button id="btn-cancelar-salir" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors">
+                        Cancelar
                     </button>
-                    <button id="btn-confirmar-salir" class="px-5 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-all-smooth">
-                        <i class="fas fa-sign-out-alt mr-2"></i>Sí, salir del sistema
+                    <button id="btn-confirmar-salir" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors shadow-md">
+                        Sí, Salir
                     </button>
                 </div>
             </div>
@@ -1472,6 +1472,10 @@
         </div>
     </section>
 
+    <button id="btn-flotante-salir" class="fixed bottom-6 left-6 bg-red-600 hover:bg-red-700 text-white w-14 h-14 rounded-full shadow-2xl z-50 flex items-center justify-center transition-all transform hover:scale-110 border-4 border-white" title="Cerrar Sesión">
+        <i class="fas fa-power-off text-xl"></i>
+    </button>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script type="module">
@@ -1761,6 +1765,9 @@
                 boton.addEventListener('click', mostrarConfirmacionSalir);
             });
             
+            // NUEVO LISTENER PARA BOTÓN FLOTANTE
+            document.getElementById('btn-flotante-salir').addEventListener('click', mostrarConfirmacionSalir);
+            
             // Acciones principales
             btnResuelto.addEventListener('click', marcarComoResuelto);
             btnDerivar.addEventListener('click', abrirModalDerivar);
@@ -1994,32 +2001,93 @@
         async function exportarTablaPDF() {
             try {
                 const tabla = document.querySelector('.table-responsive table');
-                if (!tabla) return;
+                if (!tabla) {
+                    mostrarNotificacionTemp('No hay datos para exportar', 'error');
+                    return;
+                }
 
+                // 1. Crear contenedor temporal con fondo blanco para "foto" limpia
+                const container = document.createElement('div');
+                container.style.position = 'absolute';
+                container.style.left = '-9999px';
+                container.style.top = '0';
+                container.style.width = '800px'; // Ancho fijo para buena proporción A4
+                container.style.backgroundColor = '#ffffff';
+                container.style.padding = '40px';
+                container.style.fontFamily = 'Arial, sans-serif';
+
+                // 2. Cabecera del Reporte
+                const headerDiv = document.createElement('div');
+                headerDiv.innerHTML = `
+                    <div style="border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; margin-bottom: 20px;">
+                        <h1 style="color: #1e3a8a; font-size: 24px; margin: 0;">Reporte de Casos Asignados</h1>
+                        <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">Generado por: <strong>${usuarioActual}</strong></p>
+                        <p style="color: #666; font-size: 12px; margin: 0;">Fecha: ${new Date().toLocaleString()}</p>
+                    </div>
+                `;
+                container.appendChild(headerDiv);
+
+                // 3. Clonar y limpiar tabla
                 const tablaClon = tabla.cloneNode(true);
-                // Ocultar columnas/botones innecesarios en el clon...
-                const botones = tablaClon.querySelectorAll('button');
-                botones.forEach(b => b.style.display = 'none');
+                
+                // Eliminar columna de acciones (última columna)
+                // Cabecera
+                const theadRow = tablaClon.querySelector('thead tr');
+                if (theadRow && theadRow.lastElementChild) theadRow.removeChild(theadRow.lastElementChild);
+                
+                // Cuerpo
+                const tbodyRows = tablaClon.querySelectorAll('tbody tr');
+                tbodyRows.forEach(row => {
+                    if (row.lastElementChild) row.removeChild(row.lastElementChild);
+                });
 
-                document.body.appendChild(tablaClon);
-                tablaClon.style.position = 'absolute'; 
-                tablaClon.style.left = '-9999px';
+                // 4. Estilizar tabla para impresión (Professional Look)
+                tablaClon.style.width = '100%';
+                tablaClon.style.borderCollapse = 'collapse';
+                tablaClon.style.fontSize = '11px';
 
-                const canvas = await html2canvas(tablaClon);
-                document.body.removeChild(tablaClon);
+                // Estilos Th
+                tablaClon.querySelectorAll('thead th').forEach(th => {
+                    th.style.backgroundColor = '#f3f4f6';
+                    th.style.color = '#1f2937';
+                    th.style.padding = '10px';
+                    th.style.borderBottom = '2px solid #e5e7eb';
+                    th.style.textAlign = 'left';
+                });
+
+                // Estilos Td
+                tablaClon.querySelectorAll('tbody td').forEach(td => {
+                    td.style.padding = '10px';
+                    td.style.borderBottom = '1px solid #e5e7eb';
+                    td.style.color = '#374151';
+                });
+
+                container.appendChild(tablaClon);
+                document.body.appendChild(container);
+
+                // 5. Generar PDF
+                const canvas = await html2canvas(container, { scale: 2 }); // Escala 2 para mejor calidad
+                document.body.removeChild(container);
 
                 const { jsPDF } = window.jspdf;
                 const pdf = new jsPDF('p', 'mm', 'a4');
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 190;
+                
+                const imgWidth = 190; // A4 width (210) - margins (20)
+                const pageHeight = 297;
                 const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                
+                let heightLeft = imgHeight;
+                let position = 10; // Margin top
 
-                pdf.text(`Reporte de Casos: ${usuarioActual}`, 10, 10);
-                pdf.addImage(imgData, 'PNG', 10, 20, imgWidth, imgHeight);
-                pdf.save(`Reporte_Casos_${new Date().toISOString().split('T')[0]}.pdf`);
-                mostrarNotificacionTemp('PDF generado', 'success');
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, position, imgWidth, imgHeight);
+                
+                // Guardar
+                pdf.save(`Casos_${usuarioActual.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+                mostrarNotificacionTemp('PDF exportado exitosamente', 'success');
+
             } catch (error) {
                 console.error("Error PDF:", error);
+                mostrarNotificacionTemp('Error al generar PDF', 'error');
             }
         }
 
