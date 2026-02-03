@@ -12,1159 +12,104 @@
         body { font-family: 'Inter', sans-serif; }
         
         /* ---------------------------------------------------- */
-        /* ALERTA ROJA FLOTANTE (ESTILO MODAL MEJORADO)         */
+        /* ESTILOS GENERALES Y MODALES                          */
         /* ---------------------------------------------------- */
         
         .modal-feriado-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(5px);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
+            position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px); z-index: 99999; display: flex;
+            align-items: center; justify-content: center; padding: 1rem;
             animation: fadeInOverlay 0.3s ease-out;
         }
 
         .modal-feriado {
-            background: white;
-            width: 100%;
-            max-width: 480px;
-            border-radius: 16px;
-            box-shadow: 0 20px 25px -5px rgba(220, 38, 38, 0.15), 0 10px 10px -5px rgba(220, 38, 38, 0.1);
-            overflow: hidden;
-            border: 1px solid #fecaca;
+            background: white; width: 100%; max-width: 480px;
+            border-radius: 16px; border: 1px solid #fecaca;
+            box-shadow: 0 20px 25px -5px rgba(220, 38, 38, 0.15);
             animation: floatUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
         }
 
         .modal-feriado-header {
             background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
-            color: white;
-            padding: 20px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            color: white; padding: 20px 24px; display: flex;
+            align-items: center; justify-content: space-between;
         }
 
-        .modal-feriado-header h3 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
-        }
+        .modal-feriado-header h3 { font-size: 1.25rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 12px; }
+        .modal-feriado-body { padding: 32px 24px; text-align: center; background: #fff; }
+        .modal-feriado-footer { padding: 16px 24px; background: #fef2f2; border-top: 1px solid #fee2e2; text-align: center; }
+        
+        .login-container { min-height: 100vh; background: white; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); width: 100%; max-width: 420px; overflow: hidden; }
+        .login-header { background: linear-gradient(to right, #1e3a8a, #3b82f6); color: white; padding: 25px 30px; text-align: center; }
+        .login-body { padding: 35px 30px; }
+        
+        .login-input { width: 100%; padding: 14px 16px; border: 2px solid #e5e7eb; border-radius: 10px; font-size: 15px; transition: all 0.3s; }
+        .login-input:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); outline: none; }
+        
+        .login-btn { width: 100%; background: linear-gradient(to right, #1e3a8a, #3b82f6); color: white; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3); }
 
-        .modal-feriado-header i {
-            font-size: 1.5rem;
-            background: rgba(255,255,255,0.2);
-            padding: 8px;
-            border-radius: 8px;
-            animation: latido 2s infinite;
-        }
-
-        .modal-feriado-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-        }
-        
-        .modal-feriado-close:hover {
-            background: rgba(255, 255, 255, 0.4);
-            transform: rotate(90deg);
-        }
-
-        .modal-feriado-body {
-            padding: 32px 24px;
-            text-align: center;
-            background: #fff;
-        }
-        
-        .modal-feriado-body p {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            color: #374151;
-            font-weight: 500;
-        }
-
-        .modal-feriado-footer {
-            padding: 16px 24px;
-            background: #fef2f2;
-            border-top: 1px solid #fee2e2;
-            text-align: center;
-        }
-        
-        .modal-feriado-footer p {
-            font-size: 0.85rem;
-            color: #991b1b;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        @keyframes floatUp {
-            from { opacity: 0; transform: translateY(20px) scale(0.95); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @keyframes latido {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-        
-        @keyframes fadeInOverlay {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        /* Login */
-        .login-container {
-            min-height: 100vh;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .login-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            width: 100%;
-            max-width: 420px;
-            overflow: hidden;
-        }
-
-        .login-header {
-            background: linear-gradient(to right, #1e3a8a, #3b82f6);
-            color: white;
-            padding: 25px 30px;
-            text-align: center;
-        }
-
-        .login-body {
-            padding: 35px 30px;
-        }
-
-        .login-input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 15px;
-            transition: all 0.3s;
-        }
-
-        .login-input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-            outline: none;
-        }
-
-        .login-btn {
-            width: 100%;
-            background: linear-gradient(to right, #1e3a8a, #3b82f6);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
-        }
-        
-        /* Notificación persistente */
-        .notification-persistent {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            animation: slideInPersistent 0.5s ease-out;
-            max-width: 400px;
-            border-left: 5px solid #3b82f6;
-            transform-origin: top right;
-        }
-        
-        .notification-persistent.warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            border-left-color: #f59e0b;
-        }
-        
-        .notification-persistent.success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border-left-color: #10b981;
-        }
-        
-        .notification-persistent i.fa-bell {
-            animation: bellRing 1s ease-in-out;
-        }
-        
-        @keyframes slideInPersistent {
-            from { 
-                transform: translateX(100%) scale(0.8);
-                opacity: 0;
-            }
-            to { 
-                transform: translateX(0) scale(1);
-                opacity: 1;
-            }
-        }
-        
-        @keyframes bellRing {
-            0%, 100% { transform: rotate(0); }
-            10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
-            20%, 40%, 60%, 80% { transform: rotate(10deg); }
-        }
-        
-        .notification-persistent-content {
-            flex: 1;
-        }
-        
-        .notification-persistent-close {
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-left: 15px;
-            transition: background 0.3s;
-        }
-        
-        .notification-persistent-close:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        
-        .pulse-new {
-            animation: pulseNew 2s infinite;
-        }
-        
-        @keyframes pulseNew {
-            0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
-        }
-        
-        /* Calendario días */
-        .calendar-day-nuevo {
-            cursor: pointer;
-        }
-        
-        .calendar-day-nuevo:hover:not(.disabled) {
-            background-color: #e6f7ff;
-        }
-        
-        .calendar-day-nuevo.selected {
-            background-color: #3b82f6;
-            color: white;
-        }
-        
-        .calendar-day-nuevo.disabled {
-            color: #d1d5db;
-            cursor: not-allowed;
-        }
-        
-        /* Estados */
-        .estado-badge {
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-        }
-        
+        .estado-badge { padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; }
         .estado-pendiente { background: #fef3c7; color: #92400e; }
         .estado-proceso { background: #dbeafe; color: #1e40af; }
         .estado-resuelto { background: #d1fae5; color: #065f46; }
         .estado-derivado { background: #f3e8ff; color: #5b21b6; }
-        
-        /* Estados de respuesta */
         .respuesta-pendiente { background: #fee2e2; color: #dc2626; }
         .respuesta-enviada { background: #d1fae5; color: #065f46; }
-        
-        /* Transiciones */
-        .transition-all-smooth {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        /* Tabla responsiva */
-        @media (max-width: 768px) {
-            .table-responsive {
-                overflow-x: auto;
-            }
-            
-            .mobile-stack {
-                flex-direction: column;
-            }
-            
-            .mobile-stack > * {
-                margin-bottom: 0.5rem;
-            }
-        }
-        
-        /* Scroll personalizado */
-        .scrollbar-thin::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-        
-        .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        
-        /* Alerta roja flotante */
-        .alerta-roja-flotante {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            color: #333;
-            padding: 0;
-            border-radius: 16px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            animation: aparecerAlertaModal 0.3s ease-out;
-            width: 90%;
-            max-width: 500px;
-            min-width: 300px;
-            overflow: hidden;
-            border: none;
-        }
-        
-        @keyframes aparecerAlertaModal {
-            from { 
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.9);
-            }
-            to { 
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-        
-        .alerta-roja-flotante-header {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            padding: 20px 25px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .alerta-roja-flotante-header h3 {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .alerta-roja-flotante-header i {
-            font-size: 1.5rem;
-            animation: latido 1s infinite;
-        }
-        
-        .alerta-roja-flotante-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s;
-            font-size: 1.25rem;
-        }
-        
-        .alerta-roja-flotante-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .alerta-roja-flotante-body {
-            padding: 25px;
-            text-align: center;
-        }
-        
-        .alerta-roja-flotante-body p {
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            line-height: 1.5;
-        }
-        
-        .alerta-roja-flotante-footer {
-            padding: 15px 25px 25px;
-            text-align: center;
-            border-top: 1px solid #e5e7eb;
-            background: #f9fafb;
-        }
-        
-        .alerta-roja-flotante-footer p {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin: 0;
-        }
-        
-        .alerta-roja-flotante-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            animation: fadeInOverlay 0.3s ease-out;
-        }
 
-        /* Modal de comprobante */
-        .modal-comprobante {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
+        .hidden { display: none !important; }
+        .pulse-new { animation: pulseNew 2s infinite; }
+        @keyframes pulseNew { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+        @keyframes floatUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* Modal Respuesta */
+        #modal-respuesta-cliente { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        #modal-respuesta-cliente:not(.hidden) { display: flex !important; }
+        
+        .tiempo-transcurrido { padding: 12px; border-radius: 10px; font-weight: bold; text-align: center; transition: all 0.3s; }
+        .tiempo-normal { background-color: #dbeafe; color: #1e40af; border: 2px solid #93c5fd; }
+        .tiempo-medio { background-color: #fef3c7; color: #92400e; border: 2px solid #fbbf24; }
+        .tiempo-alto { background-color: #fee2e2; color: #991b1b; border: 2px solid #fca5a5; }
+        .historial-item { border-left: 3px solid #3b82f6; padding-left: 10px; background: white; padding: 8px; border-radius: 4px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
 
-        .modal-comprobante-content {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
+        /* Paginación */
+        .pagination-container { display: flex; flex-direction: column; align-items: center; padding: 1rem; border-top: 1px solid #e5e7eb; background-color: #f9fafb; }
+        .pagination-controls { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+        .pagination-btn { padding: 0.375rem 0.75rem; border: 1px solid #d1d5db; background: white; border-radius: 0.375rem; cursor: pointer; }
+        .pagination-btn.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+        .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        .hidden {
-            display: none !important;
-        }
-        
-        /* Estilos de paginación */
-        .pagination-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            padding: 1rem;
-            border-top: 1px solid #e5e7eb;
-            background-color: #f9fafb;
-        }
-        
-        .pagination-info {
-            font-size: 0.875rem;
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-        }
-        
-        .pagination-controls {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        
-        .pagination-btn {
-            padding: 0.375rem 0.75rem;
-            border: 1px solid #d1d5db;
-            background-color: white;
-            color: #374151;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .pagination-btn:hover:not(:disabled) {
-            background-color: #f3f4f6;
-        }
-        
-        .pagination-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        
-        .pagination-btn.active {
-            background-color: #3b82f6;
-            color: white;
-            border-color: #3b82f6;
-        }
-        
-        .pagination-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        
-        .pagination-selector select {
-            padding: 0.25rem 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            background-color: white;
-        }
-        
-        .pagination-ellipsis {
-            padding: 0.375rem 0.75rem;
-            color: #6b7280;
-        }
-
-        /* ---------------------------------------------------- */
-        /* MODAL DE RESPUESTA AL CLIENTE - DEL TXT              */
-        /* ---------------------------------------------------- */
-        #modal-respuesta-cliente {
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.5); 
-            z-index: 1000; 
-            align-items: center; 
-            justify-content: center;
-        }
-        
-        #modal-respuesta-cliente.active { 
-            display: flex; 
-        }
-        
-        /* Asegurar que el modal se muestre cuando no tiene la clase hidden */
-        #modal-respuesta-cliente:not(.hidden) {
-            display: flex !important;
-        }
-
-        /* Estados del contador de tiempo */
-        .tiempo-transcurrido { 
-            padding: 12px; 
-            border-radius: 10px; 
-            font-weight: bold; 
-            text-align: center; 
-            transition: all 0.3s; 
-        }
-        
-        .tiempo-normal { 
-            background-color: #dbeafe; 
-            color: #1e40af; 
-            border: 2px solid #93c5fd; 
-        }
-        
-        .tiempo-medio { 
-            background-color: #fef3c7; 
-            color: #92400e; 
-            border: 2px solid #fbbf24; 
-        }
-        
-        .tiempo-alto { 
-            background-color: #fee2e2; 
-            color: #991b1b; 
-            border: 2px solid #fca5a5; 
-        }
-
-        /* Historial */
-        .historial-item { 
-            border-left: 3px solid #3b82f6; 
-            padding-left: 10px; 
-            background: white; 
-            padding: 8px; 
-            border-radius: 4px;
-            margin-bottom: 8px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
+        @media (max-width: 768px) { .table-responsive { overflow-x: auto; } }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
+    
     <div id="system-unavailable-overlay" class="modal-feriado-overlay hidden">
         <div class="modal-feriado">
             <div class="modal-feriado-header">
-                <h3>
-                    <i class="fas fa-calendar-times"></i>
-                    Atención: Día Inhábil
-                </h3>
-                <button id="modal-feriado-close" class="modal-feriado-close">
-                    <i class="fas fa-times"></i>
-                </button>
+                <h3><i class="fas fa-calendar-times"></i> Atención: Día Inhábil</h3>
+                <button id="modal-feriado-close" class="text-white"><i class="fas fa-times"></i></button>
             </div>
-            
-            <div class="modal-feriado-body">
-                <p id="system-unavailable-message"></p>
-            </div>
-            
-            <div class="modal-feriado-footer">
-                <p>
-                    <i class="fas fa-lock"></i>
-                    Esta función no está disponible fuera del horario de atención.
-                </p>
-            </div>
+            <div class="modal-feriado-body"><p id="system-unavailable-message"></p></div>
+            <div class="modal-feriado-footer"><p><i class="fas fa-lock"></i> Función no disponible.</p></div>
         </div>
     </div>
 
-    <div id="notification-persistent-container"></div>
     <div id="notification-temp-container" class="fixed top-4 right-4 z-40 space-y-2"></div>
-    <div id="alerta-roja-flotante-container"></div>
-
-    <div id="modal-comprobante" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
-                <h3 class="font-bold text-lg">Comprobante de Turno</h3>
-                <button id="btn-cerrar-comprobante" class="text-2xl leading-none">&times;</button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto p-6">
-                <div class="mb-6 text-center">
-                    <div class="w-20 h-20 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-file-alt text-3xl"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">COMPROBANTE DE TURNO ONLINE</h2>
-                    <p class="text-gray-600">Defensoría Civil y Comercial N6 - Posadas, Misiones</p>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-gray-800 mb-3">Información del Ciudadano</h4>
-                        <div class="space-y-2">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Nombre:</span>
-                                <span id="comp-nombre" class="font-medium">--</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">DNI:</span>
-                                <span id="comp-dni" class="font-medium">--</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Teléfono:</span>
-                                <span id="comp-telefono" class="font-medium">--</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-gray-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-gray-800 mb-3">Información del Turno</h4>
-                        <div class="space-y-2">
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Trámite:</span>
-                                <span id="comp-tramite" class="font-medium">--</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Fecha:</span>
-                                <span id="comp-fecha" class="font-medium">--</span>
-                            </div>
-                            <div class="flex justify-between">
-                                <span class="text-gray-600">Horario:</span>
-                                <span id="comp-horario" class="font-medium">--</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                    <h4 class="font-bold text-blue-800 mb-2">Instrucciones para el Ciudadano</h4>
-                    <ul class="text-sm text-blue-700 space-y-1">
-                        <li><i class="fas fa-check-circle mr-2"></i>Presentarse con DNI original y copia</li>
-                        <li><i class="fas fa-check-circle mr-2"></i>Llegar 15 minutos antes de la hora asignada</li>
-                        <li><i class="fas fa-check-circle mr-2"></i>Traer toda la documentación relacionada al trámite</li>
-                        <li><i class="fas fa-check-circle mr-2"></i>En caso de no poder asistir, comunicarse al 376-4420000</li>
-                    </ul>
-                </div>
-                
-                <div class="text-center text-gray-500 text-sm">
-                    <p>Av. Santa Catalina 1735 1° piso Posadas-Misiones (Edificio Palacio de Justicia)</p>
-                    <p>Horario de atención: Lunes a Viernes de 7 a 12 hs. Feria: 8 a 11 hs.</p>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-200 p-4">
-                <div class="flex flex-col sm:flex-row justify-end gap-3">
-                    <button id="btn-cerrar-comprobante-modal" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all-smooth">
-                        <i class="fas fa-times mr-2"></i>Cerrar
-                    </button>
-                    <button id="btn-descargar-comprobante" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-all-smooth">
-                        <i class="fas fa-file-pdf mr-2"></i>Descargar PDF
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-salir" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full border-2 border-red-500 overflow-hidden transform transition-all scale-100">
-            <div class="bg-red-600 text-white p-3 flex justify-between items-center">
-                <h3 class="font-bold text-base"><i class="fas fa-power-off mr-2"></i>Cerrar Sesión</h3>
-                <button id="btn-cerrar-salir" class="text-white hover:text-red-200 transition-colors">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="p-5 text-center">
-                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i class="fas fa-sign-out-alt text-red-600 text-xl"></i>
-                </div>
-                
-                <p class="text-gray-800 font-bold mb-1">¿Deseas salir?</p>
-                <p class="text-sm text-gray-500 mb-4">Tu sesión actual se cerrará.</p>
-                
-                <div class="flex justify-center gap-2">
-                    <button id="btn-cancelar-salir" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition-colors">
-                        Cancelar
-                    </button>
-                    <button id="btn-confirmar-salir" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors shadow-md">
-                        Sí, Salir
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-derivar" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full">
-            <div class="bg-purple-600 text-white p-4 rounded-t-xl flex justify-between items-center">
-                <h3 class="font-bold text-lg">Derivar Caso</h3>
-                <button id="btn-cerrar-derivar" class="text-2xl leading-none">&times;</button>
-            </div>
-            
-            <div class="p-6">
-                <p class="text-gray-700 mb-4">Selecciona el usuario al que deseas derivar este caso:</p>
-                
-                <div class="mb-6">
-                    <label for="select-usuario-derivar" class="block text-sm font-medium text-gray-700 mb-2">
-                        <i class="fas fa-user-friends mr-2"></i>Usuario Destino
-                    </label>
-                    <select id="select-usuario-derivar" 
-                            class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition-all-smooth">
-                        <option value="">Seleccionar usuario...</option>
-                    </select>
-                </div>
-                
-                <div class="flex justify-end space-x-3">
-                    <button id="btn-cancelar-derivar" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all-smooth">
-                        Cancelar
-                    </button>
-                    <button id="btn-confirmar-derivar" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-all-smooth">
-                        <i class="fas fa-share-alt mr-2"></i>Derivar
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-detalle" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-            <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
-                <h3 class="font-bold text-lg">Detalles y Actualización de Consulta</h3>
-                <button id="btn-cerrar-detalle" class="text-2xl leading-none">&times;</button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <h4 class="font-bold text-gray-800 mb-2">Información del Ciudadano</h4>
-                        <div class="space-y-3">
-                            <div>
-                                <p class="text-sm text-gray-600">Nombre Completo</p>
-                                <p id="detalle-nombre" class="font-medium text-gray-800">--</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">DNI</p>
-                                <p id="detalle-dni" class="font-medium text-gray-800">--</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Teléfono</p>
-                                <p id="detalle-telefono" class="font-medium text-gray-800">--</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <h4 class="font-bold text-gray-800 mb-2">Información del Caso</h4>
-                        <div class="space-y-3">
-                            <div>
-                                <p class="text-sm text-gray-600">Tipo de Consulta</p>
-                                <p id="detalle-tipo" class="font-medium text-gray-800">--</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Estado Actual</p>
-                                <p id="detalle-estado" class="font-medium text-gray-800">--</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-600">Fecha de Registro</p>
-                                <p id="detalle-fecha" class="font-medium text-gray-800">--</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Descripción del Caso</h4>
-                    <div class="bg-gray-50 rounded-lg p-4">
-                        <p id="detalle-descripcion" class="text-gray-700">--</p>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Observaciones Anteriores</h4>
-                    <div id="detalle-observaciones" class="bg-gray-50 rounded-lg p-4 max-h-48 overflow-y-auto scrollbar-thin">
-                        <p class="text-gray-500 text-sm">No hay observaciones registradas.</p>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="font-bold text-gray-800 mb-2">Nueva Observación</h4>
-                    <textarea id="nueva-observacion" 
-                              rows="4" 
-                              class="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all-smooth"
-                              placeholder="Escribe aquí las observaciones de seguimiento del caso..."></textarea>
-                    <p class="text-sm text-gray-500 mt-2">Esta observación será registrada con tu nombre y fecha actual.</p>
-                </div>
-            </div>
-            
-            <div class="border-t border-gray-200 p-4">
-                <div class="flex justify-end space-x-3">
-                    <button id="btn-cancelar-detalle" class="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-all-smooth">
-                        Cancelar
-                    </button>
-                    <button id="btn-guardar-actualizacion" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all-smooth">
-                        <i class="fas fa-save mr-2"></i>Guardar Observación
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-nueva-consulta" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
-            <div class="bg-green-600 text-white p-4 flex justify-between items-center">
-                <h3 class="font-bold text-lg">Registrar Nueva Consulta</h3>
-                <button id="btn-cerrar-nueva-consulta" class="text-2xl leading-none">&times;</button>
-            </div>
-            
-            <div class="flex-1 overflow-y-auto">
-                <form id="form-nueva-consulta" class="p-6 space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-user mr-2"></i>Nombre Completo *
-                            </label>
-                            <input type="text" id="input-nombre" placeholder="Ej: Juan Pérez" required 
-                                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-id-card mr-2"></i>DNI
-                            </label>
-                            <input type="text" id="input-dni" placeholder="Ej: 12345678" 
-                                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-phone mr-2"></i>Teléfono/WhatsApp
-                            </label>
-                            <input type="text" id="input-telefono" placeholder="Ej: 3764123456" 
-                                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-envelope mr-2"></i>Correo Electrónico
-                            </label>
-                            <input type="email" id="input-email" placeholder="ejemplo@correo.com" 
-                                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-file-alt mr-2"></i>Tipo de Consulta *
-                            </label>
-                            <select id="select-tipo-consulta" required
-                                    class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth">
-                                <option value="">Seleccionar tipo...</option>
-                                <option value="Presencial">Presencial</option>
-                                <option value="Telefónica">Telefónica</option>
-                                <option value="WhatsApp">WhatsApp</option>
-                                <option value="Consulta Web: Alimentos">Consulta Web: Alimentos</option>
-                                <option value="Consulta Web: Regimen Comunicación">Consulta Web: Régimen Comunicación</option>
-                                <option value="Consulta Web: Cuidado Personal">Consulta Web: Cuidado Personal</option>
-                                <option value="Consulta Web: Divorcio">Consulta Web: Divorcio</option>
-                                <option value="Consulta Web: Otros">Consulta Web: Otros</option>
-                            </select>
-                        </div>
-                        
-                        <div class="md:col-span-2">
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-align-left mr-2"></i>Descripción
-                            </label>
-                            <textarea id="textarea-descripcion" rows="3" 
-                                      placeholder="Detalles de la consulta..."
-                                      class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth"></textarea>
-                        </div>
-                        
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-2">
-                                <i class="fas fa-user-tie mr-2"></i>Usuario Asignado
-                            </label>
-                            <select id="select-usuario-asignar" disabled
-                                    class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth bg-gray-100">
-                                <option value="">Sin asignar</option>
-                            </select>
-                            <p class="text-sm text-gray-500 mt-1">La consulta será asignada automáticamente a tu usuario</p>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t pt-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">
-                            <i class="fas fa-calendar-alt mr-2"></i>Asignar Turno (Opcional)
-                        </h3>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-3">Seleccione Fecha</label>
-                                <div class="bg-gray-50 p-4 rounded-lg border">
-                                    <div class="flex justify-between items-center mb-4">
-                                        <button type="button" id="prev-month" class="p-2 hover:bg-gray-200 rounded">
-                                            <i class="fas fa-chevron-left"></i>
-                                        </button>
-                                        <h4 id="current-month" class="font-bold text-gray-800">Diciembre 2024</h4>
-                                        <button type="button" id="next-month" class="p-2 hover:bg-gray-200 rounded">
-                                            <i class="fas fa-chevron-right"></i>
-                                        </button>
-                                    </div>
-                                    <div class="grid grid-cols-7 gap-1 mb-2">
-                                        <div class="text-center text-xs font-bold text-gray-500">Lun</div>
-                                        <div class="text-center text-xs font-bold text-gray-500">Mar</div>
-                                        <div class="text-center text-xs font-bold text-gray-500">Mié</div>
-                                        <div class="text-center text-xs font-bold text-gray-500">Jue</div>
-                                        <div class="text-center text-xs font-bold text-gray-500">Vie</div>
-                                        <div class="text-center text-xs font-bold text-gray-500">Sáb</div>
-                                        <div class="text-center text-xs font-bold text-gray-500">Dom</div>
-                                    </div>
-                                    <div id="calendar-grid-nuevo" class="grid grid-cols-7 gap-1"></div>
-                                </div>
-                                <input type="hidden" id="input-fecha-turno" value="">
-                            </div>
-                            
-                            <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-3">Horarios Disponibles</label>
-                                <div class="bg-gray-50 p-4 rounded-lg border h-full">
-                                    <div id="horarios-container-nuevo" class="grid grid-cols-2 sm:grid-cols-3 gap-2 mb-4">
-                                    </div>
-                                    
-                                    <div>
-                                        <label class="block text-sm font-semibold text-gray-700 mb-2">Horario Personalizado</label>
-                                        <div class="flex gap-2">
-                                            <input type="time" id="input-hora-personalizada" 
-                                                   class="flex-1 border border-gray-300 p-2 rounded focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none transition-all-smooth"
-                                                   min="07:00" max="11:30">
-                                            <button type="button" id="btn-usar-hora-personalizada" 
-                                                    class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 whitespace-nowrap transition-all-smooth">
-                                                Usar
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                                <input type="hidden" id="input-horario-turno" value="">
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                            <p class="text-sm text-gray-700">
-                                <i class="fas fa-info-circle mr-2 text-blue-500"></i>
-                                <span id="turno-seleccionado-texto">No se ha asignado turno</span>
-                            </p>
-                            <p class="text-xs text-gray-600 mt-1">
-                                <i class="fas fa-exclamation-triangle mr-1"></i>
-                                Límite de 2 turnos por horario. Si intentas registrar un tercero, se mostrará una alerta.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t pt-6">
-                        <button type="submit" id="btn-guardar-nueva-consulta" 
-                                class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg transition-all-smooth">
-                            <i class="fas fa-save mr-2"></i>Guardar Consulta en Sistema
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-respuesta-cliente" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl w-full max-w-4xl mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
-            <div class="bg-blue-800 text-white p-4 flex justify-between items-center font-bold sticky top-0 z-10">
-                <span class="text-sm sm:text-base"><i class="fas fa-reply mr-2"></i>Respuesta al Cliente</span>
-                <button id="btn-cerrar-respuesta-cliente" class="text-2xl leading-none">&times;</button>
-            </div>
-            
-            <div class="p-4 sm:p-6">
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="space-y-6">
-                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                            <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center">
-                                <i class="fas fa-user-circle mr-2 text-blue-600"></i>Información del Cliente
-                            </h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre Completo</label>
-                                    <p id="resp-nombre" class="p-3 bg-white rounded border text-sm font-medium"></p>
-                                </div>
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div><label class="block text-sm font-semibold text-gray-700 mb-1">DNI</label>
-                                        <p id="resp-dni" class="p-3 bg-white rounded border text-sm"></p>
-                                    </div>
-                                    <div><label class="block text-sm font-semibold text-gray-700 mb-1">Teléfono</label>
-                                        <p id="resp-telefono" class="p-3 bg-white rounded border text-sm"></p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
-                                    <p id="resp-email" class="p-3 bg-white rounded border text-sm">No registrado</p>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Consulta</label>
-                                    <p id="resp-tipo" class="p-3 bg-white rounded border text-sm font-bold text-blue-600"></p>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción Inicial</label>
-                                    <p id="resp-descripcion" class="p-3 bg-white rounded border text-sm h-24 overflow-y-auto"></p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div id="contador-tiempo" class="tiempo-transcurrido tiempo-normal">
-                            <div class="flex items-center justify-center mb-2">
-                                <i class="fas fa-clock text-2xl mr-3"></i>
-                                <div>
-                                    <p class="text-sm font-semibold">Tiempo Transcurrido</p>
-                                    <p id="tiempo-texto" class="text-2xl font-bold">0 días, 0 horas</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-6">
-                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                            <h3 class="font-bold text-lg text-gray-800 mb-4 flex items-center">
-                                <i class="fas fa-comment-dots mr-2 text-green-600"></i>Enviar Respuesta
-                            </h3>
-                            <div class="space-y-4">
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Asunto</label>
-                                    <select id="resp-asunto" class="w-full border p-3 rounded-lg text-sm">
-                                        <option value="confirmacion_turno">Confirmación de Turno</option>
-                                        <option value="informacion_adicional">Información Adicional</option>
-                                        <option value="resolucion_caso">Resolución del Caso</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Mensaje</label>
-                                    <textarea id="resp-mensaje" rows="5" class="w-full border p-3 rounded-lg text-sm" placeholder="Escriba su respuesta..."></textarea>
-                                </div>
-                                <div class="grid grid-cols-2 gap-3">
-                                    <button id="btn-enviar-whatsapp" class="p-3 bg-green-600 text-white rounded-lg font-bold flex items-center justify-center hover:bg-green-700">
-                                        <i class="fab fa-whatsapp mr-2"></i> WhatsApp
-                                    </button>
-                                    <button id="btn-enviar-email" class="p-3 bg-blue-600 text-white rounded-lg font-bold flex items-center justify-center hover:bg-blue-700">
-                                        <i class="fas fa-envelope mr-2"></i> Correo
-                                    </button>
-                                </div>
-                                <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                                    <p class="text-xs font-semibold mb-2">Plantillas Rápidas:</p>
-                                    <div class="flex flex-wrap gap-2">
-                                        <button class="plantilla-rapida text-xs bg-blue-100 px-2 py-1 rounded" data-texto="Su turno ha sido confirmado para la fecha pactada.">Confirmar</button>
-                                        <button class="plantilla-rapida text-xs bg-green-100 px-2 py-1 rounded" data-texto="Necesitamos que adjunte foto de su DNI.">Pedir Info</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                            <h3 class="font-bold text-sm text-gray-800 mb-3"><i class="fas fa-history mr-2"></i>Historial</h3>
-                            <div id="historial-respuestas" class="space-y-2 max-h-40 overflow-y-auto text-xs">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <section id="login-section" class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <h1 class="text-2xl font-bold text-white">Consultas y Turnos Clientes</h1>
-                <p class="text-white text-opacity-90 mt-2">Uso de empleados asignados</p>
+                <h1 class="text-2xl font-bold text-white">Consultas y Turnos</h1>
+                <p class="text-white text-opacity-90 mt-2">Acceso Personal</p>
             </div>
-            
             <div class="login-body">
                 <form id="login-form" class="space-y-6">
                     <div>
-                        <label for="login-input" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-user mr-2"></i>Nombre de Usuario
-                        </label>
-                        <div class="relative">
-                            <input type="text" id="login-input" class="login-input"
-                                   placeholder="Ej: Bazante Nadia Romina" required
-                                   list="usuarios-lista">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <i class="fas fa-id-card text-gray-400"></i>
-                            </div>
-                        </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2"><i class="fas fa-user mr-2"></i>Usuario</label>
+                        <input type="text" id="login-input" class="login-input" placeholder="Nombre Apellido" required list="usuarios-lista">
                         <datalist id="usuarios-lista">
                             <option value="Bazante Nadia Romina">
                             <option value="Boillat Cesar Enrique">
@@ -1185,23 +130,11 @@
                             <option value="Sosa Rita Cecilia">
                         </datalist>
                     </div>
-                    
                     <div>
-                        <label for="login-password" class="block text-sm font-medium text-gray-700 mb-2">
-                            <i class="fas fa-key mr-2"></i>Clave de Acceso
-                        </label>
-                        <div class="relative">
-                            <input type="password" id="login-password" class="login-input"
-                                   placeholder="Ingresa tu clave" required>
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <i class="fas fa-lock text-gray-400"></i>
-                            </div>
-                        </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2"><i class="fas fa-key mr-2"></i>Clave</label>
+                        <input type="password" id="login-password" class="login-input" placeholder="Tu clave" required>
                     </div>
-                    
-                    <button type="submit" class="login-btn">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Ingresar al Sistema
-                    </button>
+                    <button type="submit" class="login-btn"><i class="fas fa-sign-in-alt mr-2"></i>Ingresar</button>
                 </form>
             </div>
         </div>
@@ -1211,181 +144,74 @@
         <header class="bg-white shadow-sm border-b sticky top-0 z-40">
             <div class="max-w-7xl mx-auto px-4 py-3">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3">
-                                <i class="fas fa-user-shield text-white"></i>
-                            </div>
-                            <div>
-                                <h1 class="text-lg font-bold text-gray-800">Mis Casos Asignados</h1>
-                                <p class="text-sm text-gray-600">Panel Personal de Gestión</p>
-                            </div>
-                        </div>
-                        
-                        <div class="md:hidden">
-                            <button class="btn-salir bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm transition-all-smooth">
-                                <i class="fas fa-home mr-1"></i>Salir
-                            </button>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center mr-3"><i class="fas fa-user-shield text-white"></i></div>
+                        <div>
+                            <h1 class="text-lg font-bold text-gray-800">Mis Casos</h1>
+                            <span id="user-name-display" class="text-sm font-bold text-blue-700"></span>
                         </div>
                     </div>
-                    
-                    <div class="flex items-center justify-between">
-                        <div class="hidden md:block mr-6">
-                            <span class="text-sm text-gray-600">Bienvenido/a,</span>
-                            <span id="user-name-display" class="font-bold text-blue-700 ml-1"></span>
-                        </div>
-                        
-                        <div class="flex items-center space-x-2">
-                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg">
-                                <span class="font-bold" id="contador-pendientes">0</span>
-                                <span class="text-sm ml-1">pendientes</span>
-                            </div>
-                            
-                            <div class="hidden md:block">
-                                <button class="btn-salir bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm transition-all-smooth">
-                                    <i class="fas fa-home mr-2"></i>Salir
-                                </button>
-                            </div>
-                        </div>
+                    <div class="flex items-center space-x-2">
+                         <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg"><span class="font-bold" id="contador-pendientes">0</span> pend.</div>
+                         <button class="btn-salir bg-red-100 text-red-700 px-3 py-1 rounded text-sm"><i class="fas fa-power-off"></i></button>
                     </div>
                 </div>
-                
                 <div class="mt-4 flex space-x-2">
-                    <button id="btn-ver-casos" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
-                        <i class="fas fa-list mr-2"></i>Mis Casos
-                    </button>
-                    <button id="btn-ver-calendario" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
-                        <i class="fas fa-calendar-day mr-2"></i>Calendario Hoy
-                    </button>
+                    <button id="btn-ver-casos" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm transition-all-smooth"><i class="fas fa-list mr-2"></i>Lista</button>
+                    <button id="btn-ver-calendario" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm transition-all-smooth"><i class="fas fa-calendar-day mr-2"></i>Calendario</button>
                 </div>
             </div>
         </header>
         
         <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                        <h3 class="font-bold text-blue-800">Acciones Rápidas</h3>
-                        <p class="text-sm text-blue-600">Gestiona el caso seleccionado</p>
-                    </div>
-                    
-                    <div class="flex flex-wrap gap-3">
-                        <button id="btn-nueva-consulta"
-                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth transform hover:scale-[1.02]">
-                            <i class="fas fa-plus-circle mr-2"></i>Nueva Consulta
-                        </button>
-                        
-                        <button id="btn-marcar-resuelto" 
-                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all-smooth transform hover:scale-[1.02]"
-                                disabled>
-                            <i class="fas fa-check-circle mr-2"></i>Marcar como Resuelto
-                        </button>
-                        
-                        <button id="btn-actualizar-consulta"
-                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all-smooth transform hover:scale-[1.02]"
-                                disabled>
-                            <i class="fas fa-edit mr-2"></i>Actualización de Consulta
-                        </button>
-                        
-                        <button id="btn-derivar-caso"
-                                class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-all-smooth transform hover:scale-[1.02]"
-                                disabled>
-                            <i class="fas fa-share-alt mr-2"></i>Derivar Caso
-                        </button>
-                    </div>
-                </div>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex flex-wrap gap-3">
+                <button id="btn-nueva-consulta" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700"><i class="fas fa-plus-circle mr-2"></i>Nuevo</button>
+                <button id="btn-marcar-resuelto" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 disabled:opacity-50" disabled><i class="fas fa-check-circle mr-2"></i>Resolver</button>
+                <button id="btn-actualizar-consulta" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50" disabled><i class="fas fa-edit mr-2"></i>Detalles/Notas</button>
+                <button id="btn-derivar-caso" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 disabled:opacity-50" disabled><i class="fas fa-share-alt mr-2"></i>Derivar</button>
             </div>
             
-            <div class="mb-4">
-                <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
-                    <input type="text" id="input-busqueda" 
-                           class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all-smooth"
-                           placeholder="Buscar por nombre, DNI, tipo, descripción...">
-                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                        <button id="btn-limpiar-busqueda" class="text-gray-400 hover:text-gray-600 hidden">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-500 mt-1">Busca en todos los campos de la tabla. La búsqueda se realiza en tiempo real.</p>
+            <div class="mb-4 relative">
+                <input type="text" id="input-busqueda" class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg outline-none" placeholder="Buscar...">
+                <i class="fas fa-search absolute left-3 top-3.5 text-gray-400"></i>
+                <button id="btn-limpiar-busqueda" class="absolute right-3 top-3.5 text-gray-400 hidden"><i class="fas fa-times"></i></button>
             </div>
             
             <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
-                <div class="px-6 py-4 border-b">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <h2 class="text-lg font-bold text-gray-800">Casos Asignados a Mí</h2>
-                            <p class="text-sm text-gray-600">Lista actualizada en tiempo real</p>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <button id="btn-exportar-pdf" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
-                                <i class="fas fa-file-pdf mr-2"></i>Exportar a PDF
-                            </button>
-                            <span class="text-sm text-gray-500" id="ultima-actualizacion">--:--</span>
-                        </div>
-                    </div>
+                <div class="px-6 py-4 border-b flex justify-between">
+                    <h2 class="text-lg font-bold text-gray-800">Listado de Casos</h2>
+                    <button id="btn-exportar-pdf" class="text-red-600 text-sm"><i class="fas fa-file-pdf"></i> PDF</button>
                 </div>
-                
                 <div class="overflow-x-auto table-responsive">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ciudadano</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo / Descripción</th>
-                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha Registro</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Descripción</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Fecha</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Respuesta</th>
                                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody id="casos-body" class="divide-y divide-gray-200">
-                        </tbody>
+                        <tbody id="casos-body" class="divide-y divide-gray-200"></tbody>
                     </table>
                     
                     <div id="pagination-container" class="pagination-container hidden">
-                        <div class="pagination-info">
-                            Mostrando <span id="pagination-start">0</span> - <span id="pagination-end">0</span> de <span id="pagination-total">0</span> registros
+                        <div class="pagination-info text-sm text-gray-500 mb-2">
+                            <span id="pagination-start">0</span>-<span id="pagination-end">0</span> de <span id="pagination-total">0</span>
                         </div>
                         <div class="pagination-controls">
-                            <button id="pagination-first" class="pagination-btn">
-                                <i class="fas fa-angle-double-left"></i>
-                            </button>
-                            <button id="pagination-prev" class="pagination-btn">
-                                <i class="fas fa-angle-left"></i>
-                            </button>
-                            <div id="pagination-numbers" class="flex items-center gap-1"></div>
-                            <button id="pagination-next" class="pagination-btn">
-                                <i class="fas fa-angle-right"></i>
-                            </button>
-                            <button id="pagination-last" class="pagination-btn">
-                                <i class="fas fa-angle-double-right"></i>
-                            </button>
-                        </div>
-                        <div class="pagination-selector">
-                            <span>Mostrar:</span>
-                            <select id="pagination-items-per-page">
-                                <option value="10">10</option>
-                                <option value="20">20</option>
-                                <option value="50">50</option>
-                                <option value="100">100</option>
-                            </select>
-                            <span>registros por página</span>
+                            <button id="pagination-first" class="pagination-btn"><i class="fas fa-angle-double-left"></i></button>
+                            <button id="pagination-prev" class="pagination-btn"><i class="fas fa-angle-left"></i></button>
+                            <span id="pagination-numbers" class="flex gap-1"></span>
+                            <button id="pagination-next" class="pagination-btn"><i class="fas fa-angle-right"></i></button>
+                            <button id="pagination-last" class="pagination-btn"><i class="fas fa-angle-double-right"></i></button>
                         </div>
                     </div>
-                    
-                    <div id="tabla-vacia" class="hidden p-8 text-center">
-                        <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">No tienes casos asignados en este momento</p>
-                        <p class="text-sm text-gray-400 mt-2">Los casos que te sean asignados aparecerán aquí automáticamente</p>
-                    </div>
-                    
-                    <div id="tabla-sin-resultados" class="hidden p-8 text-center">
-                        <i class="fas fa-search text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">No se encontraron casos que coincidan con la búsqueda</p>
-                        <p class="text-sm text-gray-400 mt-2">Intenta con otros términos de búsqueda</p>
+
+                    <div id="tabla-vacia" class="hidden p-8 text-center text-gray-500">
+                        <i class="fas fa-inbox text-4xl mb-4"></i><p>No tienes casos asignados.</p>
                     </div>
                 </div>
             </div>
@@ -1394,107 +220,146 @@
     
     <section id="calendario-section" class="hidden min-h-screen">
         <header class="bg-white shadow-sm border-b sticky top-0 z-40">
-            <div class="max-w-7xl mx-auto px-4 py-3">
-                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center">
-                            <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-3">
-                                <i class="fas fa-calendar-alt text-white"></i>
-                            </div>
-                            <div>
-                                <h1 class="text-lg font-bold text-gray-800">Mi Calendario</h1>
-                                <p id="fecha-actual-display" class="text-sm text-gray-600">--</p>
-                            </div>
-                        </div>
-                        
-                        <div class="md:hidden">
-                            <button class="btn-salir-cal bg-blue-100 text-blue-700 px-3 py-1 rounded text-sm transition-all-smooth">
-                                <i class="fas fa-home mr-1"></i>Salir
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center justify-between">
-                        <div class="hidden md:block mr-6">
-                            <span class="text-sm text-gray-600">Bienvenido/a,</span>
-                            <span id="user-name-cal" class="font-bold text-blue-700 ml-1"></span>
-                        </div>
-                        
-                        <div class="flex items-center space-x-2">
-                            <div class="bg-blue-100 text-blue-800 px-3 py-1 rounded-lg">
-                                <span class="font-bold" id="contador-pendientes-cal">0</span>
-                                <span class="text-sm ml-1">pendientes</span>
-                            </div>
-                            
-                            <div class="hidden md:block">
-                                <button class="btn-salir-cal bg-blue-100 hover:bg-blue-200 text-blue-700 px-4 py-2 rounded-lg text-sm transition-all-smooth">
-                                    <i class="fas fa-home mr-2"></i>Salir
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+            <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-green-600 rounded-lg flex items-center justify-center mr-3"><i class="fas fa-calendar-alt text-white"></i></div>
+                    <h1 class="text-lg font-bold text-gray-800">Mi Calendario</h1>
                 </div>
-                
-                <div class="mt-4 flex space-x-2">
-                    <button id="btn-ver-casos-cal" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
-                        <i class="fas fa-list mr-2"></i>Mis Casos
-                    </button>
-                    <button id="btn-ver-calendario-cal" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all-smooth">
-                        <i class="fas fa-calendar-day mr-2"></i>Calendario Hoy
-                    </button>
-                </div>
+                <button class="btn-salir bg-red-100 text-red-700 px-3 py-1 rounded text-sm"><i class="fas fa-power-off"></i></button>
+            </div>
+            <div class="px-4 pb-3 max-w-7xl mx-auto">
+                <button id="btn-ver-casos-cal" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm mr-2"><i class="fas fa-list mr-2"></i>Lista</button>
+                <button id="btn-ver-calendario-cal" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm"><i class="fas fa-calendar-day mr-2"></i>Calendario</button>
             </div>
         </header>
-        
         <div class="max-w-7xl mx-auto px-4 py-6">
-            <div class="mb-6">
-                <h2 class="text-xl font-bold text-gray-800 mb-2">Turnos del Día de Hoy</h2>
-                <p class="text-gray-600">Visualiza todos los turnos asignados para hoy en tu agenda</p>
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Turnos de Hoy</h2>
+            <div id="calendario-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </div>
+    </section>
+
+    <div id="modal-respuesta-cliente" class="hidden">
+        <div class="bg-white rounded-xl w-full max-w-4xl mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="bg-blue-800 text-white p-4 flex justify-between font-bold sticky top-0">
+                <span>Respuesta al Cliente</span>
+                <button id="btn-cerrar-respuesta-cliente">&times;</button>
             </div>
-            
-            <div id="calendario-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-            </div>
-            
-            <div class="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-                <div class="flex items-start">
-                    <div class="flex-shrink-0">
-                        <i class="fas fa-info-circle text-blue-500 text-xl"></i>
+            <div class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold mb-4">Datos del Cliente</h3>
+                    <p class="text-sm"><strong>Nombre:</strong> <span id="resp-nombre"></span></p>
+                    <p class="text-sm"><strong>DNI:</strong> <span id="resp-dni"></span></p>
+                    <p class="text-sm"><strong>Tel:</strong> <span id="resp-telefono"></span></p>
+                    <p class="text-sm"><strong>Email:</strong> <span id="resp-email"></span></p>
+                    <p class="text-sm mt-2"><strong>Descripción:</strong></p>
+                    <p id="resp-descripcion" class="text-sm bg-gray-50 p-2 rounded"></p>
+                    <div id="contador-tiempo" class="mt-4 tiempo-transcurrido tiempo-normal">
+                        <p id="tiempo-texto">Calculando...</p>
                     </div>
-                    <div class="ml-3">
-                        <h3 class="font-bold text-blue-800">Información del Calendario</h3>
-                        <p class="text-blue-700 text-sm mt-1">
-                            Esta vista muestra solo los turnos asignados para hoy. Los horarios sin turnos aparecen como disponibles.
-                            Recuerda actualizar el estado de los casos una vez atendidos.
-                        </p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-4">Enviar Respuesta</h3>
+                    <select id="resp-asunto" class="w-full border p-2 mb-2 rounded"><option value="confirmacion_turno">Confirmación Turno</option><option value="info">Información</option></select>
+                    <textarea id="resp-mensaje" rows="4" class="w-full border p-2 mb-2 rounded" placeholder="Mensaje..."></textarea>
+                    <div class="flex gap-2 mb-4">
+                        <button id="btn-enviar-whatsapp" class="bg-green-600 text-white px-3 py-2 rounded flex-1"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+                        <button id="btn-enviar-email" class="bg-blue-600 text-white px-3 py-2 rounded flex-1"><i class="fas fa-envelope"></i> Email</button>
+                    </div>
+                    <div class="bg-gray-50 p-2 rounded max-h-40 overflow-y-auto">
+                        <h4 class="text-xs font-bold mb-2">Historial</h4>
+                        <div id="historial-respuestas" class="text-xs space-y-2"></div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
-    <button id="btn-flotante-salir" class="fixed bottom-6 left-6 bg-red-600 hover:bg-red-700 text-white w-14 h-14 rounded-full shadow-2xl z-50 flex items-center justify-center transition-all transform hover:scale-110 border-4 border-white" title="Cerrar Sesión">
-        <i class="fas fa-power-off text-xl"></i>
-    </button>
+    <div id="modal-detalle" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="bg-blue-600 text-white p-4 flex justify-between">
+                <h3 class="font-bold">Detalles / Notas Internas</h3>
+                <button id="btn-cerrar-detalle">&times;</button>
+            </div>
+            <div class="p-6">
+                <p><strong>Ciudadano:</strong> <span id="detalle-nombre"></span></p>
+                <p><strong>Desc:</strong> <span id="detalle-descripcion"></span></p>
+                <hr class="my-4">
+                <h4 class="font-bold mb-2">Notas Anteriores</h4>
+                <div id="detalle-observaciones" class="bg-gray-50 p-2 mb-4 max-h-40 overflow-y-auto text-sm"></div>
+                <textarea id="nueva-observacion" rows="3" class="w-full border p-2 rounded" placeholder="Nueva nota interna..."></textarea>
+                <div class="flex justify-end mt-4 gap-2">
+                    <button id="btn-cancelar-detalle" class="px-4 py-2 bg-gray-200 rounded">Cerrar</button>
+                    <button id="btn-guardar-actualizacion" class="px-4 py-2 bg-blue-600 text-white rounded">Guardar Nota</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="modal-derivar" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded p-6 max-w-md w-full">
+            <h3 class="font-bold mb-4">Derivar Caso</h3>
+            <select id="select-usuario-derivar" class="w-full border p-2 mb-4 rounded"></select>
+            <div class="flex justify-end gap-2">
+                <button id="btn-cancelar-derivar" class="px-4 py-2 bg-gray-200 rounded">Cancelar</button>
+                <button id="btn-confirmar-derivar" class="px-4 py-2 bg-purple-600 text-white rounded">Derivar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-comprobante" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded p-6 max-w-md w-full">
+            <h3 class="font-bold mb-4 text-center">Comprobante Turno</h3>
+            <div class="space-y-2 mb-4">
+                <p><strong>Nombre:</strong> <span id="comp-nombre"></span></p>
+                <p><strong>DNI:</strong> <span id="comp-dni"></span></p>
+                <p><strong>Fecha:</strong> <span id="comp-fecha"></span> <span id="comp-horario"></span></p>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button id="btn-cerrar-comprobante" class="px-4 py-2 bg-gray-200 rounded">Cerrar</button>
+                <button id="btn-descargar-comprobante" class="px-4 py-2 bg-red-600 text-white rounded">PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-nueva-consulta" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="bg-green-600 text-white p-4 flex justify-between">
+                <h3 class="font-bold">Nueva Consulta</h3>
+                <button id="btn-cerrar-nueva-consulta">&times;</button>
+            </div>
+            <form id="form-nueva-consulta" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="input-nombre" placeholder="Nombre *" class="border p-2 rounded" required>
+                <input type="text" id="input-dni" placeholder="DNI" class="border p-2 rounded">
+                <input type="text" id="input-telefono" placeholder="Teléfono" class="border p-2 rounded">
+                <select id="select-tipo-consulta" class="border p-2 rounded">
+                    <option value="Presencial">Presencial</option>
+                    <option value="Telefónica">Telefónica</option>
+                    <option value="WhatsApp">WhatsApp</option>
+                </select>
+                <textarea id="textarea-descripcion" placeholder="Descripción" class="border p-2 rounded md:col-span-2"></textarea>
+                
+                <div class="md:col-span-2 border p-4 rounded bg-gray-50">
+                    <p class="font-bold mb-2">Asignar Turno (Opcional)</p>
+                    <div class="flex gap-2 mb-2">
+                        <input type="date" id="input-fecha-turno" class="border p-2 rounded">
+                        <select id="input-horario-turno" class="border p-2 rounded">
+                            <option value="">Hora...</option>
+                            <option>07:00</option><option>07:30</option><option>08:00</option><option>08:30</option>
+                            <option>09:00</option><option>09:30</option><option>10:00</option><option>10:30</option><option>11:00</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="bg-green-600 text-white py-2 rounded md:col-span-2 font-bold">Guardar</button>
+            </form>
+        </div>
+    </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { 
-            getDatabase,
-            ref,
-            onValue,
-            update,
-            set,
-            push,
-            remove,
-            query,
-            orderByChild,
-            equalTo,
-            get
-        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getDatabase, ref, onValue, update, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-        // Configuración de Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyDgxLS98sk6GkLrjMu3BVS2cmZ9exdh4dY",
             authDomain: "atencion-publico-def6.firebaseapp.com",
@@ -1502,180 +367,29 @@
             projectId: "atencion-publico-def6"
         };
 
-        // Inicializar Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         
-        // --- LISTA DE FERIADOS ARGENTINA 2026 ---
-        const feriados2026 = [
-            '2026-01-01', '2026-02-16', '2026-02-17', '2026-03-24', '2026-04-02', 
-            '2026-04-03', '2026-05-01', '2026-05-25', '2026-06-20', '2026-07-09', 
-            '2026-12-08', '2026-12-25', '2026-06-15', '2026-08-17', '2026-10-12', 
-            '2026-11-23', '2026-03-23', '2026-07-10', '2026-12-07'
-        ];
-
-        // --- FUNCIONES DE RESTRICCIÓN DE TIEMPO ---
-        function isFeriaJudicial(date) {
-            const month = date.getMonth() + 1;
-            const day = date.getDate();
-            if (month === 12 && day >= 26) return true;
-            if (month === 1 && day <= 31) return true;
-            if (month === 7 && day >= 13 && day <= 24) return true;
-            return false;
+        // --- NORMALIZACIÓN DE TEXTO (LA CLAVE DE LA SOLUCIÓN) ---
+        function normalizarTexto(str) {
+            if (!str) return "";
+            return str.toString()
+                      .toLowerCase()
+                      .trim()
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, ""); // Quita tildes pero deja la ñ si es base
         }
 
-        // Variables de estado
-        let usuarioActual = null;
-        let casosAsignados = [];
-        let casoSeleccionado = null;
-        let casoSeleccionadoDetalle = null;
-        let casosVistos = new Set();
-        let ultimaNotificacionId = null;
-        let allCases = []; 
-        let terminoBusqueda = '';
-        
-        // Variables para calendario
-        let currentMonth = new Date().getMonth();
-        let currentYear = new Date().getFullYear();
-        let selectedDate = null;
-        let selectedTime = null;
-        let diasInactivos = [];
-        let capacidadHoraria = {};
-        
-        // Variables para comprobante
-        let casoParaComprobante = null;
-        
-        // Variables para respuesta (MODAL NUEVO)
-        let casoParaResponder = null;
-        let intervaloContadorRespuesta = null;
-        
-        // Variables para paginación
-        let paginaActual = 1;
-        let registrosPorPagina = 10;
-        let casosFiltradosPaginados = [];
-        
-        // Referencias a elementos DOM
-        const loginSection = document.getElementById('login-section');
-        const dashboardSection = document.getElementById('dashboard-section');
-        const calendarioSection = document.getElementById('calendario-section');
-        const loginForm = document.getElementById('login-form');
-        const loginInput = document.getElementById('login-input');
-        const loginPassword = document.getElementById('login-password');
-        const userNameDisplay = document.getElementById('user-name-display');
-        const userNameCal = document.getElementById('user-name-cal');
-        const casosBody = document.getElementById('casos-body');
-        const tablaVacia = document.getElementById('tabla-vacia');
-        const tablaSinResultados = document.getElementById('tabla-sin-resultados');
-        const btnResuelto = document.getElementById('btn-marcar-resuelto');
-        const btnDerivar = document.getElementById('btn-derivar-caso');
-        const btnActualizar = document.getElementById('btn-actualizar-consulta');
-        const btnNuevaConsulta = document.getElementById('btn-nueva-consulta');
-        const modalDerivar = document.getElementById('modal-derivar');
-        const selectUsuarioDerivar = document.getElementById('select-usuario-derivar');
-        const btnCerrarDerivar = document.getElementById('btn-cerrar-derivar');
-        const btnConfirmarDerivar = document.getElementById('btn-confirmar-derivar');
-        const btnCancelarDerivar = document.getElementById('btn-cancelar-derivar');
-        const modalDetalle = document.getElementById('modal-detalle');
-        const btnCerrarDetalle = document.getElementById('btn-cerrar-detalle');
-        const btnCancelarDetalle = document.getElementById('btn-cancelar-detalle');
-        const btnGuardarActualizacion = document.getElementById('btn-guardar-actualizacion');
-        const detalleNombre = document.getElementById('detalle-nombre');
-        const detalleDNI = document.getElementById('detalle-dni');
-        const detalleTelefono = document.getElementById('detalle-telefono');
-        const detalleTipo = document.getElementById('detalle-tipo');
-        const detalleDescripcion = document.getElementById('detalle-descripcion');
-        const detalleEstado = document.getElementById('detalle-estado');
-        const detalleFecha = document.getElementById('detalle-fecha');
-        const detalleObservaciones = document.getElementById('detalle-observaciones');
-        const nuevaObservacion = document.getElementById('nueva-observacion');
-        const calendarioGrid = document.getElementById('calendario-grid');
-        const fechaActualDisplay = document.getElementById('fecha-actual-display');
-        const modalSalir = document.getElementById('modal-salir');
-        const btnConfirmarSalir = document.getElementById('btn-confirmar-salir');
-        const btnCancelarSalir = document.getElementById('btn-cancelar-salir');
-        const btnCerrarSalir = document.getElementById('btn-cerrar-salir');
-        const modalNuevaConsulta = document.getElementById('modal-nueva-consulta');
-        const btnCerrarNuevaConsulta = document.getElementById('btn-cerrar-nueva-consulta');
-        const formNuevaConsulta = document.getElementById('form-nueva-consulta');
-        const inputNombre = document.getElementById('input-nombre');
-        const inputDNI = document.getElementById('input-dni');
-        const inputTelefono = document.getElementById('input-telefono');
-        const inputEmail = document.getElementById('input-email');
-        const selectTipoConsulta = document.getElementById('select-tipo-consulta');
-        const textareaDescripcion = document.getElementById('textarea-descripcion');
-        const selectUsuarioAsignar = document.getElementById('select-usuario-asignar');
-        const currentMonthElement = document.getElementById('current-month');
-        const calendarGridNuevo = document.getElementById('calendar-grid-nuevo');
-        const prevMonthBtn = document.getElementById('prev-month');
-        const nextMonthBtn = document.getElementById('next-month');
-        const horariosContainerNuevo = document.getElementById('horarios-container-nuevo');
-        const inputFechaTurno = document.getElementById('input-fecha-turno');
-        const inputHorarioTurno = document.getElementById('input-horario-turno');
-        const turnoSeleccionadoTexto = document.getElementById('turno-seleccionado-texto');
-        const inputHoraPersonalizada = document.getElementById('input-hora-personalizada');
-        const btnUsarHoraPersonalizada = document.getElementById('btn-usar-hora-personalizada');
-        const btnGuardarNuevaConsulta = document.getElementById('btn-guardar-nueva-consulta');
-        const ultimaActualizacionElement = document.getElementById('ultima-actualizacion');
-        const inputBusqueda = document.getElementById('input-busqueda');
-        const btnLimpiarBusqueda = document.getElementById('btn-limpiar-busqueda');
-        const alertaRojaFlotanteContainer = document.getElementById('alerta-roja-flotante-container');
-        const btnExportarPDF = document.getElementById('btn-exportar-pdf');
-        const systemUnavailableOverlay = document.getElementById('system-unavailable-overlay');
-        const systemUnavailableMessage = document.getElementById('system-unavailable-message');
-        const modalFeriadoClose = document.getElementById('modal-feriado-close');
-        
-        // Referencias para paginación
-        const paginationContainer = document.getElementById('pagination-container');
-        const paginationStart = document.getElementById('pagination-start');
-        const paginationEnd = document.getElementById('pagination-end');
-        const paginationTotal = document.getElementById('pagination-total');
-        const paginationFirst = document.getElementById('pagination-first');
-        const paginationPrev = document.getElementById('pagination-prev');
-        const paginationNumbers = document.getElementById('pagination-numbers');
-        const paginationNext = document.getElementById('pagination-next');
-        const paginationLast = document.getElementById('pagination-last');
-        const paginationItemsPerPage = document.getElementById('pagination-items-per-page');
-        
-        // Referencias para modal de comprobante
-        const modalComprobante = document.getElementById('modal-comprobante');
-        const btnCerrarComprobante = document.getElementById('btn-cerrar-comprobante');
-        const btnCerrarComprobanteModal = document.getElementById('btn-cerrar-comprobante-modal');
-        const btnDescargarComprobante = document.getElementById('btn-descargar-comprobante');
-        const compNombre = document.getElementById('comp-nombre');
-        const compDNI = document.getElementById('comp-dni');
-        const compTelefono = document.getElementById('comp-telefono');
-        const compTramite = document.getElementById('comp-tramite');
-        const compFecha = document.getElementById('comp-fecha');
-        const compHorario = document.getElementById('comp-horario');
-        
-        // Referencias para modal de respuesta del TXT (NUEVO)
-        const modalRespuestaCliente = document.getElementById('modal-respuesta-cliente');
-        const btnCerrarRespuestaCliente = document.getElementById('btn-cerrar-respuesta-cliente');
-        const respNombre = document.getElementById('resp-nombre');
-        const respDNI = document.getElementById('resp-dni');
-        const respTelefono = document.getElementById('resp-telefono');
-        const respEmail = document.getElementById('resp-email');
-        const respTipo = document.getElementById('resp-tipo');
-        const respDescripcion = document.getElementById('resp-descripcion');
-        const respAsunto = document.getElementById('resp-asunto');
-        const respMensaje = document.getElementById('resp-mensaje');
-        const btnEnviarWhatsapp = document.getElementById('btn-enviar-whatsapp');
-        const btnEnviarEmail = document.getElementById('btn-enviar-email');
-        const contadorTiempo = document.getElementById('contador-tiempo');
-        const tiempoTexto = document.getElementById('tiempo-texto');
-        const historialRespuestas = document.getElementById('historial-respuestas');
-        
-        // Lista de usuarios del sistema
+        // Listas Sincronizadas con Interno.html (Sin tildes visuales para evitar confusión)
         const listaUsuarios = [
             "Bazante Nadia Romina", "Boillat Cesar Enrique", "Cardozo Maria Raquel",
             "Cedron Noelia Aurora", "Corrales Alicia Mariela", "Escobar Monica Graciela",
-            "Fioravante Rómulo", "Gonzalez Alberto Misael", "Gonzalez Juan Jose",
+            "Fioravante Romulo", "Gonzalez Alberto Misael", "Gonzalez Juan Jose",
             "Gudiño Natalia Esther", "Magnani Enzo Luciano", "Pablos Patricia",
             "Palacios Ana Gabriela", "Ortega Lucia Noemi", "Ramos Marcelo Gustavo",
             "Riveros Patricia Soledad", "Sosa Rita Cecilia"
         ];
 
-        // Claves de acceso por usuario
         const clavesUsuarios = {
             "Bazante Nadia Romina": "bazante123",
             "Boillat Cesar Enrique": "boillat123",
@@ -1683,7 +397,7 @@
             "Cedron Noelia Aurora": "cedron123",
             "Corrales Alicia Mariela": "corrales123",
             "Escobar Monica Graciela": "escobar123",
-            "Fioravante Rómulo": "fioravante123",
+            "Fioravante Romulo": "fioravante123",
             "Gonzalez Alberto Misael": "gonzalez123",
             "Gonzalez Juan Jose": "gonzalezjj123",
             "Gudiño Natalia Esther": "gudino123",
@@ -1696,486 +410,134 @@
             "Sosa Rita Cecilia": "sosa123"
         };
 
-        // Función para verificar si una fecha está en período especial
-        function esPeriodoEspecial(fecha) {
-            return isFeriaJudicial(fecha);
-        }
+        // Estado
+        let usuarioActual = null;
+        let allCases = []; 
+        let casosAsignados = [];
+        let casoSeleccionado = null;
+        let casoSeleccionadoDetalle = null;
+        let casoParaResponder = null;
+        let casoParaComprobante = null;
+        let intervaloContadorRespuesta = null;
+        let paginaActual = 1;
+        let registrosPorPagina = 10;
+        let terminoBusqueda = '';
 
-        // Función para verificar si una fecha es feriado
-        function esFeriado(fecha) {
-            const fechaStr = formatDateLocal(fecha);
-            return feriados2026.includes(fechaStr);
-        }
-
-        // Función para mostrar alerta de sistema no disponible
-        function mostrarAlertaSistemaNoDisponible(mensaje) {
-            systemUnavailableMessage.textContent = mensaje;
-            systemUnavailableOverlay.classList.remove('hidden');
-        }
-
-        // FUNCIÓN ESPECÍFICA PARA MODAL NUEVA CONSULTA - Restringe horarios y días
-        function verificarDisponibilidadParaNuevaConsulta() {
-            const ahora = new Date();
-            const diaSemana = ahora.getDay();
-            const hora = ahora.getHours();
-            const minutos = ahora.getMinutes();
-            const horaDecimal = hora + minutos / 100;
-            
-            const fechaString = ahora.toISOString().split('T')[0];
-            if (feriados2026.includes(fechaString)) {
-                return { disponible: false, mensaje: 'Hoy es día no laborable (Feriado).' };
-            }
-            
-            if (diaSemana === 0 || diaSemana === 6) {
-                return { disponible: false, mensaje: 'Hoy es día no laborable.' };
-            }
-            
-            const enFeria = isFeriaJudicial(ahora);
-            let horaInicio = enFeria ? 8.00 : 7.00;
-            let horaFin = enFeria ? 10.00 : 11.50;
-            let mensajeHorario = enFeria ? 'Feria Judicial: 08:00 a 10:00 hs.' : 'Horario: 07:00 a 11:30 hs.';
-            
-            if (horaDecimal < horaInicio || horaDecimal > horaFin) {
-                return { disponible: false, mensaje: mensajeHorario };
-            }
-            
-            return { disponible: true };
-        }
-
-        // Inicializar la aplicación
-        document.addEventListener('DOMContentLoaded', function() {
-            inicializarEventos();
+        // DOM Elements
+        const loginSection = document.getElementById('login-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const calendarioSection = document.getElementById('calendario-section');
+        const casosBody = document.getElementById('casos-body');
+        
+        document.addEventListener('DOMContentLoaded', () => {
             verificarSesion();
+            setupEventListeners();
         });
 
-        function inicializarEventos() {
-            // Login
-            loginForm.addEventListener('submit', manejarLogin);
-            
-            // Modal Feriado
-            modalFeriadoClose.addEventListener('click', function() {
-                systemUnavailableOverlay.classList.add('hidden');
-            });
-            systemUnavailableOverlay.addEventListener('click', function(e) {
-                if (e.target === systemUnavailableOverlay) systemUnavailableOverlay.classList.add('hidden');
-            });
-            
-            // Salir
-            document.querySelectorAll('.btn-salir, .btn-salir-cal').forEach(boton => {
-                boton.addEventListener('click', mostrarConfirmacionSalir);
-            });
-            
-            // NUEVO LISTENER PARA BOTÓN FLOTANTE
-            document.getElementById('btn-flotante-salir').addEventListener('click', mostrarConfirmacionSalir);
-            
-            // Acciones principales
-            btnResuelto.addEventListener('click', marcarComoResuelto);
-            btnDerivar.addEventListener('click', abrirModalDerivar);
-            
-            // Se corregió aquí: se llama a una función específica para el botón del header
-            btnActualizar.addEventListener('click', abrirModalDetalle);
-            
-            btnNuevaConsulta.addEventListener('click', abrirModalNuevaConsulta);
-            
-            // Modal derivar
-            btnCerrarDerivar.addEventListener('click', cerrarModalDerivar);
-            btnCancelarDerivar.addEventListener('click', cerrarModalDerivar);
-            btnConfirmarDerivar.addEventListener('click', derivarCaso);
-            
-            // Modal detalle
-            btnCerrarDetalle.addEventListener('click', cerrarModalDetalle);
-            btnCancelarDetalle.addEventListener('click', cerrarModalDetalle);
-            btnGuardarActualizacion.addEventListener('click', guardarActualizacion);
-            
-            // Modal comprobante
-            btnCerrarComprobante.addEventListener('click', cerrarModalComprobante);
-            btnCerrarComprobanteModal.addEventListener('click', cerrarModalComprobante);
-            btnDescargarComprobante.addEventListener('click', descargarComprobantePDF);
-            
-            // Modal respuesta del TXT (NUEVO)
-            btnCerrarRespuestaCliente.addEventListener('click', cerrarModalRespuestaCliente);
-            btnEnviarWhatsapp.addEventListener('click', enviarRespuestaWhatsapp);
-            btnEnviarEmail.addEventListener('click', enviarRespuestaEmail);
-            
-            // Plantillas rápidas
-            document.querySelectorAll('.plantilla-rapida').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    respMensaje.value = this.getAttribute('data-texto');
-                });
-            });
+        function setupEventListeners() {
+            document.getElementById('login-form').addEventListener('submit', manejarLogin);
             
             // Navegación
+            document.querySelectorAll('.btn-salir').forEach(b => b.addEventListener('click', cerrarSesion));
             document.getElementById('btn-ver-casos').addEventListener('click', () => cambiarVista('casos'));
             document.getElementById('btn-ver-calendario').addEventListener('click', () => cambiarVista('calendario'));
             document.getElementById('btn-ver-casos-cal').addEventListener('click', () => cambiarVista('casos'));
             document.getElementById('btn-ver-calendario-cal').addEventListener('click', () => cambiarVista('calendario'));
             
-            // Modal de salida
-            btnConfirmarSalir.addEventListener('click', salirAInicio);
-            btnCancelarSalir.addEventListener('click', cerrarModalSalir);
-            btnCerrarSalir.addEventListener('click', cerrarModalSalir);
+            // Acciones Casos
+            document.getElementById('btn-marcar-resuelto').addEventListener('click', marcarResuelto);
+            document.getElementById('btn-derivar-caso').addEventListener('click', () => abrirModal('modal-derivar'));
+            document.getElementById('btn-actualizar-consulta').addEventListener('click', abrirModalDetalle);
+            document.getElementById('btn-nueva-consulta').addEventListener('click', () => abrirModal('modal-nueva-consulta'));
             
-            // Modal nueva consulta
-            btnCerrarNuevaConsulta.addEventListener('click', cerrarModalNuevaConsulta);
-            formNuevaConsulta.addEventListener('submit', guardarNuevaConsulta);
-            prevMonthBtn.addEventListener('click', () => cambiarMes(-1));
-            nextMonthBtn.addEventListener('click', () => cambiarMes(1));
-            btnUsarHoraPersonalizada.addEventListener('click', usarHoraPersonalizada);
+            // Modales Cancelar/Cerrar
+            const closeMap = {
+                'btn-cerrar-respuesta-cliente': 'modal-respuesta-cliente',
+                'btn-cerrar-detalle': 'modal-detalle',
+                'btn-cancelar-detalle': 'modal-detalle',
+                'btn-cancelar-derivar': 'modal-derivar',
+                'btn-cerrar-comprobante': 'modal-comprobante',
+                'btn-cerrar-nueva-consulta': 'modal-nueva-consulta'
+            };
+            Object.keys(closeMap).forEach(id => {
+                document.getElementById(id).addEventListener('click', () => cerrarModal(closeMap[id]));
+            });
+
+            // Funciones Modales
+            document.getElementById('btn-guardar-actualizacion').addEventListener('click', guardarNota);
+            document.getElementById('btn-confirmar-derivar').addEventListener('click', derivarCaso);
+            document.getElementById('btn-enviar-whatsapp').addEventListener('click', enviarWhatsapp);
+            document.getElementById('btn-enviar-email').addEventListener('click', enviarEmail);
+            document.getElementById('form-nueva-consulta').addEventListener('submit', guardarNuevaConsulta);
+            document.getElementById('btn-descargar-comprobante').addEventListener('click', descargarComprobante);
             
-            // Búsqueda
-            inputBusqueda.addEventListener('input', function() {
-                terminoBusqueda = this.value.trim().toLowerCase();
-                btnLimpiarBusqueda.classList.toggle('hidden', !terminoBusqueda);
+            // Buscador
+            document.getElementById('input-busqueda').addEventListener('input', (e) => {
+                terminoBusqueda = normalizarTexto(e.target.value);
                 paginaActual = 1;
                 renderizarCasos();
             });
-            
-            btnLimpiarBusqueda.addEventListener('click', function() {
-                inputBusqueda.value = '';
-                terminoBusqueda = '';
-                this.classList.add('hidden');
-                paginaActual = 1;
-                renderizarCasos();
+            document.getElementById('btn-limpiar-busqueda').addEventListener('click', () => {
+                 document.getElementById('input-busqueda').value = '';
+                 terminoBusqueda = '';
+                 renderizarCasos();
             });
+
+            // Paginación
+            document.getElementById('pagination-prev').addEventListener('click', () => cambiarPagina(paginaActual - 1));
+            document.getElementById('pagination-next').addEventListener('click', () => cambiarPagina(paginaActual + 1));
             
             // Exportar
-            btnExportarPDF.addEventListener('click', exportarTablaPDF);
+            document.getElementById('btn-exportar-pdf').addEventListener('click', exportarPDF);
             
-            // Paginación
-            paginationFirst.addEventListener('click', () => cambiarPagina(1));
-            paginationPrev.addEventListener('click', () => cambiarPagina(paginaActual - 1));
-            paginationNext.addEventListener('click', () => cambiarPagina(paginaActual + 1));
-            paginationLast.addEventListener('click', () => {
-                const totalPaginas = Math.ceil(casosFiltradosPaginados.length / registrosPorPagina);
-                cambiarPagina(totalPaginas);
-            });
-            
-            paginationItemsPerPage.addEventListener('change', function() {
-                registrosPorPagina = parseInt(this.value);
-                paginaActual = 1;
-                renderizarCasos();
-            });
-            
-            llenarSelectUsuarios();
+            llenarSelectDerivar();
         }
 
-        // Funciones de paginación
-        function cambiarPagina(nuevaPagina) {
-            const totalPaginas = Math.ceil(casosFiltradosPaginados.length / registrosPorPagina);
-            if (nuevaPagina < 1 || nuevaPagina > totalPaginas) return;
-            paginaActual = nuevaPagina;
-            renderizarCasos();
-        }
-
-        function actualizarPaginacion() {
-            const totalRegistros = casosFiltradosPaginados.length;
-            const totalPaginas = Math.ceil(totalRegistros / registrosPorPagina);
-            
-            if (totalRegistros === 0 || totalPaginas <= 1) {
-                paginationContainer.classList.add('hidden');
-                return;
-            }
-            
-            paginationContainer.classList.remove('hidden');
-            paginationStart.textContent = (paginaActual - 1) * registrosPorPagina + 1;
-            paginationEnd.textContent = Math.min(paginaActual * registrosPorPagina, totalRegistros);
-            paginationTotal.textContent = totalRegistros;
-            
-            paginationFirst.disabled = paginaActual === 1;
-            paginationPrev.disabled = paginaActual === 1;
-            paginationNext.disabled = paginaActual === totalPaginas;
-            paginationLast.disabled = paginaActual === totalPaginas;
-            
-            paginationNumbers.innerHTML = '';
-            
-            const maxPaginasVisibles = 5;
-            let inicioPaginas = Math.max(1, paginaActual - Math.floor(maxPaginasVisibles / 2));
-            let finPaginas = Math.min(totalPaginas, inicioPaginas + maxPaginasVisibles - 1);
-            
-            if (finPaginas - inicioPaginas + 1 < maxPaginasVisibles) {
-                inicioPaginas = Math.max(1, finPaginas - maxPaginasVisibles + 1);
-            }
-            
-            // Construcción de botones de página...
-            if (inicioPaginas > 1) {
-                crearBotonPagina(1);
-                if (inicioPaginas > 2) crearElipsis();
-            }
-            
-            for (let i = inicioPaginas; i <= finPaginas; i++) {
-                crearBotonPagina(i);
-            }
-            
-            if (finPaginas < totalPaginas) {
-                if (finPaginas < totalPaginas - 1) crearElipsis();
-                crearBotonPagina(totalPaginas);
-            }
-        }
-
-        function crearBotonPagina(num) {
-            const pageBtn = document.createElement('button');
-            pageBtn.className = `pagination-btn ${num === paginaActual ? 'active' : ''}`;
-            pageBtn.textContent = num;
-            pageBtn.addEventListener('click', () => cambiarPagina(num));
-            paginationNumbers.appendChild(pageBtn);
-        }
-
-        function crearElipsis() {
-            const ellipsis = document.createElement('span');
-            ellipsis.className = 'pagination-ellipsis';
-            ellipsis.textContent = '...';
-            paginationNumbers.appendChild(ellipsis);
-        }
-
-        function llenarSelectUsuarios() {
-            selectUsuarioAsignar.innerHTML = '<option value="">Sin asignar</option>';
-            selectUsuarioDerivar.innerHTML = '<option value="">Seleccionar usuario...</option>';
-            
-            listaUsuarios.forEach(usuario => {
-                const optionAsignar = document.createElement('option');
-                optionAsignar.value = usuario;
-                optionAsignar.textContent = usuario;
-                selectUsuarioAsignar.appendChild(optionAsignar);
-                
-                const optionDerivar = document.createElement('option');
-                optionDerivar.value = usuario;
-                optionDerivar.textContent = usuario;
-                selectUsuarioDerivar.appendChild(optionDerivar);
-            });
-        }
-
-        // Función para mostrar modal de comprobante
-        function mostrarComprobante(caso) {
-            casoParaComprobante = caso;
-            compNombre.textContent = caso.personName || 'No especificado';
-            compDNI.textContent = caso.dni || 'No especificado';
-            compTelefono.textContent = caso.telefono || 'No especificado';
-            compTramite.textContent = caso.type || 'No especificado';
-            
-            if (caso.fechaTurno && caso.horarioTurno) {
-                const fecha = new Date(caso.fechaTurno + 'T00:00:00');
-                compFecha.textContent = formatoFechaCompleta(fecha);
-                compHorario.textContent = caso.horarioTurno;
-            } else {
-                compFecha.textContent = 'No asignada';
-                compHorario.textContent = 'No asignado';
-            }
-            
-            modalComprobante.classList.remove('hidden');
-        }
-
-        function cerrarModalComprobante() {
-            modalComprobante.classList.add('hidden');
-            casoParaComprobante = null;
-        }
-
-        function descargarComprobantePDF() {
-            if (!casoParaComprobante) return;
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            // ... (Lógica de PDF existente, abreviada para claridad)
-            doc.text("COMPROBANTE DE TURNO ONLINE", 105, 25, null, null, 'center');
-            doc.text(`Solicitante: ${casoParaComprobante.personName}`, 20, 65);
-            doc.text(`Turno: ${casoParaComprobante.fechaTurno} ${casoParaComprobante.horarioTurno}`, 20, 115);
-            doc.save(`Turno_${casoParaComprobante.dni}.pdf`);
-            
-            mostrarNotificacionTemp('Comprobante descargado', 'success');
-            cerrarModalComprobante();
-        }
-
-        function descargarRespuestaPDF(caso) {
-            if (!caso || !caso.respuestas || caso.respuestas.length === 0) {
-                mostrarNotificacionTemp('No hay respuestas registradas', 'error');
-                return;
-            }
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.text("COMPROBANTE DE RESPUESTA", 105, 25, null, null, 'center');
-            const ultimaRespuesta = caso.respuestas[caso.respuestas.length - 1];
-            doc.text(`Mensaje: ${ultimaRespuesta.mensaje}`, 20, 50);
-            doc.save(`Respuesta_${caso.dni}.pdf`);
-            mostrarNotificacionTemp('PDF descargado', 'success');
-        }
-
-        async function exportarTablaPDF() {
-            try {
-                const tabla = document.querySelector('.table-responsive table');
-                if (!tabla) {
-                    mostrarNotificacionTemp('No hay datos para exportar', 'error');
-                    return;
-                }
-
-                // 1. Crear contenedor temporal con fondo blanco para "foto" limpia
-                const container = document.createElement('div');
-                container.style.position = 'absolute';
-                container.style.left = '-9999px';
-                container.style.top = '0';
-                container.style.width = '800px'; // Ancho fijo para buena proporción A4
-                container.style.backgroundColor = '#ffffff';
-                container.style.padding = '40px';
-                container.style.fontFamily = 'Arial, sans-serif';
-
-                // 2. Cabecera del Reporte
-                const headerDiv = document.createElement('div');
-                headerDiv.innerHTML = `
-                    <div style="border-bottom: 2px solid #1e3a8a; padding-bottom: 10px; margin-bottom: 20px;">
-                        <h1 style="color: #1e3a8a; font-size: 24px; margin: 0;">Reporte de Casos Asignados</h1>
-                        <p style="color: #666; font-size: 12px; margin: 5px 0 0 0;">Generado por: <strong>${usuarioActual}</strong></p>
-                        <p style="color: #666; font-size: 12px; margin: 0;">Fecha: ${new Date().toLocaleString()}</p>
-                    </div>
-                `;
-                container.appendChild(headerDiv);
-
-                // 3. Clonar y limpiar tabla
-                const tablaClon = tabla.cloneNode(true);
-                
-                // Eliminar columna de acciones (última columna)
-                // Cabecera
-                const theadRow = tablaClon.querySelector('thead tr');
-                if (theadRow && theadRow.lastElementChild) theadRow.removeChild(theadRow.lastElementChild);
-                
-                // Cuerpo
-                const tbodyRows = tablaClon.querySelectorAll('tbody tr');
-                tbodyRows.forEach(row => {
-                    if (row.lastElementChild) row.removeChild(row.lastElementChild);
-                });
-
-                // 4. Estilizar tabla para impresión (Professional Look)
-                tablaClon.style.width = '100%';
-                tablaClon.style.borderCollapse = 'collapse';
-                tablaClon.style.fontSize = '11px';
-
-                // Estilos Th
-                tablaClon.querySelectorAll('thead th').forEach(th => {
-                    th.style.backgroundColor = '#f3f4f6';
-                    th.style.color = '#1f2937';
-                    th.style.padding = '10px';
-                    th.style.borderBottom = '2px solid #e5e7eb';
-                    th.style.textAlign = 'left';
-                });
-
-                // Estilos Td
-                tablaClon.querySelectorAll('tbody td').forEach(td => {
-                    td.style.padding = '10px';
-                    td.style.borderBottom = '1px solid #e5e7eb';
-                    td.style.color = '#374151';
-                });
-
-                container.appendChild(tablaClon);
-                document.body.appendChild(container);
-
-                // 5. Generar PDF
-                const canvas = await html2canvas(container, { scale: 2 }); // Escala 2 para mejor calidad
-                document.body.removeChild(container);
-
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
-                
-                const imgWidth = 190; // A4 width (210) - margins (20)
-                const pageHeight = 297;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                
-                let heightLeft = imgHeight;
-                let position = 10; // Margin top
-
-                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 10, position, imgWidth, imgHeight);
-                
-                // Guardar
-                pdf.save(`Casos_${usuarioActual.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
-                mostrarNotificacionTemp('PDF exportado exitosamente', 'success');
-
-            } catch (error) {
-                console.error("Error PDF:", error);
-                mostrarNotificacionTemp('Error al generar PDF', 'error');
-            }
-        }
-
+        // --- AUTH & DATA ---
         function verificarSesion() {
-            const usuarioGuardado = localStorage.getItem('defensoriaUsuario');
-            if (usuarioGuardado) {
-                usuarioActual = usuarioGuardado;
-                iniciarSesion(usuarioGuardado);
-            } else {
-                mostrarLogin();
-            }
+            const user = localStorage.getItem('defensoriaUsuario');
+            if (user) iniciarSesion(user);
         }
 
         function manejarLogin(e) {
             e.preventDefault();
-            const usuario = loginInput.value.trim();
-            const clave = loginPassword.value.trim();
+            const inputUser = document.getElementById('login-input').value.trim();
+            const inputPass = document.getElementById('login-password').value.trim();
             
-            if (!listaUsuarios.includes(usuario) || clavesUsuarios[usuario] !== clave) {
-                mostrarNotificacionTemp('Credenciales incorrectas', 'error');
-                return;
+            // Buscar usuario normalizando nombres para ser flexible
+            const userMatch = listaUsuarios.find(u => normalizarTexto(u) === normalizarTexto(inputUser));
+            
+            if (userMatch && clavesUsuarios[userMatch] === inputPass) {
+                localStorage.setItem('defensoriaUsuario', userMatch);
+                iniciarSesion(userMatch);
+            } else {
+                mostrarNotificacion('Credenciales incorrectas', 'error');
             }
-            
-            usuarioActual = usuario;
-            localStorage.setItem('defensoriaUsuario', usuario);
-            iniciarSesion(usuario);
         }
 
-        function mostrarConfirmacionSalir() { modalSalir.classList.remove('hidden'); }
-        function cerrarModalSalir() { modalSalir.classList.add('hidden'); }
-        function salirAInicio() {
+        function iniciarSesion(user) {
+            usuarioActual = user;
+            document.getElementById('user-name-display').textContent = user;
+            loginSection.classList.add('hidden');
+            dashboardSection.classList.remove('hidden');
+            cargarCasos();
+        }
+
+        function cerrarSesion() {
             localStorage.removeItem('defensoriaUsuario');
             location.reload();
         }
 
-        function mostrarLogin() {
-            loginSection.classList.remove('hidden');
-            dashboardSection.classList.add('hidden');
-            calendarioSection.classList.add('hidden');
-        }
-
-        function iniciarSesion(usuario) {
-            systemUnavailableOverlay.classList.add('hidden');
-            loginSection.classList.add('hidden');
-            dashboardSection.classList.remove('hidden');
-            userNameDisplay.textContent = usuario;
-            userNameCal.textContent = usuario;
-            selectUsuarioAsignar.value = usuario;
-            
-            const casosVistosGuardados = localStorage.getItem(`defensoriaCasosVistos_${usuario}`);
-            if (casosVistosGuardados) casosVistos = new Set(JSON.parse(casosVistosGuardados));
-            
-            cargarTodosLosCasos();
-            cargarConfiguracionAgenda();
-        }
-
-        function cambiarVista(vista) {
-            // ... (Lógica de cambio de vista UI)
-            document.querySelectorAll('#btn-ver-casos, #btn-ver-calendario, #btn-ver-casos-cal, #btn-ver-calendario-cal').forEach(b => {
-                b.classList.remove('bg-blue-600', 'text-white');
-                b.classList.add('bg-gray-200', 'text-gray-700');
-            });
-
-            if (vista === 'casos') {
-                dashboardSection.classList.remove('hidden');
-                calendarioSection.classList.add('hidden');
-                document.getElementById('btn-ver-casos').classList.add('bg-blue-600', 'text-white');
-                filtrarYMostrarCasosAsignados();
-            } else {
-                dashboardSection.classList.add('hidden');
-                calendarioSection.classList.remove('hidden');
-                document.getElementById('btn-ver-calendario-cal').classList.add('bg-blue-600', 'text-white');
-                cargarCalendario();
-            }
-        }
-
-        // Firebase Logic
-        function cargarTodosLosCasos() {
+        // --- LOGICA DE DATOS (FIREBASE) ---
+        function cargarCasos() {
             const casosRef = ref(db, "atencion");
             onValue(casosRef, (snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    allCases = Object.entries(data).map(([id, value]) => ({ id, ...value }))
+                    allCases = Object.entries(data).map(([id, val]) => ({ id, ...val }))
                         .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
                     
-                    filtrarYMostrarCasosAsignados();
-                    actualizarContadorPendientes();
-                    ultimaActualizacionElement.textContent = new Date().toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+                    filtrarCasosUsuario();
                 } else {
                     allCases = [];
                     renderizarCasos();
@@ -2183,489 +545,379 @@
             });
         }
 
-        function filtrarYMostrarCasosAsignados() {
+        // ***** LA FUNCIÓN CRÍTICA CORREGIDA *****
+        function filtrarCasosUsuario() {
             if (!usuarioActual) return;
-            const nuevosCasosAsignados = allCases.filter(caso => caso.assignedUser === usuarioActual);
             
-            nuevosCasosAsignados.forEach(caso => {
-                if (!casosVistos.has(caso.id)) {
-                    mostrarNotificacionPersistente(caso);
-                    casosVistos.add(caso.id);
-                }
+            const miUsuarioNorm = normalizarTexto(usuarioActual);
+            
+            casosAsignados = allCases.filter(c => {
+                if (!c.assignedUser) return false;
+                // Compara ignorando tildes y mayúsculas
+                return normalizarTexto(c.assignedUser) === miUsuarioNorm;
             });
             
-            casosAsignados = nuevosCasosAsignados;
-            localStorage.setItem(`defensoriaCasosVistos_${usuarioActual}`, JSON.stringify([...casosVistos]));
+            document.getElementById('contador-pendientes').textContent = 
+                casosAsignados.filter(c => c.estado === 'pendiente').length;
+                
             renderizarCasos();
-            cargarCalendario();
+            renderizarCalendario();
         }
 
         function renderizarCasos() {
             casosBody.innerHTML = '';
-            let casosFiltrados = casosAsignados;
             
+            // Filtrado por buscador local
+            let filtrados = casosAsignados;
             if (terminoBusqueda) {
-                casosFiltrados = casosAsignados.filter(caso => 
-                    (caso.personName && caso.personName.toLowerCase().includes(terminoBusqueda)) ||
-                    (caso.dni && caso.dni.includes(terminoBusqueda))
+                filtrados = casosAsignados.filter(c => 
+                    normalizarTexto(c.personName).includes(terminoBusqueda) ||
+                    (c.dni && c.dni.includes(terminoBusqueda)) ||
+                    normalizarTexto(c.description).includes(terminoBusqueda)
                 );
             }
+
+            // Paginación
+            const total = filtrados.length;
+            const totalPaginas = Math.ceil(total / registrosPorPagina);
+            if (paginaActual > totalPaginas) paginaActual = 1;
             
-            casosFiltradosPaginados = casosFiltrados;
-            
-            // Lógica de paginación
-            const inicio = (paginaActual - 1) * registrosPorPagina;
-            const fin = Math.min(inicio + registrosPorPagina, casosFiltrados.length);
-            const casosPagina = casosFiltrados.slice(inicio, fin);
-            
-            if (casosFiltrados.length === 0) {
-                tablaVacia.classList.toggle('hidden', !!terminoBusqueda);
-                tablaSinResultados.classList.toggle('hidden', !terminoBusqueda);
-                paginationContainer.classList.add('hidden');
+            const start = (paginaActual - 1) * registrosPorPagina;
+            const end = start + registrosPorPagina;
+            const paginaData = filtrados.slice(start, end);
+
+            // Actualizar UI Paginación
+            document.getElementById('pagination-container').classList.toggle('hidden', total === 0);
+            document.getElementById('pagination-start').textContent = total > 0 ? start + 1 : 0;
+            document.getElementById('pagination-end').textContent = Math.min(end, total);
+            document.getElementById('pagination-total').textContent = total;
+            document.getElementById('pagination-prev').disabled = paginaActual === 1;
+            document.getElementById('pagination-next').disabled = paginaActual >= totalPaginas;
+
+            if (total === 0) {
+                document.getElementById('tabla-vacia').classList.remove('hidden');
                 return;
             }
-            
-            tablaVacia.classList.add('hidden');
-            tablaSinResultados.classList.add('hidden');
-            
-            casosPagina.forEach(caso => {
-                const esNuevo = !casosVistos.has(caso.id);
-                const tieneRespuestas = caso.respuestas && caso.respuestas.length > 0;
+            document.getElementById('tabla-vacia').classList.add('hidden');
+
+            paginaData.forEach(caso => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-blue-50 cursor-pointer transition-colors border-b";
+                if(casoSeleccionado === caso.id) tr.classList.add('bg-blue-100');
                 
-                const row = document.createElement('tr');
-                row.className = `hover:bg-gray-50 transition-all-smooth ${esNuevo ? 'pulse-new bg-blue-50' : ''}`;
-                row.dataset.id = caso.id;
+                // Color Estado
+                let badgeClass = 'estado-proceso';
+                if(caso.estado === 'pendiente') badgeClass = 'estado-pendiente';
+                if(caso.estado === 'resuelta') badgeClass = 'estado-resuelto';
+
+                const tieneRespuesta = caso.respuestas && caso.respuestas.length > 0;
                 
-                row.innerHTML = `
+                tr.innerHTML = `
                     <td class="px-4 py-3">
-                        <div class="font-medium text-gray-900">${caso.personName}</div>
-                        <div class="text-xs text-gray-500">${caso.dni || 'Sin DNI'}</div>
-                        ${caso.fechaTurno ? `<div class="text-xs text-blue-600 mt-1"><i class="fas fa-calendar"></i> ${formatoFechaCorta(caso.fechaTurno)} ${caso.horarioTurno}</div>` : ''}
+                        <div class="font-bold text-gray-800">${caso.personName || 'Sin Nombre'}</div>
+                        <div class="text-xs text-gray-500">${caso.dni || ''} - ${caso.telefono || ''}</div>
                     </td>
+                    <td class="px-4 py-3 text-sm text-gray-600 truncate max-w-xs">${caso.description || caso.type}</td>
+                    <td class="px-4 py-3 text-sm">${new Date(caso.timestamp).toLocaleDateString()}</td>
+                    <td class="px-4 py-3"><span class="estado-badge ${badgeClass}">${caso.estado}</span></td>
                     <td class="px-4 py-3">
-                        <div class="text-sm">${caso.type}</div>
-                        <div class="text-xs text-gray-500 truncate max-w-[150px]">${caso.description}</div>
+                        <span class="estado-badge ${tieneRespuesta ? 'respuesta-enviada' : 'respuesta-pendiente'}">
+                            ${tieneRespuesta ? 'Enviada' : 'Pendiente'}
+                        </span>
                     </td>
-                    <td class="px-4 py-3 text-sm">${formatoFecha(caso.timestamp)}</td>
-                    <td class="px-4 py-3"><span class="estado-badge ${obtenerColorEstado(caso.estado)}">${caso.estado.toUpperCase()}</span></td>
-                    <td class="px-4 py-3">
-                        <div class="flex items-center">
-                            <span class="estado-badge ${tieneRespuestas ? 'respuesta-enviada' : 'respuesta-pendiente'}">
-                                ${tieneRespuestas ? 'Enviada' : 'Pendiente'}
-                            </span>
-                            ${tieneRespuestas ? `<button class="ml-2 text-red-600 btn-pdf-respuesta"><i class="fas fa-file-pdf"></i></button>` : ''}
-                        </div>
-                    </td>
-                    <td class="px-4 py-3 text-sm">
-                        <div class="flex space-x-2">
-                            <button class="btn-seleccionar text-blue-600"><i class="fas fa-check-circle"></i></button>
-                            <button class="btn-ver text-green-600"><i class="fas fa-eye"></i></button>
-                            <button class="btn-responder text-purple-600"><i class="fas fa-reply"></i></button>
-                            ${caso.fechaTurno ? `<button class="btn-comprobante text-red-600"><i class="fas fa-file-pdf"></i></button>` : ''}
-                        </div>
+                    <td class="px-4 py-3 flex gap-2">
+                        <button class="btn-select text-blue-600 hover:text-blue-800" title="Seleccionar"><i class="fas fa-check-circle"></i></button>
+                        <button class="btn-resp text-purple-600 hover:text-purple-800" title="Responder"><i class="fas fa-reply"></i></button>
+                        ${caso.fechaTurno ? `<button class="btn-pdf text-red-600 hover:text-red-800"><i class="fas fa-file-pdf"></i></button>` : ''}
                     </td>
                 `;
                 
-                // Event Listeners
-                row.querySelector('.btn-seleccionar').addEventListener('click', (e) => { e.stopPropagation(); seleccionarCaso(caso.id); });
-                row.querySelector('.btn-ver').addEventListener('click', (e) => { e.stopPropagation(); verDetalleCaso(caso.id); });
+                // Eventos de fila
+                tr.querySelector('.btn-select').addEventListener('click', (e) => { e.stopPropagation(); seleccionarCaso(caso.id); });
+                tr.querySelector('.btn-resp').addEventListener('click', (e) => { e.stopPropagation(); abrirModalRespuesta(caso); });
+                if(tr.querySelector('.btn-pdf')) tr.querySelector('.btn-pdf').addEventListener('click', (e) => { e.stopPropagation(); verComprobante(caso); });
                 
-                // --- CORRECCIÓN CLAVE: Abrir el modal NUEVO de respuesta ---
-                row.querySelector('.btn-responder').addEventListener('click', (e) => { 
-                    e.stopPropagation(); 
-                    abrirModalRespuestaCliente(caso.id); 
-                });
-                
-                if (row.querySelector('.btn-comprobante')) 
-                    row.querySelector('.btn-comprobante').addEventListener('click', (e) => { e.stopPropagation(); mostrarComprobante(caso); });
-                
-                if (row.querySelector('.btn-pdf-respuesta'))
-                    row.querySelector('.btn-pdf-respuesta').addEventListener('click', (e) => { e.stopPropagation(); descargarRespuestaPDF(caso); });
-                
-                casosBody.appendChild(row);
-            });
-            
-            actualizarPaginacion();
-        }
-
-        // --- FUNCIONES DEL MODAL DE RESPUESTA CLIENTE (CORREGIDO) ---
-        function abrirModalRespuestaCliente(idCaso) {
-            const caso = casosAsignados.find(c => c.id === idCaso);
-            if (!caso) return;
-            
-            casoParaResponder = caso;
-            
-            // Llenar datos
-            respNombre.textContent = caso.personName || 'No especificado';
-            respDNI.textContent = caso.dni || 'No especificado';
-            respTelefono.textContent = caso.telefono || 'No especificado';
-            respEmail.textContent = caso.email || 'No registrado';
-            respTipo.textContent = caso.type || 'No especificado';
-            respDescripcion.textContent = caso.description || 'No especificado';
-            
-            iniciarContadorRespuesta(caso.timestamp);
-            cargarHistorialRespuestas(caso);
-            
-            // Reset
-            respAsunto.value = 'confirmacion_turno';
-            respMensaje.value = '';
-            
-            modalRespuestaCliente.classList.remove('hidden');
-        }
-
-        function cerrarModalRespuestaCliente() {
-            modalRespuestaCliente.classList.add('hidden');
-            casoParaResponder = null;
-            if (intervaloContadorRespuesta) {
-                clearInterval(intervaloContadorRespuesta);
-                intervaloContadorRespuesta = null;
-            }
-        }
-
-        function iniciarContadorRespuesta(fechaISO) {
-            if (intervaloContadorRespuesta) clearInterval(intervaloContadorRespuesta);
-            
-            intervaloContadorRespuesta = setInterval(() => {
-                const diff = new Date() - new Date(fechaISO);
-                const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-                const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-                tiempoTexto.textContent = `${dias} días, ${horas} horas`;
-                
-                contadorTiempo.className = "tiempo-transcurrido " + 
-                    (dias >= 3 ? 'tiempo-alto' : (dias >= 1 ? 'tiempo-medio' : 'tiempo-normal'));
-            }, 1000);
-        }
-
-        function cargarHistorialRespuestas(caso) {
-            historialRespuestas.innerHTML = '';
-            if (!caso.respuestas || caso.respuestas.length === 0) {
-                historialRespuestas.innerHTML = '<p class="text-gray-500 text-center">No hay historial</p>';
-                return;
-            }
-            
-            const historial = [...caso.respuestas].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-            
-            historial.forEach(r => {
-                const div = document.createElement('div');
-                div.className = 'historial-item';
-                div.innerHTML = `
-                    <div class="flex justify-between">
-                        <span class="font-bold text-xs">${r.usuario}</span>
-                        <span class="text-xs text-gray-500">${new Date(r.fecha).toLocaleString()}</span>
-                    </div>
-                    <p class="text-xs mt-1">${r.mensaje}</p>
-                    <div class="text-xs text-gray-500 mt-1"><i class="fas fa-paper-plane"></i> ${r.modo}</div>
-                `;
-                historialRespuestas.appendChild(div);
+                tr.addEventListener('click', () => seleccionarCaso(caso.id));
+                casosBody.appendChild(tr);
             });
         }
-
-        function enviarRespuestaWhatsapp() {
-            if (!casoParaResponder) return;
-            const telefono = respTelefono.textContent.replace(/\D/g, ''); // Solo números
-            const mensaje = respMensaje.value.trim();
-            
-            if (!telefono) { mostrarNotificacionTemp('Sin teléfono registrado', 'error'); return; }
-            if (!mensaje) { mostrarNotificacionTemp('Escribe un mensaje', 'warning'); return; }
-            
-            const asuntoTexto = respAsunto.options[respAsunto.selectedIndex].text;
-            const textoFinal = `*${asuntoTexto}*\n\nHola ${respNombre.textContent},\n\n${mensaje}\n\nAtte: ${usuarioActual}\nDefensoría Civil y Comercial N6`;
-            
-            window.open(`https://wa.me/${telefono}?text=${encodeURIComponent(textoFinal)}`, '_blank');
-            
-            registrarRespuestaEnCaso(mensaje, 'whatsapp', asuntoTexto);
-            mostrarNotificacionTemp('Abriendo WhatsApp...', 'success');
-            cerrarModalRespuestaCliente();
+        
+        function cambiarPagina(pag) {
+            paginaActual = pag;
+            renderizarCasos();
         }
-
-        function enviarRespuestaEmail() {
-            if (!casoParaResponder) return;
-            const email = respEmail.textContent;
-            const mensaje = respMensaje.value.trim();
-            
-            if (!email || !email.includes('@')) { mostrarNotificacionTemp('Email inválido o no registrado', 'error'); return; }
-            if (!mensaje) { mostrarNotificacionTemp('Escribe un mensaje', 'warning'); return; }
-            
-            const asuntoTexto = respAsunto.options[respAsunto.selectedIndex].text;
-            const cuerpo = `Estimado/a ${respNombre.textContent}:\n\n${mensaje}\n\nAtentamente,\n${usuarioActual}\nDefensoría N6`;
-            
-            window.open(`mailto:${email}?subject=${encodeURIComponent(asuntoTexto)}&body=${encodeURIComponent(cuerpo)}`, '_blank');
-            
-            registrarRespuestaEnCaso(mensaje, 'correo', asuntoTexto);
-            mostrarNotificacionTemp('Abriendo Correo...', 'success');
-            cerrarModalRespuestaCliente();
-        }
-
-        async function registrarRespuestaEnCaso(mensaje, modo, asunto) {
-            try {
-                const casoRef = ref(db, `atencion/${casoParaResponder.id}`);
-                const respuestas = casoParaResponder.respuestas || [];
-                const notas = casoParaResponder.notas || [];
-                
-                const nuevaRespuesta = {
-                    fecha: new Date().toISOString(),
-                    usuario: usuarioActual,
-                    mensaje: mensaje,
-                    modo: modo,
-                    asunto: asunto,
-                    tipo: 'respuesta'
-                };
-                
-                await update(casoRef, {
-                    respuestas: [...respuestas, nuevaRespuesta],
-                    notas: [...notas, {
-                        fecha: new Date().toISOString(),
-                        usuario: usuarioActual,
-                        texto: `Respuesta (${modo}): ${mensaje}`
-                    }]
-                });
-                
-                // Actualización local optimista
-                const idx = allCases.findIndex(c => c.id === casoParaResponder.id);
-                if (idx !== -1) {
-                    if (!allCases[idx].respuestas) allCases[idx].respuestas = [];
-                    allCases[idx].respuestas.push(nuevaRespuesta);
-                }
-                filtrarYMostrarCasosAsignados();
-                
-            } catch (error) {
-                console.error("Error al registrar:", error);
-                mostrarNotificacionTemp('Error al guardar respuesta en base de datos', 'error');
-            }
-        }
-        // --- FIN MODAL RESPUESTA CLIENTE ---
 
         function seleccionarCaso(id) {
             casoSeleccionado = id;
-            document.querySelectorAll('#casos-body tr').forEach(tr => tr.classList.remove('bg-blue-50'));
-            const fila = document.querySelector(`tr[data-id="${id}"]`);
-            if (fila) fila.classList.add('bg-blue-50');
-            
-            btnResuelto.disabled = false;
-            btnDerivar.disabled = false;
-            btnActualizar.disabled = false;
+            document.querySelectorAll('button:disabled').forEach(b => b.disabled = false);
+            renderizarCasos(); // Para actualizar el bg de la fila
         }
 
-        function verDetalleCaso(id) {
-            const caso = casosAsignados.find(c => c.id === id);
-            if (!caso) return;
-            casoSeleccionadoDetalle = caso;
+        // --- FUNCIONES MODALES ---
+
+        // 1. Respuesta
+        function abrirModalRespuesta(caso) {
+            casoParaResponder = caso;
+            document.getElementById('resp-nombre').textContent = caso.personName;
+            document.getElementById('resp-dni').textContent = caso.dni;
+            document.getElementById('resp-telefono').textContent = caso.telefono;
+            document.getElementById('resp-email').textContent = caso.email || '-';
+            document.getElementById('resp-descripcion').textContent = caso.description;
             
-            detalleNombre.textContent = caso.personName;
-            detalleDescripcion.textContent = caso.description;
-            
-            // ... (llenado de otros campos detalle)
-            // Lógica simplificada de observaciones:
-            detalleObservaciones.innerHTML = '';
-            const notas = [...(caso.observaciones || []), ...(caso.notas || [])];
-            if (notas.length) {
-                notas.sort((a,b) => new Date(b.fecha) - new Date(a.fecha)).forEach(n => {
-                    detalleObservaciones.innerHTML += `<div class="mb-2 border-b pb-2"><span class="font-bold text-xs">${n.usuario}</span>: <span class="text-sm">${n.texto}</span></div>`;
+            // Historial
+            const histDiv = document.getElementById('historial-respuestas');
+            histDiv.innerHTML = '';
+            if(caso.respuestas) {
+                caso.respuestas.forEach(r => {
+                    histDiv.innerHTML += `<div class="border-l-2 border-blue-500 pl-2 mb-2"><p class="font-bold">${r.modo}</p><p>${r.mensaje}</p></div>`;
                 });
             } else {
-                detalleObservaciones.innerHTML = '<p class="text-gray-500">Sin observaciones</p>';
+                histDiv.innerHTML = 'Sin respuestas previas.';
             }
-            
-            modalDetalle.classList.remove('hidden');
+
+            // Tiempo
+            if(intervaloContadorRespuesta) clearInterval(intervaloContadorRespuesta);
+            intervaloContadorRespuesta = setInterval(() => {
+                const diff = new Date() - new Date(caso.timestamp);
+                const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+                document.getElementById('tiempo-texto').textContent = `${dias} días transcurridos`;
+            }, 1000);
+
+            abrirModal('modal-respuesta-cliente');
         }
-        
-        // --- FUNCIÓN AGREGADA (Corrección para botón header) ---
+
+        async function enviarWhatsapp() {
+            if(!casoParaResponder) return;
+            const tel = document.getElementById('resp-telefono').textContent.replace(/\D/g,'');
+            const msg = document.getElementById('resp-mensaje').value;
+            if(!tel) return alert("Sin teléfono");
+            
+            window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`, '_blank');
+            await registrarRespuesta(casoParaResponder.id, msg, 'WhatsApp');
+            cerrarModal('modal-respuesta-cliente');
+        }
+
+        async function enviarEmail() {
+            if(!casoParaResponder) return;
+            const mail = document.getElementById('resp-email').textContent;
+            const msg = document.getElementById('resp-mensaje').value;
+            if(!mail || !mail.includes('@')) return alert("Email inválido");
+            
+            window.open(`mailto:${mail}?body=${encodeURIComponent(msg)}`, '_blank');
+            await registrarRespuesta(casoParaResponder.id, msg, 'Email');
+            cerrarModal('modal-respuesta-cliente');
+        }
+
+        async function registrarRespuesta(id, mensaje, modo) {
+            const casoRef = ref(db, `atencion/${id}`);
+            // Obtenemos snapshot actual para no sobrescribir arrays
+            const caso = allCases.find(c => c.id === id);
+            const respuestas = caso.respuestas || [];
+            respuestas.push({
+                fecha: new Date().toISOString(),
+                usuario: usuarioActual,
+                mensaje, modo
+            });
+            await update(casoRef, { respuestas });
+        }
+
+        // 2. Detalle / Notas
         function abrirModalDetalle() {
-            if (casoSeleccionado) {
-                verDetalleCaso(casoSeleccionado);
-            } else {
-                mostrarNotificacionTemp('Por favor selecciona un caso primero', 'warning');
-            }
-        }
-        
-        function cerrarModalDetalle() { modalDetalle.classList.add('hidden'); }
-        
-        async function guardarActualizacion() {
-            if (!casoSeleccionadoDetalle) return;
-            const texto = nuevaObservacion.value.trim();
-            if (!texto) return;
+            if(!casoSeleccionado) return;
+            const caso = allCases.find(c => c.id === casoSeleccionado);
+            casoSeleccionadoDetalle = caso;
             
-            const refCaso = ref(db, `atencion/${casoSeleccionadoDetalle.id}`);
+            document.getElementById('detalle-nombre').textContent = caso.personName;
+            document.getElementById('detalle-descripcion').textContent = caso.description;
+            
+            const notasDiv = document.getElementById('detalle-observaciones');
+            notasDiv.innerHTML = '';
+            if(caso.notas) {
+                caso.notas.forEach(n => {
+                    notasDiv.innerHTML += `<div class="mb-2 text-xs border-b"><span class="font-bold">${n.usuario}</span>: ${n.texto}</div>`;
+                });
+            } else {
+                notasDiv.innerHTML = 'Sin notas.';
+            }
+            abrirModal('modal-detalle');
+        }
+
+        async function guardarNota() {
+            if(!casoSeleccionadoDetalle) return;
+            const texto = document.getElementById('nueva-observacion').value;
+            if(!texto) return;
+            
             const notas = casoSeleccionadoDetalle.notas || [];
-            await update(refCaso, {
-                notas: [...notas, { fecha: new Date().toISOString(), usuario: usuarioActual, texto }]
+            notas.push({
+                fecha: new Date().toISOString(),
+                usuario: usuarioActual,
+                texto
             });
-            mostrarNotificacionTemp('Observación guardada', 'success');
-            cerrarModalDetalle();
+            
+            await update(ref(db, `atencion/${casoSeleccionadoDetalle.id}`), { notas });
+            document.getElementById('nueva-observacion').value = '';
+            cerrarModal('modal-detalle');
         }
 
-        // ... (Resto de funciones: Marcar Resuelto, Derivar, Nueva Consulta, Calendario, Utilidades)
-        // Se mantienen igual que el original pero asegurando que llamen a renderizarCasos() al finalizar.
-        
-        async function marcarComoResuelto() {
-            if (!casoSeleccionado) return;
-            if(!confirm('¿Marcar como resuelto?')) return;
-            await update(ref(db, `atencion/${casoSeleccionado}`), {
-                estado: "resuelta",
-                resueltoPor: usuarioActual
-            });
-            mostrarNotificacionTemp('Caso resuelto', 'success');
-            casoSeleccionado = null;
-        }
-
-        function abrirModalDerivar() { 
-            if (casoSeleccionado) modalDerivar.classList.remove('hidden'); 
-        }
-        function cerrarModalDerivar() { modalDerivar.classList.add('hidden'); }
-        
-        async function derivarCaso() {
-            const destino = selectUsuarioDerivar.value;
-            if (!destino) return;
-            await update(ref(db, `atencion/${casoSeleccionado}`), {
-                assignedUser: destino,
-                estado: "pendiente"
-            });
-            mostrarNotificacionTemp('Caso derivado', 'success');
-            cerrarModalDerivar();
-        }
-        
-        // Calendario Logic
-        function cargarCalendario() {
-            // ... (Lógica de calendario original)
-            const hoyStr = new Date().toISOString().split('T')[0];
-            const turnosHoy = casosAsignados.filter(c => c.fechaTurno === hoyStr);
-            renderizarCalendario(turnosHoy);
-        }
-        
-        function renderizarCalendario(casos) {
-            calendarioGrid.innerHTML = '';
-            // ... (Renderizado de tarjetas de calendario)
-            // Si está vacío:
-            if(casos.length === 0) calendarioGrid.innerHTML = '<p class="col-span-full text-center text-gray-500">Sin turnos hoy</p>';
-            // Renderizado simplificado para no extender demasiado:
-            casos.forEach(c => {
-                 const card = document.createElement('div');
-                 card.className = "bg-white p-4 rounded shadow border-l-4 border-blue-500";
-                 card.innerHTML = `<p class="font-bold">${c.horarioTurno}</p><p>${c.personName}</p>`;
-                 calendarioGrid.appendChild(card);
-            });
-        }
-        
-        // Nueva Consulta Logic
-        function abrirModalNuevaConsulta() {
-             const check = verificarDisponibilidadParaNuevaConsulta();
-             if(!check.disponible) { mostrarAlertaSistemaNoDisponible(check.mensaje); return; }
-             
-             formNuevaConsulta.reset();
-             selectUsuarioAsignar.value = usuarioActual;
-             renderCalendarioNuevo();
-             modalNuevaConsulta.classList.remove('hidden');
-        }
-        
-        function cerrarModalNuevaConsulta() { modalNuevaConsulta.classList.add('hidden'); }
-        
-        function renderCalendarioNuevo() {
-            // ... (Lógica de calendario para seleccionar fecha turno - Mantenida del original)
-            calendarGridNuevo.innerHTML = '';
-            // Simplificado: Generar días del mes actual
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            for(let i=1; i<=daysInMonth; i++) {
-                const d = document.createElement('div');
-                d.className = "calendar-day-nuevo text-center p-1 cursor-pointer hover:bg-blue-100 rounded";
-                d.textContent = i;
-                d.onclick = () => { 
-                    inputFechaTurno.value = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-                    actualizarHorariosDisponiblesNuevo();
-                    document.querySelectorAll('.calendar-day-nuevo').forEach(el=>el.classList.remove('bg-blue-500','text-white'));
-                    d.classList.add('bg-blue-500','text-white');
-                };
-                calendarGridNuevo.appendChild(d);
+        // 3. Acciones Rápidas
+        async function marcarResuelto() {
+            if(!casoSeleccionado) return;
+            if(confirm("¿Marcar caso como Resuelto?")) {
+                await update(ref(db, `atencion/${casoSeleccionado}`), { estado: 'resuelta', resueltoPor: usuarioActual });
+                mostrarNotificacion('Caso Resuelto', 'success');
             }
         }
-        
-        function actualizarHorariosDisponiblesNuevo() {
-             horariosContainerNuevo.innerHTML = '';
-             ["07:00","07:30","08:00","08:30","09:00","09:30","10:00","10:30","11:00"].forEach(h => {
-                 const btn = document.createElement('button');
-                 btn.className = "border p-2 rounded hover:bg-green-50";
-                 btn.textContent = h;
-                 btn.type = "button";
-                 btn.onclick = () => {
-                     inputHorarioTurno.value = h;
-                     turnoSeleccionadoTexto.textContent = `Turno: ${inputFechaTurno.value} a las ${h}`;
-                 };
-                 horariosContainerNuevo.appendChild(btn);
-             });
+
+        function llenarSelectDerivar() {
+            const sel = document.getElementById('select-usuario-derivar');
+            listaUsuarios.forEach(u => {
+                const opt = document.createElement('option');
+                opt.value = u;
+                opt.textContent = u;
+                sel.appendChild(opt);
+            });
+        }
+
+        async function derivarCaso() {
+            const target = document.getElementById('select-usuario-derivar').value;
+            if(!casoSeleccionado || !target) return;
+            
+            await update(ref(db, `atencion/${casoSeleccionado}`), { assignedUser: target, estado: 'derivado' });
+            cerrarModal('modal-derivar');
+            mostrarNotificacion(`Derivado a ${target}`, 'success');
         }
         
+        // 4. Nueva Consulta
         async function guardarNuevaConsulta(e) {
             e.preventDefault();
             const data = {
-                personName: inputNombre.value,
-                dni: inputDNI.value,
-                telefono: inputTelefono.value,
-                email: inputEmail.value,
-                type: selectTipoConsulta.value,
-                description: textareaDescripcion.value,
+                personName: document.getElementById('input-nombre').value,
+                dni: document.getElementById('input-dni').value,
+                telefono: document.getElementById('input-telefono').value,
+                type: document.getElementById('select-tipo-consulta').value,
+                description: document.getElementById('textarea-descripcion').value,
                 assignedUser: usuarioActual,
-                estado: "pendiente",
+                estado: 'pendiente',
                 timestamp: new Date().toISOString(),
-                fechaTurno: inputFechaTurno.value,
-                horarioTurno: inputHorarioTurno.value
+                // Campos opcionales de turno
+                fechaTurno: document.getElementById('input-fecha-turno').value || null,
+                horarioTurno: document.getElementById('input-horario-turno').value || null
             };
             
             await push(ref(db, "atencion"), data);
-            mostrarNotificacionTemp('Consulta guardada', 'success');
-            cerrarModalNuevaConsulta();
+            cerrarModal('modal-nueva-consulta');
+            document.getElementById('form-nueva-consulta').reset();
+            mostrarNotificacion('Consulta creada', 'success');
         }
 
-        // Utils
-        function mostrarNotificacionTemp(msg, type) {
+        // 5. Comprobante PDF
+        function verComprobante(caso) {
+            casoParaComprobante = caso;
+            document.getElementById('comp-nombre').textContent = caso.personName;
+            document.getElementById('comp-dni').textContent = caso.dni;
+            document.getElementById('comp-fecha').textContent = caso.fechaTurno;
+            document.getElementById('comp-horario').textContent = caso.horarioTurno;
+            abrirModal('modal-comprobante');
+        }
+        
+        function descargarComprobante() {
+            if(!casoParaComprobante) return;
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            doc.setFontSize(18);
+            doc.text("Defensoría Civil y Comercial N6", 105, 20, null, null, 'center');
+            doc.setFontSize(14);
+            doc.text("COMPROBANTE DE TURNO", 105, 30, null, null, 'center');
+            
+            doc.setFontSize(12);
+            doc.text(`Nombre: ${casoParaComprobante.personName}`, 20, 50);
+            doc.text(`DNI: ${casoParaComprobante.dni}`, 20, 60);
+            doc.text(`Fecha: ${casoParaComprobante.fechaTurno} - Hora: ${casoParaComprobante.horarioTurno}`, 20, 70);
+            doc.text(`Atendido por: ${casoParaComprobante.assignedUser}`, 20, 80);
+            
+            doc.save(`Turno_${casoParaComprobante.dni}.pdf`);
+        }
+
+        function exportarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            let y = 10;
+            doc.text(`Reporte de Casos - ${usuarioActual}`, 10, y);
+            y += 10;
+            
+            casosAsignados.forEach(c => {
+                if(y > 280) { doc.addPage(); y = 10; }
+                doc.setFontSize(10);
+                doc.text(`${c.timestamp.split('T')[0]} - ${c.personName} - ${c.estado}`, 10, y);
+                y += 7;
+            });
+            doc.save('mis_casos.pdf');
+        }
+
+        // --- CALENDARIO ---
+        function renderizarCalendario() {
+            const grid = document.getElementById('calendario-grid');
+            grid.innerHTML = '';
+            const hoy = new Date().toISOString().split('T')[0];
+            
+            const turnosHoy = casosAsignados.filter(c => c.fechaTurno === hoy);
+            
+            if(turnosHoy.length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 col-span-full text-center">No tienes turnos para hoy.</p>';
+                return;
+            }
+            
+            turnosHoy.sort((a,b) => (a.horarioTurno || '').localeCompare(b.horarioTurno || ''));
+            
+            turnosHoy.forEach(c => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-4 rounded shadow border-l-4 border-green-500 hover:shadow-lg transition-shadow cursor-pointer";
+                card.innerHTML = `
+                    <p class="font-bold text-lg text-green-700">${c.horarioTurno || 'Sin Hora'}</p>
+                    <p class="font-semibold">${c.personName}</p>
+                    <p class="text-xs text-gray-500">${c.type}</p>
+                `;
+                card.onclick = () => {
+                    cambiarVista('casos');
+                    // Pequeño hack para filtrar por ese caso si quisiéramos, por ahora solo vuelve a lista
+                };
+                grid.appendChild(card);
+            });
+        }
+
+        // --- UTILIDADES UI ---
+        function cambiarVista(vista) {
+            dashboardSection.classList.toggle('hidden', vista !== 'casos');
+            calendarioSection.classList.toggle('hidden', vista !== 'calendario');
+            
+            // Actualizar botones visualmente
+            const activeClass = ['bg-blue-600', 'text-white'];
+            const inactiveClass = ['bg-gray-200', 'text-gray-700'];
+            
+            const setBtn = (id, active) => {
+                const el = document.getElementById(id);
+                if(active) {
+                    el.classList.add(...activeClass); el.classList.remove(...inactiveClass);
+                } else {
+                    el.classList.add(...inactiveClass); el.classList.remove(...activeClass);
+                }
+            };
+            
+            setBtn('btn-ver-casos', vista === 'casos');
+            setBtn('btn-ver-calendario', vista === 'calendario');
+            setBtn('btn-ver-casos-cal', vista === 'casos');
+            setBtn('btn-ver-calendario-cal', vista === 'calendario');
+        }
+
+        function abrirModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+        
+        function mostrarNotificacion(msg, type='info') {
             const div = document.createElement('div');
-            div.className = `bg-white p-4 rounded shadow-lg border-l-4 ${type==='error'?'border-red-500':'border-green-500'}`;
+            div.className = `p-3 rounded shadow text-white mb-2 ${type==='error'?'bg-red-500':(type==='success'?'bg-green-500':'bg-blue-500')}`;
             div.textContent = msg;
             document.getElementById('notification-temp-container').appendChild(div);
-            setTimeout(() => div.remove(), 4000);
-        }
-        
-        function mostrarNotificacionPersistente(caso) {
-             // ... (Lógica de notificación de nuevo caso)
-        }
-        
-        function obtenerColorEstado(estado) {
-            if(estado.includes('resuelta')) return 'estado-resuelto';
-            if(estado.includes('pendiente')) return 'estado-pendiente';
-            return 'estado-proceso';
-        }
-        
-        function formatoFecha(iso) { return new Date(iso).toLocaleDateString(); }
-        function formatoFechaCorta(iso) { return new Date(iso + 'T00:00:00').toLocaleDateString(); }
-        function formatoFechaCompleta(iso) { return new Date(iso).toLocaleDateString(undefined, {weekday:'long', year:'numeric', month:'long', day:'numeric'}); }
-
-        // Funciones auxiliares calendario
-        function usarHoraPersonalizada() {
-            if(inputHoraPersonalizada.value) {
-                inputHorarioTurno.value = inputHoraPersonalizada.value;
-                turnoSeleccionadoTexto.textContent = `Turno Personalizado: ${inputFechaTurno.value} a las ${inputHoraPersonalizada.value}`;
-            }
-        }
-        function cambiarMes(d) {
-            currentMonth += d;
-            if(currentMonth > 11) { currentMonth=0; currentYear++; }
-            if(currentMonth < 0) { currentMonth=11; currentYear--; }
-            currentMonthElement.textContent = `${currentYear}-${currentMonth+1}`;
-            renderCalendarioNuevo();
-        }
-
-        // --- FUNCIONES AGREGADAS PARA CORREGIR EL FLUJO (Estaban faltando en el original y causaban errores) ---
-        function actualizarContadorPendientes() {
-            if (!usuarioActual) return;
-            const pendientes = casosAsignados.filter(c => c.estado === 'pendiente').length;
-            const badge1 = document.getElementById('contador-pendientes');
-            const badge2 = document.getElementById('contador-pendientes-cal');
-            if (badge1) badge1.textContent = pendientes;
-            if (badge2) badge2.textContent = pendientes;
-        }
-
-        function cargarConfiguracionAgenda() {
-            // Función placeholder para evitar errores de referencia si se intenta llamar
-            // en una futura expansión de funcionalidad.
-            // Actualmente el sistema usa lógica hardcoded en 'verificarDisponibilidadParaNuevaConsulta'
+            setTimeout(() => div.remove(), 3000);
         }
 
     </script>
