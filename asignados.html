@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Casos Asignados</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        
+        .modal-feriado-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeInOverlay 0.3s ease-out;
+        }
+
+        .modal-feriado {
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 1.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            transform: scale(1);
+            animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        .calendar-dot {
+            height: 6px;
+            width: 6px;
+            background-color: #3b82f6;
+            border-radius: 50%;
+            display: inline-block;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-3">
+                    <div class="bg-indigo-600 p-2 rounded-lg">
+                        <i class="fas fa-briefcase-medical text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-slate-800">Panel Médico</h1>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <p id="nombre-usuario" class="text-sm font-semibold text-slate-700">Cargando...</p>
+                        <p id="rol-usuario" class="text-xs text-slate-500 text-capitalize"></p>
+                    </div>
+                    <button onclick="cerrarSesion()" class="p-2 text-slate-400 hover:text-red-500 transition-colors">
+                        <i class="fas fa-sign-out-alt text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex border-b border-slate-200 mb-8 overflow-x-auto">
+            <button onclick="switchTab('listado')" id="tab-listado" class="px-6 py-3 border-b-2 border-indigo-600 text-indigo-600 font-medium whitespace-nowrap">
+                <i class="fas fa-list-ul mr-2"></i>Mis Casos 
+                <span id="contador-pendientes" class="ml-2 bg-indigo-100 text-indigo-600 py-0.5 px-2 rounded-full text-xs font-bold">0</span>
+            </button>
+            <button onclick="switchTab('agenda')" id="tab-agenda" class="px-6 py-3 border-b-2 border-transparent text-slate-500 hover:text-slate-700 font-medium whitespace-nowrap">
+                <i class="fas fa-calendar-alt mr-2"></i>Agenda y Turnos
+                <span id="contador-pendientes-cal" class="ml-2 bg-slate-100 text-slate-500 py-0.5 px-2 rounded-full text-xs font-bold">0</span>
+            </button>
+        </div>
+
+        <div id="section-listado" class="space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <h2 class="text-2xl font-bold text-slate-800">Casos Asignados</h2>
+                <div class="flex gap-2 bg-white p-1 rounded-xl shadow-sm border border-slate-200">
+                    <button onclick="cargarCasos('todos')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium bg-slate-100 text-slate-800">Todos</button>
+                    <button onclick="cargarCasos('pendiente')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50">Pendientes</button>
+                    <button onclick="cargarCasos('completado')" class="filter-btn px-4 py-2 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-50">Completados</button>
+                </div>
+            </div>
+
+            <div id="contenedor-casos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+        </div>
+
+        <div id="section-agenda" class="hidden animate-in fade-in duration-500">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 id="currentMonth" class="text-lg font-bold text-slate-800">Octubre 2023</h3>
+                        <div class="flex gap-2">
+                            <button onclick="cambiarMes(-1)" class="p-2 hover:bg-slate-100 rounded-lg text-slate-600"><i class="fas fa-chevron-left"></i></button>
+                            <button onclick="cambiarMes(1)" class="p-2 hover:bg-slate-100 rounded-lg text-slate-600"><i class="fas fa-chevron-right"></i></button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-7 gap-px bg-slate-200 border border-slate-200 rounded-lg overflow-hidden" id="calendario-grid">
+                        <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Dom</div>
+                        <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Lun</div>
+                        <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Mar</div>
+                        <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Mié</div>
+                        <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Jue</div>
+                        <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Vie</div>
+                        <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Sáb</div>
+                        </div>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+                        <h3 class="font-bold text-slate-800 mb-4">Día Seleccionado</h3>
+                        <div id="info-dia-seleccionado" class="text-center py-8 border-2 border-dashed border-slate-100 rounded-xl">
+                            <i class="far fa-calendar-check text-4xl text-slate-200 mb-3"></i>
+                            <p class="text-slate-500 text-sm">Selecciona un día del calendario para ver o agendar turnos</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="modal-turno" class="hidden fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-slate-800">Programar Turno</h3>
+                <button onclick="cerrarModalTurno()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-slate-700 mb-1">Paciente</label>
+                    <input type="text" id="paciente-nombre-turno" readonly class="w-full bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-slate-600">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Fecha</label>
+                        <input type="date" id="fecha-turno" class="w-full border border-slate-200 rounded-lg px-4 py-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Hora</label>
+                        <select id="hora-turno" class="w-full border border-slate-200 rounded-lg px-4 py-2">
+                            <option value="09:00">09:00 AM</option>
+                            <option value="10:00">10:00 AM</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="15:00">03:00 PM</option>
+                            <option value="16:00">04:00 PM</option>
+                        </select>
+                    </div>
+                </div>
+                <button onclick="confirmarTurno()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-indigo-200">
+                    Confirmar Turno
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-feriado" class="modal-feriado-overlay hidden">
+        <div class="modal-feriado">
+            <div class="bg-red-50 p-6 flex flex-col items-center text-center">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                    <i class="fas fa-calendar-times text-red-600 text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-red-900 mb-2">¡Atención: Día No Laboral!</h3>
+                <p class="text-red-700" id="mensaje-feriado">Este día está marcado como feriado o inhábil.</p>
+            </div>
+            <div class="p-6 bg-white space-y-3">
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    No es posible agendar turnos médicos en fechas festivas o fines de semana para garantizar el descanso del personal. Por favor, selecciona un día hábil.
+                </p>
+                <div class="pt-4 flex flex-col gap-2">
+                    <button onclick="cerrarModalFeriado()" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-red-100">
+                        Entendido, elegir otra fecha
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN Y ESTADO ---
+        let usuarioActual = JSON.parse(localStorage.getItem('usuarioLogueado'));
+        
+        // Redirigir si no hay sesión
+        if (!usuarioActual) {
+            window.location.href = 'index.html';
+        }
+
+        // Datos iniciales si no existen (CORREGIDO: asignadoA debe coincidir con los nombres de usuario)
+        let casosAsignados = JSON.parse(localStorage.getItem('casosAsignados')) || [
+            { id: 101, paciente: "Juan Pérez", tipo: "Consulta General", estado: "pendiente", fecha: "2023-10-25", asignadoA: "Dr. García" },
+            { id: 102, paciente: "Ana López", tipo: "Urgencia", estado: "pendiente", fecha: "2023-10-26", asignadoA: "Dr. García" },
+            { id: 103, paciente: "Roberto Ruiz", tipo: "Control", estado: "completado", fecha: "2023-10-20", asignadoA: "Dr. García" },
+            { id: 104, paciente: "Marta Gómez", tipo: "Consulta", estado: "pendiente", fecha: "2023-10-27", asignadoA: "Dra. Rodríguez" }
+        ];
+
+        let diaSeleccionado = null;
+        let casoParaTurno = null;
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+
+        // --- INICIALIZACIÓN ---
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('nombre-usuario').textContent = usuarioActual.nombre;
+            document.getElementById('rol-usuario').textContent = usuarioActual.rol || 'Médico';
+            
+            cargarCasos();
+            actualizarContadorPendientes();
+            renderCalendarioNuevo();
+        });
+
+        // --- FUNCIONES CORE ---
+
+        function cargarCasos(filtro = 'todos') {
+            const contenedor = document.getElementById('contenedor-casos');
+            contenedor.innerHTML = '';
+
+            // CORRECCIÓN: Filtrar por el usuario actual estrictamente por nombre
+            const misCasos = casosAsignados.filter(c => 
+                c.asignadoA && c.asignadoA.trim().toLowerCase() === usuarioActual.nombre.trim().toLowerCase()
+            );
+
+            let casosMostrar = misCasos;
+            if (filtro !== 'todos') {
+                casosMostrar = misCasos.filter(c => c.estado === filtro);
+            }
+
+            if (casosMostrar.length === 0) {
+                contenedor.innerHTML = `
+                    <div class="col-span-full py-20 text-center">
+                        <div class="bg-slate-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-folder-open text-slate-400 text-2xl"></i>
+                        </div>
+                        <p class="text-slate-500 font-medium">No tienes casos registrados bajo este criterio.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            casosMostrar.forEach(caso => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-all group';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${
+                            caso.estado === 'completado' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'
+                        }">${caso.estado}</span>
+                        <span class="text-xs text-slate-400 font-medium">ID: #${caso.id}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-slate-800 mb-1">${caso.paciente}</h3>
+                    <p class="text-sm text-slate-500 mb-4"><i class="fas fa-stethoscope mr-2"></i>${caso.tipo}</p>
+                    <div class="flex items-center gap-2 mb-6">
+                        <i class="far fa-calendar text-indigo-500"></i>
+                        <span class="text-sm font-semibold text-slate-700">${caso.fecha || 'Sin fecha'}</span>
+                    </div>
+                    <div class="flex gap-2">
+                        ${caso.estado === 'pendiente' ? `
+                            <button onclick="abrirModalTurno(${caso.id})" class="flex-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 text-sm font-bold py-2 rounded-lg transition-colors">
+                                Agendar
+                            </button>
+                            <button onclick="completarCaso(${caso.id})" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold py-2 rounded-lg transition-colors">
+                                Finalizar
+                            </button>
+                        ` : `
+                            <button class="w-full bg-slate-100 text-slate-400 text-sm font-bold py-2 rounded-lg cursor-not-allowed" disabled>
+                                Caso Cerrado
+                            </button>
+                        `}
+                    </div>
+                `;
+                contenedor.appendChild(card);
+            });
+
+            // Estilos botones filtro
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-100', 'text-slate-800');
+                btn.classList.add('text-slate-500');
+                if(btn.textContent.toLowerCase() === filtro) {
+                    btn.classList.add('bg-slate-100', 'text-slate-800');
+                }
+            });
+        }
+
+        function actualizarContadorPendientes() {
+            // CORRECCIÓN: Solo contar los pendientes DEL USUARIO LOGUEADO
+            const misPendientes = casosAsignados.filter(c => 
+                c.asignadoA && 
+                c.asignadoA.trim().toLowerCase() === usuarioActual.nombre.trim().toLowerCase() && 
+                c.estado === 'pendiente'
+            ).length;
+
+            const b1 = document.getElementById('contador-pendientes');
+            const b2 = document.getElementById('contador-pendientes-cal');
+            if(b1) b1.textContent = misPendientes;
+            if(b2) b2.textContent = misPendientes;
+        }
+
+        // --- GESTIÓN DE TURNOS ---
+
+        function abrirModalTurno(id) {
+            casoParaTurno = casosAsignados.find(c => c.id === id);
+            document.getElementById('paciente-nombre-turno').value = casoParaTurno.paciente;
+            document.getElementById('modal-turno').classList.remove('hidden');
+        }
+
+        function cerrarModalTurno() {
+            document.getElementById('modal-turno').classList.add('hidden');
+        }
+
+        function confirmarTurno() {
+            const fecha = document.getElementById('fecha-turno').value;
+            const hora = document.getElementById('hora-turno').value;
+
+            if(!fecha) return alert("Selecciona una fecha");
+
+            // Verificar si es fin de semana
+            const d = new Date(fecha + 'T00:00:00');
+            if(d.getDay() === 0 || d.getDay() === 6) {
+                mostrarAlertaFeriado("Los fines de semana no hay atención programada.");
+                return;
+            }
+
+            // Actualizar caso
+            casoParaTurno.fecha = fecha;
+            casoParaTurno.hora = hora;
+            
+            localStorage.setItem('casosAsignados', JSON.stringify(casosAsignados));
+            cerrarModalTurno();
+            cargarCasos();
+            renderCalendarioNuevo();
+            alert("Turno programado con éxito");
+        }
+
+        function completarCaso(id) {
+            const index = casosAsignados.findIndex(c => c.id === id);
+            casosAsignados[index].estado = 'completado';
+            localStorage.setItem('casosAsignados', JSON.stringify(casosAsignados));
+            cargarCasos();
+            actualizarContadorPendientes();
+        }
+
+        // --- CALENDARIO ---
+
+        function renderCalendarioNuevo() {
+            const grid = document.getElementById('calendario-grid');
+            // Mantener el header
+            const headers = `
+                <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Dom</div>
+                <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Lun</div>
+                <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Mar</div>
+                <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Mié</div>
+                <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Jue</div>
+                <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Vie</div>
+                <div class="bg-slate-50 py-2 text-center text-xs font-bold text-slate-500 uppercase">Sáb</div>
+            `;
+            grid.innerHTML = headers;
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            document.getElementById('currentMonth').textContent = new Intl.DateTimeFormat('es-ES', { month: 'long', year: 'numeric' }).format(new Date(currentYear, currentMonth));
+
+            // Espacios vacíos
+            for(let i=0; i<firstDay; i++) {
+                grid.innerHTML += `<div class="bg-slate-50/50 h-24 border-b border-r border-slate-100"></div>`;
+            }
+
+            // Días del mes
+            for(let day=1; day<=daysInMonth; day++) {
+                const fechaStr = `${currentYear}-${String(currentMonth+1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                
+                // CORRECCIÓN: Filtrar casos solo del usuario logueado para el calendario
+                const turnosDia = casosAsignados.filter(c => 
+                    c.fecha === fechaStr && 
+                    c.asignadoA && c.asignadoA.trim().toLowerCase() === usuarioActual.nombre.trim().toLowerCase()
+                );
+
+                grid.innerHTML += `
+                    <div onclick="seleccionarDia('${fechaStr}')" class="bg-white h-24 p-2 border-b border-r border-slate-100 cursor-pointer hover:bg-indigo-50 transition-colors relative group">
+                        <span class="text-sm font-semibold ${turnosDia.length > 0 ? 'text-indigo-600' : 'text-slate-700'}">${day}</span>
+                        <div class="mt-1">
+                            ${turnosDia.slice(0, 2).map(t => `<div class="text-[10px] bg-indigo-100 text-indigo-700 px-1 mb-0.5 rounded truncate">${t.paciente}</div>`).join('')}
+                            ${turnosDia.length > 2 ? `<div class="text-[10px] text-slate-400 font-bold">+${turnosDia.length - 2} más</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function cambiarMes(dir) {
+            currentMonth += dir;
+            if(currentMonth < 0) { currentMonth = 11; currentYear--; }
+            if(currentMonth > 11) { currentMonth = 0; currentYear++; }
+            renderCalendarioNuevo();
+        }
+
+        function seleccionarDia(fecha) {
+            diaSeleccionado = fecha;
+            const info = document.getElementById('info-dia-seleccionado');
+            
+            // CORRECCIÓN: Turnos del día DEL USUARIO
+            const turnos = casosAsignados.filter(c => 
+                c.fecha === fecha && 
+                c.asignadoA && c.asignadoA.trim().toLowerCase() === usuarioActual.nombre.trim().toLowerCase()
+            );
+
+            if(turnos.length === 0) {
+                info.innerHTML = `
+                    <div class="text-center">
+                        <p class="font-bold text-slate-800">${fecha}</p>
+                        <p class="text-sm text-slate-500 mt-2">No tienes turnos para este día.</p>
+                    </div>
+                `;
+            } else {
+                info.innerHTML = `
+                    <h4 class="font-bold text-slate-800 mb-3 border-b pb-2">${fecha}</h4>
+                    <div class="space-y-3">
+                        ${turnos.map(t => `
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
+                                <div>
+                                    <p class="text-sm font-bold text-slate-800">${t.paciente}</p>
+                                    <p class="text-xs text-slate-500">${t.hora || 'Hora no definida'}</p>
+                                </div>
+                                <span class="text-[10px] font-bold px-2 py-1 rounded-lg bg-white border border-slate-200">${t.tipo}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+        }
+
+        // --- UTILIDADES ---
+
+        function switchTab(tab) {
+            const listado = document.getElementById('section-listado');
+            const agenda = document.getElementById('section-agenda');
+            const tabL = document.getElementById('tab-listado');
+            const tabA = document.getElementById('tab-agenda');
+
+            if(tab === 'listado') {
+                listado.classList.remove('hidden');
+                agenda.classList.add('hidden');
+                tabL.classList.add('border-indigo-600', 'text-indigo-600');
+                tabL.classList.remove('border-transparent', 'text-slate-500');
+                tabA.classList.remove('border-indigo-600', 'text-indigo-600');
+                tabA.classList.add('border-transparent', 'text-slate-500');
+            } else {
+                listado.classList.add('hidden');
+                agenda.classList.remove('hidden');
+                tabA.classList.add('border-indigo-600', 'text-indigo-600');
+                tabA.classList.remove('border-transparent', 'text-slate-500');
+                tabL.classList.remove('border-indigo-600', 'text-indigo-600');
+                tabL.classList.add('border-transparent', 'text-slate-500');
+                renderCalendarioNuevo();
+            }
+        }
+
+        function mostrarAlertaFeriado(msj) {
+            document.getElementById('mensaje-feriado').textContent = msj;
+            document.getElementById('modal-feriado').classList.remove('hidden');
+        }
+
+        function cerrarModalFeriado() {
+            document.getElementById('modal-feriado').classList.add('hidden');
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem('usuarioLogueado');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>
