@@ -7,6 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+    
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -64,9 +67,15 @@
         @keyframes floatUp { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
         @keyframes fadeInOverlay { from { opacity: 0; } to { opacity: 1; } }
         
-        /* Modales Estilo Nuevo */
+        /* Modales */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
         .modal:not(.hidden) { display: flex !important; }
+        
+        /* Estilos Calendario (Importados de Interno) */
+        .calendar-day { cursor: pointer; }
+        .calendar-day:hover { background-color: #e6f7ff; }
+        .calendar-day.selected { background-color: #3b82f6; color: white; }
+        .calendar-day.disabled { color: #d1d5db; cursor: not-allowed; }
         
         /* Tiempo Transcurrido Estilos */
         .tiempo-transcurrido { padding: 12px; border-radius: 10px; font-weight: bold; text-align: center; transition: all 0.3s; margin-bottom: 20px; }
@@ -174,7 +183,7 @@
         
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6 flex flex-wrap gap-3">
-                <button id="btn-nueva-consulta" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700"><i class="fas fa-plus-circle mr-2"></i>Nuevo</button>
+                <button id="btn-nueva-consulta" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700"><i class="fas fa-plus-circle mr-2"></i>Nueva Consulta-Turno</button>
                 <button id="btn-marcar-resuelto" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 disabled:opacity-50" disabled><i class="fas fa-check-circle mr-2"></i>Resolver</button>
                 <button id="btn-actualizar-consulta" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50" disabled><i class="fas fa-edit mr-2"></i>Detalles Completos</button>
                 <button id="btn-derivar-caso" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 disabled:opacity-50" disabled><i class="fas fa-share-alt mr-2"></i>Derivar</button>
@@ -189,7 +198,7 @@
             <div class="bg-white rounded-xl shadow overflow-hidden mb-8">
                 <div class="px-6 py-4 border-b flex justify-between">
                     <h2 class="text-lg font-bold text-gray-800">Listado de Casos</h2>
-                    <button id="btn-exportar-pdf" class="text-red-600 text-sm"><i class="fas fa-file-pdf"></i> PDF</button>
+                    <button id="btn-exportar-pdf" class="text-red-600 text-sm hover:text-red-800 font-bold"><i class="fas fa-file-pdf"></i> Exportar PDF</button>
                 </div>
                 <div class="overflow-x-auto table-responsive">
                     <table class="min-w-full divide-y divide-gray-200">
@@ -246,6 +255,120 @@
             <div id="calendario-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
         </div>
     </section>
+
+    <div id="modal-registro" class="modal hidden">
+        <div class="bg-white rounded-xl w-full max-w-2xl mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div class="bg-blue-800 text-white p-4 flex justify-between items-center font-bold sticky top-0 z-10">
+                <span class="text-sm sm:text-base">Registrar Nueva Atención</span>
+                <button id="btn-cerrar-modal" class="text-2xl leading-none">&times;</button>
+            </div>
+            <form id="form-interno" class="p-4 sm:p-6 space-y-4 sm:space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 modal-content-grid">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Nombre Completo *</label>
+                        <input type="text" id="m-name" placeholder="Ej: Juan Pérez" required 
+                               class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">DNI</label>
+                        <input type="text" id="m-dni" placeholder="Ej: 12345678" maxlength="8" pattern="\d*"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                               class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Teléfono/WhatsApp</label>
+                        <input type="text" id="m-telefono" placeholder="Ej: 3764123456" maxlength="10" pattern="\d*"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                               class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo de Consulta *</label>
+                        <select id="m-type" class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                            <option value="Presencial">Presencial</option>
+                            <option value="Telefónica">Telefónica</option>
+                            <option value="WhatsApp">WhatsApp</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
+                    <textarea id="m-desc" placeholder="Detalles de la consulta..." 
+                              class="w-full border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none h-20 sm:h-24 text-sm"></textarea>
+                </div>
+                
+                <div class="border-t pt-4">
+                    <h3 class="text-base sm:text-lg font-bold text-gray-800 mb-3"><i class="fas fa-calendar-alt mr-2"></i>Asignar Turno (Opcional)</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Seleccione Fecha</label>
+                            <div class="bg-gray-50 p-3 sm:p-4 rounded-lg border">
+                                <div class="flex justify-between items-center mb-3 sm:mb-4">
+                                    <button type="button" id="prev-month" class="p-2 hover:bg-gray-200 rounded">
+                                        <i class="fas fa-chevron-left"></i>
+                                    </button>
+                                    <h4 id="current-month" class="font-bold text-gray-800 text-sm sm:text-base">Diciembre 2024</h4>
+                                    <button type="button" id="next-month" class="p-2 hover:bg-gray-200 rounded">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="grid grid-cols-7 gap-1 mb-2">
+                                    <div class="text-center text-xs font-bold text-gray-500">Lun</div>
+                                    <div class="text-center text-xs font-bold text-gray-500">Mar</div>
+                                    <div class="text-center text-xs font-bold text-gray-500">Mié</div>
+                                    <div class="text-center text-xs font-bold text-gray-500">Jue</div>
+                                    <div class="text-center text-xs font-bold text-gray-500">Vie</div>
+                                    <div class="text-center text-xs font-bold text-gray-500">Sáb</div>
+                                    <div class="text-center text-xs font-bold text-gray-500">Dom</div>
+                                </div>
+                                <div id="calendar-grid" class="grid grid-cols-7 gap-1"></div>
+                            </div>
+                            <input type="hidden" id="m-fecha-turno" value="">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-2">Horarios Disponibles</label>
+                            <div class="bg-gray-50 p-3 sm:p-4 rounded-lg border h-full">
+                                <div id="horarios-container" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                                    </div>
+                                <div class="mt-4">
+                                    <p id="info-capacidad" class="text-xs text-gray-600 mb-2">Cada horario tiene capacidad para 2 turnos simultáneos</p>
+                                    <label class="block text-sm font-semibold text-gray-700 mb-1">Horario Personalizado</label>
+                                    <div class="flex gap-2">
+                                        <input type="time" id="m-hora-personalizada" 
+                                               class="flex-1 border p-2 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                               min="07:00" max="11:30">
+                                        <button type="button" id="btn-usar-hora-personalizada" 
+                                                class="bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 whitespace-nowrap transition">
+                                            Usar
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="m-horario-turno" value="">
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                        <p id="turno-seleccionado" class="text-sm text-gray-700">
+                            <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+                            <span id="turno-texto">No se ha asignado turno</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Usuario asignado</label>
+                    <input type="text" id="m-user" class="w-full border p-2 rounded bg-gray-100 text-sm" readonly>
+                </div>
+                
+                <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition text-sm sm:text-base">
+                    <i class="fas fa-save mr-2"></i> Guardar en Sistema
+                </button>
+            </form>
+        </div>
+    </div>
 
     <div id="modal-respuesta-cliente" class="modal hidden">
         <div class="bg-white rounded-xl w-full max-w-4xl mx-4 overflow-hidden max-h-[90vh] overflow-y-auto">
@@ -492,44 +615,9 @@
         </div>
     </div>
 
-    <div id="modal-nueva-consulta" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div class="bg-green-600 text-white p-4 flex justify-between">
-                <h3 class="font-bold">Nueva Consulta</h3>
-                <button id="btn-cerrar-nueva-consulta">&times;</button>
-            </div>
-            <form id="form-nueva-consulta" class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="input-nombre" placeholder="Nombre *" class="border p-2 rounded" required>
-                <input type="text" id="input-dni" placeholder="DNI" class="border p-2 rounded">
-                <input type="text" id="input-telefono" placeholder="Teléfono" class="border p-2 rounded">
-                <select id="select-tipo-consulta" class="border p-2 rounded">
-                    <option value="Presencial">Presencial</option>
-                    <option value="Telefónica">Telefónica</option>
-                    <option value="WhatsApp">WhatsApp</option>
-                </select>
-                <textarea id="textarea-descripcion" placeholder="Descripción" class="border p-2 rounded md:col-span-2"></textarea>
-                
-                <div class="md:col-span-2 border p-4 rounded bg-gray-50">
-                    <p class="font-bold mb-2">Asignar Turno (Opcional)</p>
-                    <div class="flex gap-2 mb-2">
-                        <input type="date" id="input-fecha-turno" class="border p-2 rounded">
-                        <select id="input-horario-turno" class="border p-2 rounded">
-                            <option value="">Hora...</option>
-                            <option>07:00</option><option>07:30</option><option>08:00</option><option>08:30</option>
-                            <option>09:00</option><option>09:30</option><option>10:00</option><option>10:30</option><option>11:00</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="submit" class="bg-green-600 text-white py-2 rounded md:col-span-2 font-bold">Guardar</button>
-            </form>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getDatabase, ref, onValue, update, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+        import { getDatabase, ref, onValue, update, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyDgxLS98sk6GkLrjMu3BVS2cmZ9exdh4dY",
@@ -541,7 +629,15 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
         
-        // --- HELPER FUNCTIONS (Del estilo interno) ---
+        // --- CALENDARIO VARS ---
+        let currentMonth = new Date().getMonth();
+        let currentYear = new Date().getFullYear();
+        let selectedDate = null;
+        let selectedTime = null;
+        let diasInactivos = [];
+        let capacidadHoraria = {};
+        
+        // --- HELPER FUNCTIONS ---
         function formatDateTimeForDisplay(date) {
             if (!date) return '';
             const fecha = typeof date === 'string' ? new Date(date) : date;
@@ -553,10 +649,36 @@
 
         function formatDateForDisplay(date) {
             if (!date) return '';
-            const fecha = typeof date === 'string' ? new Date(date) : date;
+            const fecha = typeof date === 'string' ? parseLocalDate(date) : date;
             return new Intl.DateTimeFormat('es-AR', {
                 weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
             }).format(fecha);
+        }
+        
+        function formatShortDateForDisplay(date) {
+            if (!date) return '';
+            const fecha = typeof date === 'string' ? parseLocalDate(date) : date;
+            return new Intl.DateTimeFormat('es-AR', {
+                year: 'numeric', month: '2-digit', day: '2-digit'
+            }).format(fecha);
+        }
+
+        function parseLocalDate(dateStr) {
+            if (!dateStr) return null;
+            const separator = dateStr.includes('-') ? '-' : '/';
+            const parts = dateStr.split(separator).map(Number);
+            if (parts.length !== 3) return null;
+            // YYYY-MM-DD
+            if (parts[0] > 31) return new Date(parts[0], parts[1] - 1, parts[2]);
+            // DD/MM/YYYY
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+        
+        function formatDateLocal(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
         }
 
         function getBadgeColor(estado) {
@@ -572,6 +694,32 @@
         function normalizarTexto(str) {
             if (!str) return "";
             return str.toString().toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        }
+        
+        // Feriados 2026
+        const feriados2026 = [
+            '2026-01-01', '2026-02-16', '2026-02-17', '2026-03-24', '2026-04-02', 
+            '2026-04-03', '2026-05-01', '2026-05-25', '2026-06-20', '2026-07-09', 
+            '2026-12-08', '2026-12-25', '2026-06-15', '2026-08-17', '2026-10-12', 
+            '2026-11-23', '2026-03-23', '2026-07-10', '2026-12-07'
+        ];
+
+        function esDiaNoLaborable() {
+            const hoy = new Date();
+            const diaSemana = hoy.getDay(); 
+            const fechaString = hoy.toISOString().split('T')[0]; 
+            if (diaSemana === 0 || diaSemana === 6) return true;
+            if (feriados2026.includes(fechaString)) return true;
+            return false;
+        }
+        
+        function esFechaDeFeria(fecha) {
+            if (!fecha) return false;
+            const mes = fecha.getMonth() + 1;
+            const dia = fecha.getDate();
+            if ((mes === 12 && dia >= 26) || (mes === 1 && dia <= 31)) return true;
+            if (mes === 7 && dia >= 13 && dia <= 24) return true;
+            return false;
         }
 
         // Listas Sincronizadas
@@ -622,9 +770,16 @@
         const calendarioSection = document.getElementById('calendario-section');
         const casosBody = document.getElementById('casos-body');
         
+        // Elementos Calendario Modal
+        const calendarGrid = document.getElementById('calendar-grid');
+        const currentMonthElement = document.getElementById('current-month');
+        const horariosContainer = document.getElementById('horarios-container');
+        const turnoTexto = document.getElementById('turno-texto');
+        
         document.addEventListener('DOMContentLoaded', () => {
             verificarSesion();
             setupEventListeners();
+            cargarConfiguracionAgenda();
         });
 
         function setupEventListeners() {
@@ -641,7 +796,7 @@
             document.getElementById('btn-marcar-resuelto').addEventListener('click', marcarResuelto);
             document.getElementById('btn-derivar-caso').addEventListener('click', () => abrirModal('modal-derivar'));
             document.getElementById('btn-actualizar-consulta').addEventListener('click', abrirModalDetalle);
-            document.getElementById('btn-nueva-consulta').addEventListener('click', () => abrirModal('modal-nueva-consulta'));
+            document.getElementById('btn-nueva-consulta').addEventListener('click', abrirModalRegistro);
             
             // Modales Cancelar/Cerrar
             const closeMap = {
@@ -649,7 +804,7 @@
                 'btn-cerrar-detalle': 'modal-detalle',
                 'btn-cancelar-derivar': 'modal-derivar',
                 'btn-cerrar-comprobante': 'modal-comprobante',
-                'btn-cerrar-nueva-consulta': 'modal-nueva-consulta'
+                'btn-cerrar-modal': 'modal-registro'
             };
             Object.keys(closeMap).forEach(id => {
                 document.getElementById(id).addEventListener('click', () => {
@@ -676,7 +831,7 @@
             document.getElementById('btn-confirmar-derivar').addEventListener('click', derivarCaso);
             document.getElementById('btn-enviar-whatsapp').addEventListener('click', enviarWhatsapp);
             document.getElementById('btn-enviar-email').addEventListener('click', enviarEmail);
-            document.getElementById('form-nueva-consulta').addEventListener('submit', guardarNuevaConsulta);
+            document.getElementById('form-interno').addEventListener('submit', guardarNuevaConsulta);
             document.getElementById('btn-descargar-comprobante').addEventListener('click', descargarComprobante);
             
             // Buscador
@@ -698,8 +853,43 @@
             // Exportar
             document.getElementById('btn-exportar-pdf').addEventListener('click', exportarPDF);
             
+            // Calendario Modal Navigation
+            document.getElementById('prev-month').addEventListener('click', () => {
+                currentMonth--;
+                if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+                renderCalendarioModal();
+            });
+            document.getElementById('next-month').addEventListener('click', () => {
+                currentMonth++;
+                if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+                renderCalendarioModal();
+            });
+            
+            // Hora personalizada
+            document.getElementById('btn-usar-hora-personalizada').addEventListener('click', usarHoraPersonalizada);
+
             llenarSelectDerivar();
             inicializarPlantillasRapidas();
+        }
+        
+        // --- CONFIGURACIÓN AGENDA ---
+        async function cargarConfiguracionAgenda() {
+            onValue(ref(db, "config/diasInactivos"), (snap) => {
+                diasInactivos = snap.val() || [];
+            });
+            onValue(ref(db, "config/capacidadHoraria"), (snap) => {
+                capacidadHoraria = snap.val() || {};
+                if (Object.keys(capacidadHoraria).length === 0) {
+                     // Default fallback logic if empty
+                     for (let hour = 7; hour <= 11; hour++) {
+                        for (let minute = 0; minute < 60; minute += 30) {
+                            if (hour === 11 && minute > 30) break;
+                            const hora = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                            capacidadHoraria[hora] = 2;
+                        }
+                    }
+                }
+            });
         }
 
         // --- AUTH & DATA ---
@@ -756,6 +946,7 @@
                 if (!c.assignedUser) return false;
                 return normalizarTexto(c.assignedUser) === miUsuarioNorm;
             });
+            // Update KPI Pendientes
             document.getElementById('contador-pendientes').textContent = 
                 casosAsignados.filter(c => c.estado === 'pendiente').length;
             renderizarCasos();
@@ -819,16 +1010,16 @@
                         </span>
                     </td>
                     <td class="px-4 py-3 flex gap-2">
-                        <button class="btn-select text-blue-600 hover:text-blue-800" title="Seleccionar"><i class="fas fa-check-circle"></i></button>
-                        <button class="btn-resp text-purple-600 hover:text-purple-800" title="Responder"><i class="fas fa-reply"></i></button>
-                        ${caso.fechaTurno ? `<button class="btn-pdf text-red-600 hover:text-red-800"><i class="fas fa-file-pdf"></i></button>` : ''}
+                        <button class="btn-select text-blue-500 hover:text-blue-700" title="Ver detalles"><i class="fas fa-eye text-lg"></i></button>
+                        <button class="btn-resp text-green-500 hover:text-green-700" title="Responder"><i class="fas fa-reply text-lg"></i></button>
+                        ${caso.fechaTurno ? `<button class="btn-pdf text-red-500 hover:text-red-700" title="Comprobante PDF"><i class="fas fa-file-pdf text-lg"></i></button>` : ''}
                     </td>
                 `;
                 
-                tr.querySelector('.btn-select').addEventListener('click', (e) => { e.stopPropagation(); seleccionarCaso(caso.id); });
+                tr.querySelector('.btn-select').addEventListener('click', (e) => { e.stopPropagation(); seleccionarCaso(caso.id); abrirModalDetalle(); });
                 tr.querySelector('.btn-resp').addEventListener('click', (e) => { e.stopPropagation(); abrirModalRespuesta(caso); });
                 if(tr.querySelector('.btn-pdf')) tr.querySelector('.btn-pdf').addEventListener('click', (e) => { e.stopPropagation(); verComprobante(caso); });
-                tr.addEventListener('click', () => seleccionarCaso(caso.id));
+                tr.addEventListener('click', () => { seleccionarCaso(caso.id); });
                 casosBody.appendChild(tr);
             });
         }
@@ -841,40 +1032,211 @@
             renderizarCasos();
         }
 
-        // --- FUNCIONES MODALES ADAPTADAS ---
+        // --- MODAL NUEVA ATENCIÓN (ESTILO INTERNO) ---
+        function abrirModalRegistro() {
+            if (esDiaNoLaborable()) {
+                mostrarNotificacion('No se pueden registrar consultas en días no laborables.', 'error');
+                return;
+            }
+            // Set usuario asignado al actual
+            document.getElementById('m-user').value = usuarioActual;
+            
+            // Reiniciar inputs
+            document.getElementById('form-interno').reset();
+            document.getElementById('m-user').value = usuarioActual;
+            selectedDate = null;
+            selectedTime = null;
+            document.getElementById('m-fecha-turno').value = '';
+            document.getElementById('m-horario-turno').value = '';
+            actualizarTextoSeleccionTurno();
+            renderCalendarioModal();
+            actualizarHorariosDisponibles();
+            
+            abrirModal('modal-registro');
+        }
 
-        // 1. Respuesta al Cliente (Estilo Avanzado)
+        function renderCalendarioModal() {
+            calendarGrid.innerHTML = '';
+            const firstDay = new Date(currentYear, currentMonth, 1);
+            const lastDay = new Date(currentYear, currentMonth + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+            
+            const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                              "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            for (let i = 0; i < firstDayIndex; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'h-8';
+                calendarGrid.appendChild(emptyDiv);
+            }
+            
+            const today = new Date();
+            today.setHours(0,0,0,0);
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day h-8 flex items-center justify-center text-sm rounded';
+                
+                const date = new Date(currentYear, currentMonth, day);
+                const dateString = formatDateLocal(date);
+                const dayOfWeek = date.getDay();
+                
+                const isToday = date.getDate() === today.getDate() && date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+                const isPast = date < today && !isToday;
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                const isInactivo = diasInactivos.includes(dateString);
+                const isSelected = selectedDate && selectedDate.getFullYear() === currentYear && selectedDate.getMonth() === currentMonth && selectedDate.getDate() === day;
+                
+                if (isToday) dayElement.classList.add('bg-blue-100', 'text-blue-700', 'font-bold');
+                if (isSelected) dayElement.classList.add('selected');
+                
+                if (isPast || isWeekend || isInactivo) {
+                    dayElement.classList.add('disabled', 'text-gray-300');
+                    if(isInactivo) dayElement.innerHTML = `<span class="line-through">${day}</span>`;
+                    else dayElement.textContent = day;
+                } else {
+                    dayElement.textContent = day;
+                    dayElement.addEventListener('click', () => seleccionarDia(day));
+                }
+                calendarGrid.appendChild(dayElement);
+            }
+        }
+        
+        function seleccionarDia(day) {
+            const date = new Date(currentYear, currentMonth, day);
+            const dateString = formatDateLocal(date);
+            
+            if (diasInactivos.includes(dateString)) {
+                mostrarNotificacion('Día no laborable', 'error');
+                return;
+            }
+            selectedDate = date;
+            document.getElementById('m-fecha-turno').value = dateString;
+            renderCalendarioModal();
+            actualizarHorariosDisponibles();
+            actualizarTextoSeleccionTurno();
+        }
+        
+        function actualizarHorariosDisponibles() {
+            horariosContainer.innerHTML = '';
+            let horarios = [];
+            
+            if (selectedDate && esFechaDeFeria(selectedDate)) {
+                 document.getElementById('info-capacidad').textContent = 'PERÍODO DE FERIA: 08:00 a 10:00 hs.';
+                 for (let hour = 8; hour <= 10; hour++) {
+                    for (let minute = 0; minute < 60; minute += 30) {
+                        if (hour === 10 && minute > 0) break;
+                        const hora = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                        horarios.push({ hora, capacidad: 2 });
+                    }
+                }
+            } else {
+                document.getElementById('info-capacidad').textContent = 'Horarios normales.';
+                Object.keys(capacidadHoraria).forEach(hora => {
+                    const capacidad = capacidadHoraria[hora] || 2;
+                    horarios.push({ hora, capacidad });
+                });
+            }
+            
+            horarios.forEach(({ hora, capacidad }) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'bg-white border border-gray-300 p-2 rounded text-sm hover:bg-blue-50 transition flex flex-col items-center justify-center';
+                btn.innerHTML = `<span>${hora}</span><span class="text-xs text-gray-500">(${capacidad} cupos)</span>`;
+                btn.dataset.hora = hora;
+                btn.addEventListener('click', () => seleccionarHorario(hora));
+                horariosContainer.appendChild(btn);
+            });
+        }
+        
+        function seleccionarHorario(hora) {
+            selectedTime = hora;
+            document.getElementById('m-horario-turno').value = hora;
+            document.querySelectorAll('#horarios-container button').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-white', 'text-gray-800');
+            });
+            const btnSel = document.querySelector(`button[data-hora="${hora}"]`);
+            if(btnSel) {
+                btnSel.classList.remove('bg-white', 'text-gray-800');
+                btnSel.classList.add('bg-blue-600', 'text-white');
+            }
+            actualizarTextoSeleccionTurno();
+        }
+        
+        function actualizarTextoSeleccionTurno() {
+            if (selectedDate && selectedTime) {
+                turnoTexto.textContent = `Turno asignado: ${formatDateForDisplay(selectedDate)} a las ${selectedTime} hs`;
+                turnoTexto.parentElement.classList.replace('bg-blue-50', 'bg-green-50');
+            } else if (selectedDate) {
+                turnoTexto.textContent = `Fecha seleccionada: ${formatDateForDisplay(selectedDate)}. Falta hora.`;
+                turnoTexto.parentElement.classList.replace('bg-green-50', 'bg-blue-50');
+            } else {
+                turnoTexto.textContent = 'No se ha asignado turno';
+                turnoTexto.parentElement.classList.replace('bg-green-50', 'bg-blue-50');
+            }
+        }
+        
+        function usarHoraPersonalizada() {
+            const val = document.getElementById('m-hora-personalizada').value;
+            if(val) seleccionarHorario(val);
+        }
+
+        async function guardarNuevaConsulta(e) {
+            e.preventDefault();
+            const nuevoRegistro = {
+                personName: document.getElementById('m-name').value.trim(),
+                dni: document.getElementById('m-dni').value.trim(),
+                telefono: document.getElementById('m-telefono').value.trim(),
+                type: document.getElementById('m-type').value,
+                assignedUser: usuarioActual,
+                responsable: usuarioActual,
+                description: document.getElementById('m-desc').value.trim(),
+                estado: 'pendiente',
+                timestamp: new Date().toISOString(),
+                notas: [],
+                origen: 'interno',
+                fechaTurno: document.getElementById('m-fecha-turno').value || null,
+                horarioTurno: document.getElementById('m-horario-turno').value || null
+            };
+            
+            try {
+                await push(ref(db, "atencion"), nuevoRegistro);
+                document.getElementById('modal-registro').classList.add('hidden');
+                mostrarNotificacion('Consulta creada exitosamente', 'success');
+            } catch(err) {
+                console.error(err);
+                mostrarNotificacion('Error al guardar', 'error');
+            }
+        }
+
+        // --- FUNCIONES MODALES ---
+
         function abrirModalRespuesta(caso) {
             casoParaResponder = caso;
-            
-            // Llenar Datos Cliente
             document.getElementById('resp-nombre').textContent = caso.personName || 'No registrado';
             document.getElementById('resp-dni').textContent = caso.dni || 'No registrado';
             document.getElementById('resp-telefono').textContent = caso.telefono || 'No registrado';
             document.getElementById('resp-email').textContent = caso.email || 'No registrado';
             document.getElementById('resp-descripcion').textContent = caso.description || 'Sin descripción';
 
-            // Timer
             if (intervaloContadorRespuesta) clearInterval(intervaloContadorRespuesta);
-            
             const actualizarContador = () => {
                 const diff = new Date() - new Date(caso.timestamp);
                 const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
                 const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                
                 document.getElementById('tiempo-texto').textContent = `${dias} días, ${horas} horas`;
                 document.getElementById('tiempo-detalle').textContent = `Desde ${new Date(caso.timestamp).toLocaleDateString()}`;
-                
                 const contador = document.getElementById('contador-tiempo');
                 contador.className = `tiempo-transcurrido ${dias < 2 ? 'tiempo-normal' : (dias < 7 ? 'tiempo-medio' : 'tiempo-alto')}`;
             };
             actualizarContador();
             intervaloContadorRespuesta = setInterval(actualizarContador, 60000);
 
-            // Historial Comunicaciones
             const histDiv = document.getElementById('historial-respuestas');
             histDiv.innerHTML = '';
-            
             const comms = (caso.notas || []).filter(n => n.tipo === 'comunicacion');
             if (comms.length > 0) {
                 comms.forEach(c => {
@@ -893,7 +1255,6 @@
             } else {
                 histDiv.innerHTML = '<div class="text-center py-4 text-gray-500">No hay comunicaciones previas.</div>';
             }
-
             document.getElementById('resp-mensaje').value = '';
             abrirModal('modal-respuesta-cliente');
         }
@@ -924,7 +1285,6 @@
 
             const fullMsg = `*${asunto}*\n\n${msg}\n\nAtentamente,\nDefensoría Civil y Comercial N6`;
             window.open(`https://wa.me/${tel}?text=${encodeURIComponent(fullMsg)}`, '_blank');
-            
             await registrarComunicacion(casoParaResponder.id, msg, 'whatsapp');
             document.getElementById('modal-respuesta-cliente').classList.add('hidden');
         }
@@ -934,7 +1294,6 @@
              const mail = document.getElementById('resp-email').textContent;
              const msg = document.getElementById('resp-mensaje').value;
              if(!mail || !mail.includes('@')) return alert("Email inválido");
-             
              window.open(`mailto:${mail}?body=${encodeURIComponent(msg)}`, '_blank');
              await registrarComunicacion(casoParaResponder.id, msg, 'email');
              document.getElementById('modal-respuesta-cliente').classList.add('hidden');
@@ -944,21 +1303,14 @@
             const caso = allCases.find(c => c.id === id);
             const notas = caso.notas || [];
             notas.push({
-                texto: texto,
-                fecha: new Date().toISOString(),
-                autor: usuarioActual,
-                tipo: 'comunicacion',
-                canal: canal
+                texto: texto, fecha: new Date().toISOString(), autor: usuarioActual, tipo: 'comunicacion', canal: canal
             });
             await update(ref(db, `atencion/${id}`), { notas });
         }
 
-        // 2. Detalle Completo (Estilo Gestión)
         function abrirModalDetalle() {
             if(!casoSeleccionado) return;
             const caso = allCases.find(c => c.id === casoSeleccionado);
-            
-            // Llenar datos
             document.getElementById('detalle-nombre').textContent = caso.personName || 'No registrado';
             document.getElementById('detalle-dni').textContent = caso.dni || 'No registrado';
             document.getElementById('detalle-telefono-texto').textContent = caso.telefono || 'No registrado';
@@ -967,13 +1319,11 @@
             document.getElementById('detalle-fecha').textContent = formatDateTimeForDisplay(new Date(caso.timestamp));
             document.getElementById('detalle-turno').textContent = caso.fechaTurno ? `${caso.fechaTurno} ${caso.horarioTurno||''}` : 'No asignado';
             
-            // Estado Badge
             const badgeColor = getBadgeColor(caso.estado);
             const estadoSpan = document.getElementById('detalle-estado-texto');
             estadoSpan.textContent = (caso.estado || 'pendiente').toUpperCase();
             estadoSpan.className = `px-2 py-1 rounded-full text-[10px] font-bold ${badgeColor}`;
 
-            // Botón Whatsapp en detalle
             const btnWa = document.getElementById('btn-whatsapp-detalle');
             if(caso.telefono) {
                 btnWa.style.display = 'inline-block';
@@ -982,12 +1332,9 @@
                 btnWa.style.display = 'none';
             }
 
-            // Historial Notas
             const notasDiv = document.getElementById('detalle-observaciones');
             notasDiv.innerHTML = '';
-            
             const notas = caso.notas || [];
-            // Ordenar notas: mas recientes primero
             notas.sort((a,b) => new Date(b.fecha) - new Date(a.fecha));
 
             const totalNotas = notas.length + (caso.description ? 1 : 0);
@@ -1005,7 +1352,6 @@
                 let extraClass = '';
                 if(n.tipo === 'resuelta') extraClass = 'resuelto';
                 if(n.tipo === 'derivado') extraClass = 'derivado';
-                
                 notasDiv.innerHTML += `
                     <div class="historial-item ${extraClass} mb-3">
                          <p class="text-xs text-gray-500 mb-1">
@@ -1016,9 +1362,7 @@
                     </div>
                 `;
             });
-
             if(totalNotas === 0) notasDiv.innerHTML = '<p class="text-center text-gray-500 text-sm py-4">Sin observaciones.</p>';
-
             abrirModal('modal-detalle');
         }
 
@@ -1026,43 +1370,26 @@
             if(!casoSeleccionado) return;
             const texto = document.getElementById('nueva-observacion').value.trim();
             if(!texto) return;
-
             const caso = allCases.find(c => c.id === casoSeleccionado);
             const notas = caso.notas || [];
-            notas.push({
-                texto, 
-                fecha: new Date().toISOString(), 
-                autor: usuarioActual, 
-                tipo: 'nota' 
-            });
-
+            notas.push({ texto, fecha: new Date().toISOString(), autor: usuarioActual, tipo: 'nota' });
             await update(ref(db, `atencion/${casoSeleccionado}`), { notas });
             document.getElementById('nueva-observacion').value = '';
-            abrirModalDetalle(); // Recargar historial visualmente
+            abrirModalDetalle(); 
             mostrarNotificacion('Nota agregada', 'success');
         }
 
         async function cambiarEstadoActual(nuevoEstado) {
             if(!casoSeleccionado) return;
-            
             const caso = allCases.find(c => c.id === casoSeleccionado);
             const notas = caso.notas || [];
-            notas.push({
-                texto: `Estado cambiado a: ${nuevoEstado}`,
-                fecha: new Date().toISOString(),
-                autor: usuarioActual,
-                tipo: nuevoEstado
-            });
-
+            notas.push({ texto: `Estado cambiado a: ${nuevoEstado}`, fecha: new Date().toISOString(), autor: usuarioActual, tipo: nuevoEstado });
             const updateData = { estado: nuevoEstado, notas };
             if(nuevoEstado === 'resuelta') updateData.resueltoPor = usuarioActual;
-
             await update(ref(db, `atencion/${casoSeleccionado}`), updateData);
-            abrirModalDetalle(); // Refrescar modal
+            abrirModalDetalle(); 
             mostrarNotificacion(`Estado actualizado a ${nuevoEstado}`, 'success');
         }
-
-        // --- ACCIONES GENERALES ---
 
         async function marcarResuelto() {
             if(!casoSeleccionado) return;
@@ -1076,57 +1403,27 @@
             const sel = document.getElementById('select-usuario-derivar');
             listaUsuarios.forEach(u => {
                 const opt = document.createElement('option');
-                opt.value = u;
-                opt.textContent = u;
-                sel.appendChild(opt);
+                opt.value = u; opt.textContent = u; sel.appendChild(opt);
             });
         }
 
         async function derivarCaso() {
             const target = document.getElementById('select-usuario-derivar').value;
             if(!casoSeleccionado || !target) return;
-            
             const caso = allCases.find(c => c.id === casoSeleccionado);
             const notas = caso.notas || [];
-            notas.push({
-                texto: `Derivado a ${target}`,
-                fecha: new Date().toISOString(),
-                autor: usuarioActual,
-                tipo: 'derivado'
-            });
-
+            notas.push({ texto: `Derivado a ${target}`, fecha: new Date().toISOString(), autor: usuarioActual, tipo: 'derivado' });
             await update(ref(db, `atencion/${casoSeleccionado}`), { assignedUser: target, estado: 'derivado', notas });
             document.getElementById('modal-derivar').classList.add('hidden');
             mostrarNotificacion(`Derivado a ${target}`, 'success');
         }
-        
-        async function guardarNuevaConsulta(e) {
-            e.preventDefault();
-            const data = {
-                personName: document.getElementById('input-nombre').value,
-                dni: document.getElementById('input-dni').value,
-                telefono: document.getElementById('input-telefono').value,
-                type: document.getElementById('select-tipo-consulta').value,
-                description: document.getElementById('textarea-descripcion').value,
-                assignedUser: usuarioActual,
-                estado: 'pendiente',
-                timestamp: new Date().toISOString(),
-                fechaTurno: document.getElementById('input-fecha-turno').value || null,
-                horarioTurno: document.getElementById('input-horario-turno').value || null
-            };
-            
-            await push(ref(db, "atencion"), data);
-            document.getElementById('modal-nueva-consulta').classList.add('hidden');
-            document.getElementById('form-nueva-consulta').reset();
-            mostrarNotificacion('Consulta creada', 'success');
-        }
 
-        // PDF
         function verComprobante(caso) {
             casoParaComprobante = caso;
             document.getElementById('comp-nombre').textContent = caso.personName;
             document.getElementById('comp-dni').textContent = caso.dni;
-            document.getElementById('comp-fecha').textContent = caso.fechaTurno;
+            const fechaTurnoFormateada = caso.fechaTurno ? formatShortDateForDisplay(caso.fechaTurno) : '';
+            document.getElementById('comp-fecha').textContent = fechaTurnoFormateada;
             document.getElementById('comp-horario').textContent = caso.horarioTurno;
             abrirModal('modal-comprobante');
         }
@@ -1134,32 +1431,65 @@
         function descargarComprobante() {
             if(!casoParaComprobante) return;
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            doc.setFontSize(18);
-            doc.text("Defensoría Civil y Comercial N6", 105, 20, null, null, 'center');
-            doc.setFontSize(14);
-            doc.text("COMPROBANTE DE TURNO", 105, 30, null, null, 'center');
+            const doc = new jsPDF('p', 'mm', 'a4');
+            // Encabezado
+            doc.setFontSize(16); doc.setTextColor(0, 0, 128);
+            doc.text('Defensoría Civil y Comercial 6', 105, 20, { align: 'center' });
+            doc.setFontSize(14); doc.setTextColor(0, 0, 0);
+            doc.text('COMPROBANTE DE TURNO', 105, 30, { align: 'center' });
+            // Línea separadora
+            doc.setDrawColor(0, 0, 128); doc.setLineWidth(0.5); doc.line(20, 35, 190, 35);
+            // Datos
             doc.setFontSize(12);
-            doc.text(`Nombre: ${casoParaComprobante.personName}`, 20, 50);
-            doc.text(`DNI: ${casoParaComprobante.dni}`, 20, 60);
-            doc.text(`Fecha: ${casoParaComprobante.fechaTurno} - Hora: ${casoParaComprobante.horarioTurno}`, 20, 70);
-            doc.text(`Atendido por: ${casoParaComprobante.assignedUser}`, 20, 80);
+            let y = 50;
+            const datos = [
+                { label: 'Ciudadano:', value: casoParaComprobante.personName || '-' },
+                { label: 'DNI:', value: casoParaComprobante.dni || '-' },
+                { label: 'Fecha:', value: casoParaComprobante.fechaTurno ? `${formatShortDateForDisplay(casoParaComprobante.fechaTurno)}` : '-' },
+                { label: 'Hora:', value: casoParaComprobante.horarioTurno || '-' },
+                { label: 'Atendido por:', value: casoParaComprobante.assignedUser || '-' }
+            ];
+            datos.forEach(dato => {
+                doc.setFont('helvetica', 'bold'); doc.text(dato.label, 20, y);
+                doc.setFont('helvetica', 'normal'); doc.text(dato.value, 60, y);
+                y += 10;
+            });
             doc.save(`Turno_${casoParaComprobante.dni}.pdf`);
         }
 
         function exportarPDF() {
+            if (casosAsignados.length === 0) {
+                mostrarNotificacion('No hay casos para exportar', 'error');
+                return;
+            }
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            let y = 10;
-            doc.text(`Reporte de Casos - ${usuarioActual}`, 10, y);
-            y += 10;
-            casosAsignados.forEach(c => {
-                if(y > 280) { doc.addPage(); y = 10; }
-                doc.setFontSize(10);
-                doc.text(`${c.timestamp.split('T')[0]} - ${c.personName} - ${c.estado}`, 10, y);
-                y += 7;
+            const doc = new jsPDF('p', 'mm', 'a4');
+            // Encabezado
+            doc.setFontSize(16); doc.setTextColor(0, 0, 128);
+            doc.text('Defensoría Civil y Comercial 6', 105, 15, { align: 'center' });
+            doc.setFontSize(12); doc.setTextColor(0, 0, 0);
+            doc.text(`Mis Casos Asignados: ${usuarioActual}`, 105, 22, { align: 'center' });
+            doc.text(`Generado: ${formatDateTimeForDisplay(new Date())}`, 105, 28, { align: 'center' });
+            
+            // Tabla
+            const datosTabla = casosAsignados.map(r => [
+                r.timestamp ? formatShortDateForDisplay(new Date(r.timestamp)) : '',
+                r.personName?.substring(0, 20) || '',
+                r.dni || '',
+                (r.type || '').substring(0, 15),
+                r.estado || ''
+            ]);
+
+            doc.autoTable({
+                head: [['Fecha', 'Nombre', 'DNI', 'Tipo', 'Estado']],
+                body: datosTabla,
+                startY: 35,
+                margin: { left: 10, right: 10 },
+                styles: { fontSize: 8, cellPadding: 2 },
+                headStyles: { fillColor: [59, 130, 246], textColor: 255 },
+                alternateRowStyles: { fillColor: [240, 240, 240] }
             });
-            doc.save('mis_casos.pdf');
+            doc.save(`Mis_Casos_${new Date().toISOString().split('T')[0]}.pdf`);
         }
 
         function renderizarCalendario() {
@@ -1211,7 +1541,6 @@
             document.getElementById('notification-temp-container').appendChild(div);
             setTimeout(() => div.remove(), 3000);
         }
-
     </script>
 </body>
 </html>
