@@ -942,13 +942,23 @@
         function filtrarCasosUsuario() {
             if (!usuarioActual) return;
             const miUsuarioNorm = normalizarTexto(usuarioActual);
+            
+            // 1. Filtramos los casos del usuario
             casosAsignados = allCases.filter(c => {
                 if (!c.assignedUser) return false;
                 return normalizarTexto(c.assignedUser) === miUsuarioNorm;
             });
-            // Update KPI Pendientes
-            document.getElementById('contador-pendientes').textContent = 
-                casosAsignados.filter(c => c.estado === 'pendiente').length;
+
+            // 2. Calculamos el KPI (Pendientes + En Proceso)
+            const totalPendientes = casosAsignados.filter(c => {
+                const estado = c.estado ? normalizarTexto(c.estado) : '';
+                return estado === 'pendiente' || estado === 'en_proceso';
+            }).length;            
+
+            // 3. ¡ESTA ES LA LÍNEA QUE FALTABA! Actualizar el contador en pantalla
+            document.getElementById('contador-pendientes').textContent = totalPendientes;
+
+            // 4. Renderizar las vistas
             renderizarCasos();
             renderizarCalendario();
         }
