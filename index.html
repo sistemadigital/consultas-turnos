@@ -3,39 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consultas y Turnos Online</title>
+    <title>Consultas y Turnos Online | Defensoría Civil N°6</title>
+    <!-- Google Fonts modernas: Inter + Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #3a6ea5;
-            --primary-dark: #2a5080;
-            --secondary: #6a9bd8;
-            --accent: #f8b500;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --gray: #6c757d;
-            --border-radius: 1rem;
-            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --box-shadow-hover: 0 15px 40px rgba(0, 0, 0, 0.12);
-            --transition: all 0.3s ease;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* ===== ESTILO VISUAL MODERNO (basado en referencia web.html, sin copiar) ===== */
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.86);
+            --primary-text: #0f172a;
+            --secondary-text: #334155;
+            --accent-blue: #2563eb;
+            --accent-green: #10b981;
+            --accent-amber: #f59e0b;
+            --card-shadow: 0 25px 35px -12px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0,0,0,0.02);
+            --card-hover-shadow: 0 30px 40px -15px rgba(0, 0, 0, 0.15);
+            --border-radius-card: 2rem;
+            --transition-smooth: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
         body {
-            font-family: 'Open Sans', sans-serif;
-            background-image: url('https://github.com/sistemadigital/iconos/blob/main/azulfondo.jpg?raw=true');
-            background-size: cover;
-            background-position: center;
+            font-family: 'Inter', sans-serif;
+            /* Fondo: gradientes radiales dinámicos (como referencia web.html) */
+            background-color: #f1f5f9;
+            background-image: 
+                radial-gradient(at 0% 10%, hsla(210, 100%, 96%, 0.9) 0px, transparent 55%),
+                radial-gradient(at 90% 80%, hsla(215, 95%, 92%, 0.85) 0px, transparent 60%),
+                radial-gradient(at 40% 100%, hsla(220, 88%, 94%, 0.8) 0px, transparent 50%);
             background-attachment: fixed;
-            background-repeat: no-repeat;
-            color: var(--dark);
-            line-height: 1.6;
+            color: var(--primary-text);
+            line-height: 1.5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -43,177 +46,259 @@
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 24px;
         }
 
-        /* Área Principal */
+        /* Main content área flexible */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 2rem 0;
+            padding: 2.5rem 0 3rem;
         }
 
+        /* Encabezado con efecto glass (similar al header de referencia) */
         .page-header {
             text-align: center;
-            margin-bottom: 3rem;
+            margin-bottom: 3.2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 2.5rem;
+            padding: 2rem 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255, 255, 255, 0.75);
+            transition: var(--transition-smooth);
         }
 
         .page-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 2.2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
             margin-bottom: 0.5rem;
-            position: relative;
             display: inline-block;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 0.5rem 2rem;
-            border-radius: var(--border-radius);
         }
 
+        /* línea decorativa sutil */
         .page-title::after {
             content: '';
             display: block;
-            width: 60px;
+            width: 70px;
             height: 4px;
-            background: var(--accent);
-            margin: 0.5rem auto 0;
-            border-radius: 2px;
+            background: var(--accent-blue);
+            margin: 0.7rem auto 0;
+            border-radius: 4px;
+            opacity: 0.7;
         }
 
-        /* Tarjetas de módulos */
+        /* Grid de módulos - mantiene 3 columnas elegantes */
         .modules-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
-            padding: 1rem 0;
+            margin: 1rem 0;
         }
 
+        /* Tarjetas completamente renovadas (glass + sombras) */
         .module-card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-            padding: 2rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: var(--border-radius-card);
+            box-shadow: var(--card-shadow);
+            padding: 2rem 1.8rem;
             text-align: center;
-            transition: var(--transition);
+            transition: var(--transition-smooth);
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
-            overflow: hidden;
-            height: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.6);
         }
 
+        .module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--card-hover-shadow);
+            border-color: rgba(37, 99, 235, 0.3);
+            background: rgba(255, 255, 255, 0.94);
+        }
+
+        /* Borde superior sutil (color por módulo) */
         .module-card::before {
             content: '';
             position: absolute;
             top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
+            left: 1.5rem;
+            right: 1.5rem;
+            height: 4px;
+            border-radius: 4px;
             background: var(--primary);
+            transition: all 0.2s;
         }
 
-        .module-card:hover {
-            transform: translateY(-10px);
-            box-shadow: var(--box-shadow-hover);
-        }
+        /* Colores personalizados según módulo (modernos) */
+        .module-card:nth-child(1)::before { background: var(--accent-blue); }
+        .module-card:nth-child(2)::before { background: var(--accent-green); }
+        .module-card:nth-child(3)::before { background: var(--accent-amber); }
 
-        /* Colores específicos por tarjeta (basado en el orden) */
-        .module-card:nth-child(1)::before { background: var(--primary); }
-        .module-card:nth-child(2)::before { background: var(--secondary); }
-        .module-card:nth-child(3)::before { background: var(--accent); }
-
+        /* Iconos circulares con gradiente o fondo sólido moderno */
         .module-icon {
-            width: 80px;
-            height: 80px;
+            width: 85px;
+            height: 85px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 2.5rem;
+            margin-bottom: 1.6rem;
+            font-size: 2.6rem;
             color: white;
-            transition: var(--transition);
+            transition: var(--transition-smooth);
+            box-shadow: 0 10px 15px -6px rgba(0, 0, 0, 0.1);
         }
 
-        .module-card:nth-child(1) .module-icon { background: var(--primary); }
-        .module-card:nth-child(2) .module-icon { background: var(--secondary); }
-        .module-card:nth-child(3) .module-icon { background: var(--accent); }
+        .module-card:nth-child(1) .module-icon { background: var(--accent-blue); }
+        .module-card:nth-child(2) .module-icon { background: var(--accent-green); }
+        .module-card:nth-child(3) .module-icon { background: var(--accent-amber); }
 
         .module-title {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--dark);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.45rem;
+            color: var(--primary-text);
             margin-bottom: 1.5rem;
+            letter-spacing: -0.2px;
         }
 
+        /* Botón de acceso (moderno, similar a enlace primario) */
         .module-link {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            color: var(--primary);
-            font-weight: 600;
+            gap: 0.65rem;
+            background: rgba(37, 99, 235, 0.05);
+            color: var(--accent-blue);
+            font-weight: 700;
             text-decoration: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 50px;
-            border: 2px solid rgba(58, 110, 165, 0.1);
-            transition: var(--transition);
+            padding: 0.75rem 1.6rem;
+            border-radius: 60px;
+            border: 1.5px solid rgba(37, 99, 235, 0.25);
+            transition: all 0.25s ease;
             font-size: 0.95rem;
-            margin-top: auto; /* Empuja el botón al fondo */
+            margin-top: auto;
+            backdrop-filter: blur(2px);
+        }
+
+        .module-card:nth-child(2) .module-link {
+            color: var(--accent-green);
+            border-color: rgba(16, 185, 129, 0.3);
+            background: rgba(16, 185, 129, 0.05);
+        }
+        .module-card:nth-child(3) .module-link {
+            color: var(--accent-amber);
+            border-color: rgba(245, 158, 11, 0.3);
+            background: rgba(245, 158, 11, 0.05);
         }
 
         .module-link:hover {
-            border-color: var(--primary);
-            background: var(--primary);
+            transform: translateY(-2px);
+            gap: 0.85rem;
+        }
+        .module-card:nth-child(1) .module-link:hover {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+        .module-card:nth-child(2) .module-link:hover {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+        .module-card:nth-child(3) .module-link:hover {
+            background: var(--accent-amber);
+            border-color: var(--accent-amber);
             color: white;
         }
 
-        /* Footer */
+        /* Footer con estilo refinado y vidrio */
         .footer {
-            background: rgba(255, 255, 255, 0.9);
-            border-top: 1px solid #e9ecef;
-            color: var(--gray);
-            padding: 1.5rem 0;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border-top: 1px solid rgba(203, 213, 225, 0.5);
+            color: var(--secondary-text);
+            padding: 1.4rem 0;
             text-align: center;
-            margin-top: auto;
-        }
-
-        .developer-info {
+            margin-top: 2rem;
             font-size: 0.85rem;
         }
 
-        .developer-name {
-            font-weight: 600;
-            color: var(--primary);
-            font-size: 0.9rem;
+        .developer-info {
+            font-weight: 500;
         }
 
-        /* Animación de entrada simple */
+        .developer-name {
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        /* Animación de entrada (fadeInUp) mantenida */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(26px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .fade-in {
-            animation: fadeInUp 0.6s ease forwards;
-            opacity: 0; /* Inicia invisible */
+            animation: fadeInUp 0.55s ease forwards;
+            opacity: 0;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .page-title {
-                font-size: 2rem;
-            }
+        /* Responsive: ajustes finos */
+        @media (max-width: 860px) {
             .modules-container {
                 grid-template-columns: 1fr;
                 max-width: 500px;
-                margin: 0 auto;
+                margin-left: auto;
+                margin-right: auto;
             }
+            .page-title {
+                font-size: 1.9rem;
+            }
+            .container {
+                padding: 0 20px;
+            }
+            .main-content {
+                padding: 1.5rem 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .module-card {
+                padding: 1.5rem;
+            }
+            .module-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+            .page-header {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Mejora de accesibilidad y enfoque */
+        .module-link:focus-visible {
+            outline: 2px solid var(--accent-blue);
+            outline-offset: 3px;
+            border-radius: 50px;
         }
     </style>
 </head>
@@ -230,7 +315,6 @@
                     <i class="fas fa-users"></i>
                 </div>
                 <h3 class="module-title">App de Clientes</h3>
-                
                 <a href="https://sistemadigital.github.io/consultas-turnos/clientes" class="module-link" data-module="clientes">
                     Acceder al módulo <i class="fas fa-arrow-right"></i>
                 </a>
@@ -241,7 +325,6 @@
                     <i class="fas fa-user-tie"></i>
                 </div>
                 <h3 class="module-title">App Defensor-Secretarios</h3>
-                
                 <a href="https://sistemadigital.github.io/consultas-turnos/interno" class="module-link" data-module="defensores">
                     Acceder al módulo <i class="fas fa-arrow-right"></i>
                 </a>
@@ -252,7 +335,6 @@
                     <i class="fas fa-id-card"></i>
                 </div>
                 <h3 class="module-title">App Empleados asignados</h3>
-                
                 <a href="https://sistemadigital.github.io/consultas-turnos/asignados" class="module-link" data-module="empleados">
                     Acceder al módulo <i class="fas fa-arrow-right"></i>
                 </a>
@@ -268,28 +350,25 @@
     </footer>
 
     <script>
-        // Función para redirigir a los módulos
+        // Función de redirección (original, sin cambios)
         function redirectToModule(module) {
-            // URLs actualizadas para cada módulo
             const urls = {
                 clientes: 'https://sistemadigital.github.io/consultas-turnos/clientes',
                 defensores: 'https://sistemadigital.github.io/consultas-turnos/interno',
                 empleados: 'https://sistemadigital.github.io/consultas-turnos/asignados'
             };
-            
-            // Redirección efectiva
             if (urls[module]) {
                 window.location.href = urls[module];
             }
         }
 
-        // Prevenir comportamiento por defecto y usar la función centralizada
+        // Prevenir comportamiento por defecto y asegurar redirección (mismo código original)
         document.querySelectorAll('.module-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
-                e.stopPropagation(); // Evitar doble disparo con el onclick de la tarjeta
+                e.stopPropagation();
                 const module = link.getAttribute('data-module');
-                redirectToModule(module);
+                if (module) redirectToModule(module);
             });
         });
     </script>
