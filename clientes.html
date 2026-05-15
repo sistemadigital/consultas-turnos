@@ -567,6 +567,15 @@
         doc.text("1. Traer tu DNI.", 25, 148);
         doc.text("2. Traer toda la documentación de tu caso judicial.", 25, 158);
         doc.text("3. Asiste media hora antes y avisa en Mesa de Entradas con este comprobante.", 25, 168);
+        
+        // WhatsApp en negrita y tamaño más grande (11)
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(0);
+        doc.text("4. WhatsApp para consultas: 376-4889359", 25, 178);
+        
+        // Restauramos para la fecha de registro
+        doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
         doc.setTextColor(120);
         const ahora = new Date();
