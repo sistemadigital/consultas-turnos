@@ -187,6 +187,8 @@
                 <button id="btn-marcar-resuelto" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 disabled:opacity-50" disabled><i class="fas fa-check-circle mr-2"></i>Resolver</button>
                 <button id="btn-actualizar-consulta" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50" disabled><i class="fas fa-edit mr-2"></i>Detalles Completos</button>
                 <button id="btn-derivar-caso" class="bg-purple-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-purple-700 disabled:opacity-50" disabled><i class="fas fa-share-alt mr-2"></i>Derivar</button>
+                <!-- NUEVO BOTON: Generar Constancia Atención -->
+                <button id="btn-generar-constancia" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700 transition disabled:opacity-50" disabled><i class="fas fa-file-alt mr-2"></i>Generar Constancia Atención</button>
             </div>
             
             <div class="mb-4 relative">
@@ -615,6 +617,40 @@
         </div>
     </div>
 
+    <!-- MODAL GENERAR CONSTANCIA ATENCIÓN (NUEVO) -->
+    <div id="modal-generar-constancia" class="modal hidden">
+        <div class="bg-white rounded-xl w-full max-w-md mx-4 overflow-hidden shadow-2xl">
+            <div class="bg-indigo-800 text-white p-4 flex justify-between items-center font-bold">
+                <span><i class="fas fa-file-signature mr-2"></i>Constancia de Atención</span>
+                <button id="btn-cerrar-constancia" class="text-2xl leading-none">&times;</button>
+            </div>
+            <div class="p-6">
+                <div class="mb-4 bg-indigo-50 p-3 rounded-lg text-sm">
+                    <p class="font-semibold">Caso seleccionado:</p>
+                    <p id="constancia-cliente-info" class="text-gray-700 text-xs break-words">-</p>
+                </div>
+                <form id="form-constancia" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Quién atendió *</label>
+                        <input type="text" id="constancia-atendio" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 text-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">N° Expediente *</label>
+                        <input type="text" id="constancia-expediente" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="Ej: EX-2025-12345" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-1">Fecha de Atención *</label>
+                        <input type="date" id="constancia-fecha-atencion" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 text-sm" required>
+                    </div>
+                    <div class="flex justify-end gap-3 pt-4">
+                        <button type="button" id="btn-cancelar-constancia" class="px-4 py-2 bg-gray-200 rounded-lg text-sm font-semibold">Cancelar</button>
+                        <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700"><i class="fas fa-file-pdf mr-1"></i> Generar PDF</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
         import { getDatabase, ref, onValue, update, push, set } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
@@ -804,17 +840,23 @@
                 'btn-cerrar-detalle': 'modal-detalle',
                 'btn-cancelar-derivar': 'modal-derivar',
                 'btn-cerrar-comprobante': 'modal-comprobante',
-                'btn-cerrar-modal': 'modal-registro'
+                'btn-cerrar-modal': 'modal-registro',
+                'btn-cerrar-constancia': 'modal-generar-constancia',
+                'btn-cancelar-constancia': 'modal-generar-constancia'
             };
             Object.keys(closeMap).forEach(id => {
-                document.getElementById(id).addEventListener('click', () => {
-                    const modalId = closeMap[id];
-                    document.getElementById(modalId).classList.add('hidden');
-                    if (modalId === 'modal-respuesta-cliente' && intervaloContadorRespuesta) {
-                        clearInterval(intervaloContadorRespuesta);
-                        intervaloContadorRespuesta = null;
-                    }
-                });
+                const btn = document.getElementById(id);
+                if(btn) {
+                    btn.addEventListener('click', () => {
+                        const modalId = closeMap[id];
+                        const modal = document.getElementById(modalId);
+                        if(modal) modal.classList.add('hidden');
+                        if (modalId === 'modal-respuesta-cliente' && intervaloContadorRespuesta) {
+                            clearInterval(intervaloContadorRespuesta);
+                            intervaloContadorRespuesta = null;
+                        }
+                    });
+                }
             });
 
             // Funciones Modales Nuevas
@@ -870,6 +912,10 @@
 
             llenarSelectDerivar();
             inicializarPlantillasRapidas();
+
+            // NUEVO: botón generar constancia
+            document.getElementById('btn-generar-constancia').addEventListener('click', abrirModalConstancia);
+            document.getElementById('form-constancia').addEventListener('submit', generarPDFConstancia);
         }
         
         // --- CONFIGURACIÓN AGENDA ---
@@ -880,7 +926,6 @@
             onValue(ref(db, "config/capacidadHoraria"), (snap) => {
                 capacidadHoraria = snap.val() || {};
                 if (Object.keys(capacidadHoraria).length === 0) {
-                     // Default fallback logic if empty
                      for (let hour = 7; hour <= 11; hour++) {
                         for (let minute = 0; minute < 60; minute += 30) {
                             if (hour === 11 && minute > 30) break;
@@ -942,23 +987,15 @@
         function filtrarCasosUsuario() {
             if (!usuarioActual) return;
             const miUsuarioNorm = normalizarTexto(usuarioActual);
-            
-            // 1. Filtramos los casos del usuario
             casosAsignados = allCases.filter(c => {
                 if (!c.assignedUser) return false;
                 return normalizarTexto(c.assignedUser) === miUsuarioNorm;
             });
-
-            // 2. Calculamos el KPI (Pendientes + En Proceso)
             const totalPendientes = casosAsignados.filter(c => {
                 const estado = c.estado ? normalizarTexto(c.estado) : '';
                 return estado === 'pendiente' || estado === 'en_proceso';
             }).length;            
-
-            // 3. ¡ESTA ES LA LÍNEA QUE FALTABA! Actualizar el contador en pantalla
             document.getElementById('contador-pendientes').textContent = totalPendientes;
-
-            // 4. Renderizar las vistas
             renderizarCasos();
             renderizarCalendario();
         }
@@ -1038,7 +1075,12 @@
 
         function seleccionarCaso(id) {
             casoSeleccionado = id;
-            document.querySelectorAll('button:disabled').forEach(b => b.disabled = false);
+            // Habilitar/deshabilitar botones según selección
+            const btns = ['btn-marcar-resuelto', 'btn-actualizar-consulta', 'btn-derivar-caso', 'btn-generar-constancia'];
+            btns.forEach(btnId => {
+                const btn = document.getElementById(btnId);
+                if(btn) btn.disabled = !casoSeleccionado;
+            });
             renderizarCasos();
         }
 
@@ -1048,10 +1090,7 @@
                 mostrarNotificacion('No se pueden registrar consultas en días no laborables.', 'error');
                 return;
             }
-            // Set usuario asignado al actual
             document.getElementById('m-user').value = usuarioActual;
-            
-            // Reiniciar inputs
             document.getElementById('form-interno').reset();
             document.getElementById('m-user').value = usuarioActual;
             selectedDate = null;
@@ -1061,11 +1100,11 @@
             actualizarTextoSeleccionTurno();
             renderCalendarioModal();
             actualizarHorariosDisponibles();
-            
             abrirModal('modal-registro');
         }
 
         function renderCalendarioModal() {
+            if(!calendarGrid) return;
             calendarGrid.innerHTML = '';
             const firstDay = new Date(currentYear, currentMonth, 1);
             const lastDay = new Date(currentYear, currentMonth + 1, 0);
@@ -1074,7 +1113,7 @@
             
             const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
                               "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
-            currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+            if(currentMonthElement) currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
             
             for (let i = 0; i < firstDayIndex; i++) {
                 const emptyDiv = document.createElement('div');
@@ -1130,6 +1169,7 @@
         }
         
         function actualizarHorariosDisponibles() {
+            if(!horariosContainer) return;
             horariosContainer.innerHTML = '';
             let horarios = [];
             
@@ -1177,6 +1217,7 @@
         }
         
         function actualizarTextoSeleccionTurno() {
+            if(!turnoTexto) return;
             if (selectedDate && selectedTime) {
                 turnoTexto.textContent = `Turno asignado: ${formatDateForDisplay(selectedDate)} a las ${selectedTime} hs`;
                 turnoTexto.parentElement.classList.replace('bg-blue-50', 'bg-green-50');
@@ -1222,8 +1263,7 @@
             }
         }
 
-        // --- FUNCIONES MODALES ---
-
+        // --- FUNCIONES MODALES EXISTENTES ---
         function abrirModalRespuesta(caso) {
             casoParaResponder = caso;
             document.getElementById('resp-nombre').textContent = caso.personName || 'No registrado';
@@ -1272,7 +1312,7 @@
         function inicializarPlantillasRapidas() {
             document.querySelectorAll('.plantilla-rapida').forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    const plantilla = e.target.dataset.plantilla;
+                    const plantilla = e.target.closest('button').dataset.plantilla;
                     let mensaje = '';
                     switch(plantilla) {
                         case 'confirmacion': mensaje = 'Le confirmamos su turno asignado. Por favor, asegúrese de llegar con 10 minutos de anticipación.'; break;
@@ -1411,6 +1451,8 @@
 
         function llenarSelectDerivar() {
             const sel = document.getElementById('select-usuario-derivar');
+            if(!sel) return;
+            sel.innerHTML = '';
             listaUsuarios.forEach(u => {
                 const opt = document.createElement('option');
                 opt.value = u; opt.textContent = u; sel.appendChild(opt);
@@ -1442,14 +1484,11 @@
             if(!casoParaComprobante) return;
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
-            // Encabezado
             doc.setFontSize(16); doc.setTextColor(0, 0, 128);
             doc.text('Defensoría Civil y Comercial 6', 105, 20, { align: 'center' });
             doc.setFontSize(14); doc.setTextColor(0, 0, 0);
             doc.text('COMPROBANTE DE TURNO', 105, 30, { align: 'center' });
-            // Línea separadora
             doc.setDrawColor(0, 0, 128); doc.setLineWidth(0.5); doc.line(20, 35, 190, 35);
-            // Datos
             doc.setFontSize(12);
             let y = 50;
             const datos = [
@@ -1474,14 +1513,12 @@
             }
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF('p', 'mm', 'a4');
-            // Encabezado
             doc.setFontSize(16); doc.setTextColor(0, 0, 128);
             doc.text('Defensoría Civil y Comercial 6', 105, 15, { align: 'center' });
             doc.setFontSize(12); doc.setTextColor(0, 0, 0);
             doc.text(`Mis Casos Asignados: ${usuarioActual}`, 105, 22, { align: 'center' });
             doc.text(`Generado: ${formatDateTimeForDisplay(new Date())}`, 105, 28, { align: 'center' });
             
-            // Tabla
             const datosTabla = casosAsignados.map(r => [
                 r.timestamp ? formatShortDateForDisplay(new Date(r.timestamp)) : '',
                 r.personName?.substring(0, 20) || '',
@@ -1504,6 +1541,7 @@
 
         function renderizarCalendario() {
             const grid = document.getElementById('calendario-grid');
+            if(!grid) return;
             grid.innerHTML = '';
             const hoy = new Date().toISOString().split('T')[0];
             const turnosHoy = casosAsignados.filter(c => c.fechaTurno === hoy);
@@ -1533,8 +1571,10 @@
             const inactiveClass = ['bg-gray-200', 'text-gray-700'];
             const setBtn = (id, active) => {
                 const el = document.getElementById(id);
-                if(active) { el.classList.add(...activeClass); el.classList.remove(...inactiveClass); } 
-                else { el.classList.add(...inactiveClass); el.classList.remove(...activeClass); }
+                if(el) {
+                    if(active) { el.classList.add(...activeClass); el.classList.remove(...inactiveClass); } 
+                    else { el.classList.add(...inactiveClass); el.classList.remove(...activeClass); }
+                }
             };
             setBtn('btn-ver-casos', vista === 'casos');
             setBtn('btn-ver-calendario', vista === 'calendario');
@@ -1542,14 +1582,106 @@
             setBtn('btn-ver-calendario-cal', vista === 'calendario');
         }
 
-        function abrirModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function abrirModal(id) { 
+            const modal = document.getElementById(id);
+            if(modal) modal.classList.remove('hidden');
+        }
         
         function mostrarNotificacion(msg, type='info') {
             const div = document.createElement('div');
             div.className = `p-3 rounded shadow text-white mb-2 ${type==='error'?'bg-red-500':(type==='success'?'bg-green-500':'bg-blue-500')}`;
             div.textContent = msg;
-            document.getElementById('notification-temp-container').appendChild(div);
+            const container = document.getElementById('notification-temp-container');
+            if(container) container.appendChild(div);
             setTimeout(() => div.remove(), 3000);
+        }
+
+        // --- NUEVA FUNCIÓN CONSTANCIA (CON FECHA CORREGIDA) ---
+        function abrirModalConstancia() {
+            if(!casoSeleccionado) {
+                mostrarNotificacion("Primero seleccione un caso de la lista", "error");
+                return;
+            }
+            const caso = allCases.find(c => c.id === casoSeleccionado);
+            if(!caso) return;
+            document.getElementById('constancia-cliente-info').innerHTML = `<strong>${caso.personName}</strong> (DNI: ${caso.dni || 'N/D'})<br>Trámite: ${caso.type || (caso.description ? caso.description.substring(0,30) : 'Consulta')}`;
+            document.getElementById('constancia-atendio').value = usuarioActual || '';
+            document.getElementById('constancia-expediente').value = '';
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('constancia-fecha-atencion').value = today;
+            abrirModal('modal-generar-constancia');
+        }
+
+        function generarPDFConstancia(e) {
+            e.preventDefault();
+            const caso = allCases.find(c => c.id === casoSeleccionado);
+            if(!caso) return;
+            const atendio = document.getElementById('constancia-atendio').value.trim();
+            const expediente = document.getElementById('constancia-expediente').value.trim();
+            const fechaAtencionRaw = document.getElementById('constancia-fecha-atencion').value;
+            if(!atendio || !expediente || !fechaAtencionRaw) {
+                mostrarNotificacion("Complete todos los campos", "error");
+                return;
+            }
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // CORRECCIÓN: Interpretar fecha local sin conversión UTC
+            const [year, month, day] = fechaAtencionRaw.split('-').map(Number);
+            const fechaObj = new Date(year, month-1, day);
+            const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+            const fechaFormateada = `${diasSemana[fechaObj.getDay()]}, ${day.toString().padStart(2,'0')}/${month.toString().padStart(2,'0')}/${year}`;
+            
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(18); doc.setTextColor(30,58,138);
+            doc.text("Defensoría Civil y Comercial N°6", 105, 25, { align: 'center' });
+            doc.setFontSize(10); doc.setTextColor(70);
+            doc.text("Av. Santa Catalina 1735 1° piso - Edificio Palacio de Justicia", 105, 32, { align: 'center' });
+            doc.text("Posadas, Misiones", 105, 38, { align: 'center' });
+            // Teléfono oficial solicitado
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(11);
+            doc.setTextColor(0,0,0);
+            doc.text("Teléfono Oficial: 376-4446700 interno 1188", 105, 45, { align: 'center' });
+            doc.setFontSize(14);
+            doc.text("CONSTANCIA DE ATENCIÓN", 105, 55, { align: 'center' });
+            doc.line(20, 60, 190, 60);
+            
+            let y = 75;
+            doc.setFontSize(12); doc.setFont("helvetica", "bold");
+            doc.text("Datos del ciudadano:", 20, y); y+=8;
+            doc.setFont("helvetica", "normal");
+            doc.text(`Nombre y Apellido: ${caso.personName || 'No registrado'}`, 20, y); y+=7;
+            doc.text(`DNI: ${caso.dni || 'No registrado'}`, 20, y); y+=7;
+            doc.text(`Trámite / Motivo: ${caso.type || caso.description || 'Consulta'}`, 20, y); y+=10;
+            doc.setFont("helvetica", "bold");
+            doc.text("Detalle de la atención:", 20, y); y+=8;
+            doc.setFont("helvetica", "normal");
+            doc.text(`Fecha de atención: ${fechaFormateada}`, 20, y); y+=7;
+            doc.text(`Atendido por: ${atendio}`, 20, y); y+=7;
+            doc.text(`Expediente N°: ${expediente}`, 20, y); y+=12;
+            doc.setFont("helvetica", "bold");
+            doc.text("RECUERDA:", 20, y); y+=7;
+            doc.setFont("helvetica", "normal");
+            doc.text("1. Presentar DNI para trámites posteriores.", 25, y); y+=6;
+            doc.text("2. La constancia acredita la atención brindada en esta fecha.", 25, y); y+=6;
+            doc.text("3. Ante cualquier consulta adicional comuníquese vía WhatsApp.", 25, y); y+=8;
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(11);
+            // Número de WhatsApp con fondo destacado (simulamos con rectángulo gris claro)
+            doc.setFillColor(230, 245, 255);
+            doc.rect(20, y-2, 170, 10, 'F');
+            doc.setTextColor(0,100,0);
+            doc.text("WhatsApp para consultas: 376-4889359", 25, y+4);
+            doc.setTextColor(0,0,0);
+            y+=12;
+            doc.setFontSize(8); doc.setTextColor(120);
+            const ahora = new Date();
+            const fechaEmision = `${ahora.getDate().toString().padStart(2,'0')}/${(ahora.getMonth()+1).toString().padStart(2,'0')}/${ahora.getFullYear()} ${ahora.getHours().toString().padStart(2,'0')}:${ahora.getMinutes().toString().padStart(2,'0')}`;
+            doc.text(`Constancia emitida el: ${fechaEmision} - ID Caso: ${caso.id.slice(-6)}`, 20, 270);
+            doc.save(`Constancia_Atencion_${caso.dni || 'defensoria'}.pdf`);
+            document.getElementById('modal-generar-constancia').classList.add('hidden');
+            mostrarNotificacion("PDF generado correctamente", "success");
         }
     </script>
 </body>
