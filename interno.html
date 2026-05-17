@@ -34,6 +34,8 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            position: relative;
+            overflow-x: hidden;
         }
         
         .login-card {
@@ -43,6 +45,8 @@
             width: 100%;
             max-width: 420px;
             overflow: hidden;
+            position: relative;
+            z-index: 20;
         }
         
         .login-header {
@@ -268,11 +272,65 @@
                 margin: 0 15px;
             }
         }
+
+        /* ===== CINTAS DECORATIVAS MODERNAS (SOLO ARRIBA Y ABAJO) ===== */
+        .ribbon {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 15;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Cinta superior con animación de gradiente y desplazamiento cromático (azul-celeste) */
+        .ribbon-top {
+            top: 0;
+            height: 8px;
+            background: linear-gradient(90deg, 
+                #0f2b6d, #1e3a8a, #3b82f6, #60a5fa, #93c5fd, 
+                #60a5fa, #3b82f6, #1e3a8a, #0f2b6d);
+            background-size: 300% 100%;
+            animation: ribbonFlowModern 3.5s ease infinite alternate;
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* Cinta inferior con la misma animación pero invertida o sincronizada */
+        .ribbon-bottom {
+            bottom: 0;
+            height: 8px;
+            background: linear-gradient(90deg, 
+                #0f2b6d, #1e3a8a, #3b82f6, #60a5fa, #93c5fd, 
+                #60a5fa, #3b82f6, #1e3a8a, #0f2b6d);
+            background-size: 300% 100%;
+            animation: ribbonFlowModern 3.5s ease infinite alternate-reverse;
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Animación moderna: desplazamiento del gradiente + ligero cambio de brillo */
+        @keyframes ribbonFlowModern {
+            0% {
+                background-position: 0% 50%;
+                filter: brightness(1) drop-shadow(0 0 2px #3b82f6);
+            }
+            50% {
+                background-position: 100% 50%;
+                filter: brightness(1.15) drop-shadow(0 0 5px #60a5fa);
+            }
+            100% {
+                background-position: 200% 50%;
+                filter: brightness(1) drop-shadow(0 0 2px #1e3a8a);
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Login Screen -->
     <div id="login-container" class="login-container">
+        <!-- CINTAS DECORATIVAS: SOLO ARRIBA Y ABAJO (animación azul-celeste destacada) -->
+        <div class="ribbon ribbon-top"></div>
+        <div class="ribbon ribbon-bottom"></div>
+
         <div class="login-card">
             <div class="login-header">
                 <h1 class="text-2xl font-bold">Consultas y Turnos Clientes</h1>
