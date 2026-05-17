@@ -42,8 +42,8 @@
         .modal-feriado-body { padding: 32px 24px; text-align: center; background: #fff; }
         .modal-feriado-footer { padding: 16px 24px; background: #fef2f2; border-top: 1px solid #fee2e2; text-align: center; }
         
-        .login-container { min-height: 100vh; background: white; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-card { background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); width: 100%; max-width: 420px; overflow: hidden; }
+        .login-container { min-height: 100vh; background: white; display: flex; align-items: center; justify-content: center; padding: 20px; position: relative; z-index: 2; }
+        .login-card { background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); width: 100%; max-width: 420px; overflow: hidden; position: relative; z-index: 20; background: white; }
         .login-header { background: linear-gradient(to right, #1e3a8a, #3b82f6); color: white; padding: 25px 30px; text-align: center; }
         .login-body { padding: 35px 30px; }
         
@@ -100,6 +100,68 @@
         .pagination-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         
         @media (max-width: 768px) { .table-responsive { overflow-x: auto; } }
+
+        /* ===== CINTAS DECORATIVAS MODERNAS (SOLO ARRIBA Y ABAJO) ===== */
+        #login-section {
+            position: relative;
+            overflow-x: hidden;
+            background: white;
+        }
+
+        .ribbon {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            pointer-events: none;
+            z-index: 15;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Cinta superior con animación de gradiente y desplazamiento cromático (azul-celeste) */
+        .ribbon-top {
+            top: 0;
+            height: 8px;
+            background: linear-gradient(90deg, 
+                #0f2b6d, #1e3a8a, #3b82f6, #60a5fa, #93c5fd, 
+                #60a5fa, #3b82f6, #1e3a8a, #0f2b6d);
+            background-size: 300% 100%;
+            animation: ribbonFlowModern 3.5s ease infinite alternate;
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* Cinta inferior con la misma animación pero invertida o sincronizada */
+        .ribbon-bottom {
+            bottom: 0;
+            height: 8px;
+            background: linear-gradient(90deg, 
+                #0f2b6d, #1e3a8a, #3b82f6, #60a5fa, #93c5fd, 
+                #60a5fa, #3b82f6, #1e3a8a, #0f2b6d);
+            background-size: 300% 100%;
+            animation: ribbonFlowModern 3.5s ease infinite alternate-reverse;
+            border-radius: 4px 4px 0 0;
+        }
+
+        /* Animación moderna: desplazamiento del gradiente + ligero cambio de brillo */
+        @keyframes ribbonFlowModern {
+            0% {
+                background-position: 0% 50%;
+                filter: brightness(1) drop-shadow(0 0 2px #3b82f6);
+            }
+            50% {
+                background-position: 100% 50%;
+                filter: brightness(1.15) drop-shadow(0 0 5px #60a5fa);
+            }
+            100% {
+                background-position: 200% 50%;
+                filter: brightness(1) drop-shadow(0 0 2px #1e3a8a);
+            }
+        }
+        
+        /* Aseguramos que el contenedor de ingreso tenga prioridad visual */
+        .login-container {
+            position: relative;
+            z-index: 2;
+        }
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
@@ -118,6 +180,10 @@
     <div id="notification-temp-container" class="fixed top-4 right-4 z-40 space-y-2"></div>
 
     <section id="login-section" class="login-container">
+        <!-- CINTAS DECORATIVAS: SOLO ARRIBA Y ABAJO (animación azul-celeste destacada) -->
+        <div class="ribbon ribbon-top"></div>
+        <div class="ribbon ribbon-bottom"></div>
+
         <div class="login-card">
             <div class="login-header">
                 <h1 class="text-2xl font-bold text-white">Consultas y Turnos</h1>
@@ -332,8 +398,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-2">Horarios Disponibles</label>
                             <div class="bg-gray-50 p-3 sm:p-4 rounded-lg border h-full">
-                                <div id="horarios-container" class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                                    </div>
+                                <div id="horarios-container" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
                                 <div class="mt-4">
                                     <p id="info-capacidad" class="text-xs text-gray-600 mb-2">Cada horario tiene capacidad para 2 turnos simultáneos</p>
                                     <label class="block text-sm font-semibold text-gray-700 mb-1">Horario Personalizado</label>
@@ -559,8 +624,7 @@
                         <label class="block text-sm font-semibold text-gray-700">Historial de Observaciones</label>
                         <span class="text-xs text-gray-500" id="contador-notas">0 observaciones</span>
                     </div>
-                    <div id="detalle-observaciones" class="mb-4 max-h-48 overflow-y-auto p-3 bg-gray-50 rounded">
-                        </div>
+                    <div id="detalle-observaciones" class="mb-4 max-h-48 overflow-y-auto p-3 bg-gray-50 rounded"></div>
                     <div class="flex gap-2">
                         <textarea id="nueva-observacion" placeholder="Añadir una nueva observación, seguimiento o avance del caso..." 
                                   class="flex-1 border p-2 rounded text-sm" rows="3"></textarea>
@@ -617,7 +681,7 @@
         </div>
     </div>
 
-    <!-- MODAL GENERAR CONSTANCIA ATENCIÓN (NUEVO) -->
+    <!-- MODAL GENERAR CONSTANCIA ATENCIÓN -->
     <div id="modal-generar-constancia" class="modal hidden">
         <div class="bg-white rounded-xl w-full max-w-md mx-4 overflow-hidden shadow-2xl">
             <div class="bg-indigo-800 text-white p-4 flex justify-between items-center font-bold">
@@ -704,9 +768,7 @@
             const separator = dateStr.includes('-') ? '-' : '/';
             const parts = dateStr.split(separator).map(Number);
             if (parts.length !== 3) return null;
-            // YYYY-MM-DD
             if (parts[0] > 31) return new Date(parts[0], parts[1] - 1, parts[2]);
-            // DD/MM/YYYY
             return new Date(parts[2], parts[1] - 1, parts[0]);
         }
         
@@ -821,20 +883,17 @@
         function setupEventListeners() {
             document.getElementById('login-form').addEventListener('submit', manejarLogin);
             
-            // Navegación
             document.querySelectorAll('.btn-salir').forEach(b => b.addEventListener('click', cerrarSesion));
             document.getElementById('btn-ver-casos').addEventListener('click', () => cambiarVista('casos'));
             document.getElementById('btn-ver-calendario').addEventListener('click', () => cambiarVista('calendario'));
             document.getElementById('btn-ver-casos-cal').addEventListener('click', () => cambiarVista('casos'));
             document.getElementById('btn-ver-calendario-cal').addEventListener('click', () => cambiarVista('calendario'));
             
-            // Acciones Casos
             document.getElementById('btn-marcar-resuelto').addEventListener('click', marcarResuelto);
             document.getElementById('btn-derivar-caso').addEventListener('click', () => abrirModal('modal-derivar'));
             document.getElementById('btn-actualizar-consulta').addEventListener('click', abrirModalDetalle);
             document.getElementById('btn-nueva-consulta').addEventListener('click', abrirModalRegistro);
             
-            // Modales Cancelar/Cerrar
             const closeMap = {
                 'btn-cerrar-respuesta-cliente': 'modal-respuesta-cliente',
                 'btn-cerrar-detalle': 'modal-detalle',
@@ -859,10 +918,8 @@
                 }
             });
 
-            // Funciones Modales Nuevas
             document.getElementById('btn-guardar-actualizacion').addEventListener('click', agregarNota);
             
-            // Botones de cambio de estado en modal detalle
             document.querySelectorAll('.btn-cambio-estado').forEach(btn => {
                 btn.addEventListener('click', (e) => {
                     const estado = e.target.closest('button').dataset.estado;
@@ -876,7 +933,6 @@
             document.getElementById('form-interno').addEventListener('submit', guardarNuevaConsulta);
             document.getElementById('btn-descargar-comprobante').addEventListener('click', descargarComprobante);
             
-            // Buscador
             document.getElementById('input-busqueda').addEventListener('input', (e) => {
                 terminoBusqueda = normalizarTexto(e.target.value);
                 paginaActual = 1;
@@ -888,14 +944,11 @@
                  renderizarCasos();
             });
 
-            // Paginación
             document.getElementById('pagination-prev').addEventListener('click', () => cambiarPagina(paginaActual - 1));
             document.getElementById('pagination-next').addEventListener('click', () => cambiarPagina(paginaActual + 1));
             
-            // Exportar
             document.getElementById('btn-exportar-pdf').addEventListener('click', exportarPDF);
             
-            // Calendario Modal Navigation
             document.getElementById('prev-month').addEventListener('click', () => {
                 currentMonth--;
                 if (currentMonth < 0) { currentMonth = 11; currentYear--; }
@@ -907,13 +960,11 @@
                 renderCalendarioModal();
             });
             
-            // Hora personalizada
             document.getElementById('btn-usar-hora-personalizada').addEventListener('click', usarHoraPersonalizada);
 
             llenarSelectDerivar();
             inicializarPlantillasRapidas();
 
-            // NUEVO: botón generar constancia
             document.getElementById('btn-generar-constancia').addEventListener('click', abrirModalConstancia);
             document.getElementById('form-constancia').addEventListener('submit', generarPDFConstancia);
         }
@@ -1075,7 +1126,6 @@
 
         function seleccionarCaso(id) {
             casoSeleccionado = id;
-            // Habilitar/deshabilitar botones según selección
             const btns = ['btn-marcar-resuelto', 'btn-actualizar-consulta', 'btn-derivar-caso', 'btn-generar-constancia'];
             btns.forEach(btnId => {
                 const btn = document.getElementById(btnId);
@@ -1084,7 +1134,6 @@
             renderizarCasos();
         }
 
-        // --- MODAL NUEVA ATENCIÓN (ESTILO INTERNO) ---
         function abrirModalRegistro() {
             if (esDiaNoLaborable()) {
                 mostrarNotificacion('No se pueden registrar consultas en días no laborables.', 'error');
@@ -1263,7 +1312,6 @@
             }
         }
 
-        // --- FUNCIONES MODALES EXISTENTES ---
         function abrirModalRespuesta(caso) {
             casoParaResponder = caso;
             document.getElementById('resp-nombre').textContent = caso.personName || 'No registrado';
@@ -1563,7 +1611,6 @@
             });
         }
 
-        // --- UTILIDADES UI ---
         function cambiarVista(vista) {
             dashboardSection.classList.toggle('hidden', vista !== 'casos');
             calendarioSection.classList.toggle('hidden', vista !== 'calendario');
@@ -1596,7 +1643,6 @@
             setTimeout(() => div.remove(), 3000);
         }
 
-        // --- NUEVA FUNCIÓN CONSTANCIA (CON FECHA CORREGIDA) ---
         function abrirModalConstancia() {
             if(!casoSeleccionado) {
                 mostrarNotificacion("Primero seleccione un caso de la lista", "error");
@@ -1626,7 +1672,6 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
-            // CORRECCIÓN: Interpretar fecha local sin conversión UTC
             const [year, month, day] = fechaAtencionRaw.split('-').map(Number);
             const fechaObj = new Date(year, month-1, day);
             const diasSemana = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
@@ -1638,7 +1683,6 @@
             doc.setFontSize(10); doc.setTextColor(70);
             doc.text("Av. Santa Catalina 1735 1° piso - Edificio Palacio de Justicia", 105, 32, { align: 'center' });
             doc.text("Posadas, Misiones", 105, 38, { align: 'center' });
-            // Teléfono oficial solicitado
             doc.setFont("helvetica", "bold");
             doc.setFontSize(11);
             doc.setTextColor(0,0,0);
@@ -1668,7 +1712,6 @@
             doc.text("3. Ante cualquier consulta adicional comuníquese vía WhatsApp.", 25, y); y+=8;
             doc.setFont("helvetica", "bold");
             doc.setFontSize(11);
-            // Número de WhatsApp con fondo destacado (simulamos con rectángulo gris claro)
             doc.setFillColor(230, 245, 255);
             doc.rect(20, y-2, 170, 10, 'F');
             doc.setTextColor(0,100,0);
