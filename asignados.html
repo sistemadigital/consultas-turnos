@@ -1651,7 +1651,8 @@
             const caso = allCases.find(c => c.id === casoSeleccionado);
             if(!caso) return;
             document.getElementById('constancia-cliente-info').innerHTML = `<strong>${caso.personName}</strong> (DNI: ${caso.dni || 'N/D'})<br>Trámite: ${caso.type || (caso.description ? caso.description.substring(0,30) : 'Consulta')}`;
-            document.getElementById('constancia-atendio').value = usuarioActual || '';
+            // Campo "Quién atendió" se deja vacío para que el usuario lo complete manualmente
+            document.getElementById('constancia-atendio').value = '';
             document.getElementById('constancia-expediente').value = '';
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('constancia-fecha-atencion').value = today;
