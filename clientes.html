@@ -151,7 +151,11 @@
         .breadcrumb-item.active { color: #2563eb; }
         .breadcrumb-item.valid { color: #10b981; cursor: pointer; text-decoration: underline; }
         .hour-btn.disabled { background-color: #f1f5f9 !important; color: #cbd5e1 !important; cursor: not-allowed; }
-        #custom-alert, #loading-overlay, #system-unavailable-overlay { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(15,23,42,0.5); backdrop-filter: blur(5px); }
+        
+        /* MODIFICACIÓN CLAVE: Se agregó la clase ".flex" para que los modales puedan sobreescribir el display: none */
+        #custom-alert, #loading-overlay, #system-unavailable-overlay { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(15,23,42,0.6); backdrop-filter: blur(5px); }
+        #custom-alert.flex, #loading-overlay.flex, #system-unavailable-overlay.flex { display: flex; }
+        
         .alert-content { background: white; padding: 2rem; border-radius: 1.8rem; max-width: 400px; text-align: center; border-top: 5px solid #f97316; }
         /* Estilo para error en select */
         select.input-error {
@@ -184,17 +188,16 @@
 </div>
 
 <div id="main-app" class="min-h-screen pb-12" style="display: none; background: #f8fafc;">
-    <!-- Overlays -->
     <div id="system-unavailable-overlay">
-        <div class="bg-white p-10 rounded-3xl shadow-2xl text-center max-w-lg">
-            <div class="w-20 h-20 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">
-                <i class="fas fa-clock"></i>
+        <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-2xl text-center max-w-md border-4 border-red-500 transform transition-all">
+            <div class="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 text-4xl">
+                <i class="fas fa-ban"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-900 mb-4">Fuera de horario de atención</h3>
-            <p class="text-gray-600 mb-8" id="system-unavailable-message"></p>
-            <button onclick="location.reload()" class="w-full bg-slate-800 text-white py-4 rounded-xl font-bold">Reintentar</button>
+            <p class="text-slate-800 text-lg font-semibold leading-relaxed mb-8" id="system-unavailable-message"></p>
+            <button onclick="location.reload()" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-xl font-bold transition-all shadow-md">Entendido</button>
         </div>
     </div>
+    
     <div id="loading-overlay">
         <div class="bg-white p-8 rounded-3xl shadow-2xl text-center">
             <div class="inline-block w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mb-4"></div>
@@ -232,7 +235,6 @@
         <div class="bg-white rounded-[2rem] shadow-xl border border-slate-100 overflow-hidden">
             <div class="h-2 bg-slate-100"><div id="progress-bar" class="bg-blue-600 h-full transition-all duration-700" style="width: 33%"></div></div>
             <form id="consult-form" class="p-8 sm:p-10">
-                <!-- Step 1 -->
                 <div id="step-1" class="step-card active space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div><label class="block text-sm font-bold text-slate-700 mb-2">Nombre y Apellido *</label><input type="text" id="nombreCompleto" class="form-input"><span class="error-label" id="err-nombreCompleto">Ingrese su nombre completo.</span></div>
@@ -243,7 +245,6 @@
                     <button type="button" onclick="nextStep(2)" class="w-full bg-blue-600 text-white font-bold py-4 rounded-2xl hover:bg-blue-700 transition">Continuar <i class="fas fa-chevron-right ml-2"></i></button>
                 </div>
 
-                <!-- Step 2 -->
                 <div id="step-2" class="step-card space-y-6">
                     <div>
                         <label class="block text-sm font-bold text-slate-700 mb-2">Tipo de Trámite *</label>
@@ -262,7 +263,6 @@
                     <div class="grid grid-cols-2 gap-4"><button type="button" onclick="nextStep(1)" class="bg-slate-100 text-slate-600 font-bold py-4 rounded-2xl">Volver</button><button type="button" onclick="nextStep(3)" class="bg-blue-600 text-white font-bold py-4 rounded-2xl">Siguiente</button></div>
                 </div>
 
-                <!-- Step 3 -->
                 <div id="step-3" class="step-card space-y-6">
                     <div id="turno-selector" class="hidden space-y-6">
                         <div class="bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-xl"><p class="text-xs text-amber-800"><i class="fas fa-info-circle mr-1"></i> Solo días hábiles de 7:30 a 11:30.</p></div>
@@ -287,7 +287,6 @@
 </div>
 
 <script type="module">
-    // --- LÓGICA COMPLETA Y ORIGINAL (con la nueva validación para tipoConsulta) ---
     document.addEventListener('DOMContentLoaded', () => {
         const btn = document.getElementById('btn-entrar');
         const landing = document.getElementById('landing-page');
@@ -298,9 +297,11 @@
                 landing.style.display = 'none';
                 mainApp.style.display = 'block';
                 document.body.classList.remove('landing-active');
+                
                 const disp = verificarDisponibilidadSistema();
                 if (!disp.disponible) {
                     document.getElementById('system-unavailable-message').textContent = disp.mensaje;
+                    // Al agregar la clase 'flex' ahora funcionará correctamente gracias a la corrección del CSS.
                     document.getElementById('system-unavailable-overlay').classList.add('flex');
                     document.querySelector('main').style.display = 'none';
                     document.querySelector('header').style.display = 'none';
@@ -327,17 +328,21 @@
     let diasInactivos = {};
     const feriados2026 = ['2026-01-01','2026-02-16','2026-02-17','2026-03-24','2026-04-02','2026-04-03','2026-05-01','2026-05-25','2026-06-20','2026-07-09','2026-12-08','2026-12-25','2026-06-15','2026-08-17','2026-10-12','2026-11-23','2026-03-23','2026-07-10','2026-12-07'];
 
+    // Mensaje de validación requerido
     function verificarDisponibilidadSistema() {
         const ahora = new Date();
         const diaSemana = ahora.getDay();
         const hora = ahora.getHours() + ahora.getMinutes()/100;
         const fechaStr = ahora.toISOString().split('T')[0];
-        if (feriados2026.includes(fechaStr)) return { disponible: false, mensaje: 'Hoy es feriado. No se reciben consultas.' };
-        if (diaSemana === 0 || diaSemana === 6) return { disponible: false, mensaje: 'Horario: Lunes a Viernes de 07:00 a 11:30 hs.' };
+        
+        const msjError = 'En este momento la aplicación no esta disponible. Unicamente intenta en día y hora hábil. Gracias.';
+        
+        if (feriados2026.includes(fechaStr)) return { disponible: false, mensaje: msjError };
+        if (diaSemana === 0 || diaSemana === 6) return { disponible: false, mensaje: msjError };
         const enFeria = isFeriaJudicial(ahora);
         const inicio = enFeria ? 8.0 : 7.0;
         const fin = enFeria ? 10.0 : 11.5;
-        if (hora < inicio || hora > fin) return { disponible: false, mensaje: enFeria ? 'Horario de feria: 08:00 a 10:00 hs.' : 'Horario de atención: 07:00 a 11:30 hs.' };
+        if (hora < inicio || hora > fin) return { disponible: false, mensaje: msjError };
         return { disponible: true };
     }
 
@@ -426,7 +431,6 @@
         return valid;
     }
 
-    // Nueva validación para el select de tipoConsulta
     function validateTipoConsulta() {
         const select = document.getElementById('tipoConsulta');
         const errSpan = document.getElementById('err-tipoConsulta');
@@ -476,7 +480,6 @@
 
     document.getElementById('consult-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        // Validar nuevamente tipoConsulta antes de enviar
         if (!validateTipoConsulta()) {
             showAlert("Por favor, seleccione un tipo de trámite válido.");
             return;
@@ -568,13 +571,11 @@
         doc.text("2. Traer toda la documentación de tu caso judicial.", 25, 158);
         doc.text("3. Asiste media hora antes y avisa en Mesa de Entradas con este comprobante.", 25, 168);
         
-        // WhatsApp en negrita y tamaño más grande (11)
         doc.setFont("helvetica", "bold");
         doc.setFontSize(11);
         doc.setTextColor(0);
         doc.text("4. WhatsApp para consultas: 376-4889359", 25, 178);
         
-        // Restauramos para la fecha de registro
         doc.setFont("helvetica", "normal");
         doc.setFontSize(8);
         doc.setTextColor(120);
