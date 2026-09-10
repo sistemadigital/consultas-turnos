@@ -1357,6 +1357,105 @@
             "Sec Magnani": "magnani6"
         };
 
+        // ========== PERSISTENCIA DE SESIÓN (NUEVO) ==========
+        // Cada usuario tiene su propia entrada en localStorage, garantizando que
+        // las sesiones no se entrelacen entre sí. Al abrir la app se restaura la
+        // sesión más reciente del usuario que la dejó activa.
+        const SESSION_PREFIX = 'defensoria_sesion_usuario_';
+        const SESSION_ULTIMO = 'defensoria_ultimo_usuario_activo';
+
+        /**
+         * Guarda la sesión individual del usuario en localStorage
+         * @param {string} usuario - Nombre del usuario logueado
+         */
+        function guardarSesion(usuario) {
+            if (!usuario) return;
+            try {
+                const datosSesion = {
+                    usuario: usuario,
+                    timestamp: new Date().toISOString()
+                };
+                // Guardar entrada individual por usuario (no se entrelaza con otros usuarios)
+                localStorage.setItem(SESSION_PREFIX + usuario, JSON.stringify(datosSesion));
+                // Marcar cuál fue el último usuario activo en este navegador
+                localStorage.setItem(SESSION_ULTIMO, usuario);
+            } catch (e) {
+                console.error('Error guardando sesión:', e);
+            }
+        }
+
+        /**
+         * Obtiene la sesión guardada del último usuario activo
+         * @returns {string|null} Nombre del usuario o null
+         */
+        function obtenerSesionGuardada() {
+            try {
+                const ultimoUsuario = localStorage.getItem(SESSION_ULTIMO);
+                if (!ultimoUsuario) return null;
+                
+                // Verificar que el usuario siga siendo válido
+                if (!usuariosAutorizados.includes(ultimoUsuario)) {
+                    return null;
+                }
+                
+                // Recuperar la sesión específica de ese usuario
+                const raw = localStorage.getItem(SESSION_PREFIX + ultimoUsuario);
+                if (!raw) return null;
+                
+                const datos = JSON.parse(raw);
+                if (datos && datos.usuario === ultimoUsuario) {
+                    return ultimoUsuario;
+                }
+                return null;
+            } catch (e) {
+                console.error('Error leyendo sesión:', e);
+                return null;
+            }
+        }
+
+        /**
+         * Elimina la sesión del usuario indicado (o del usuario actual)
+         * @param {string} usuario - Usuario cuya sesión eliminar
+         */
+        function limpiarSesion(usuario) {
+            try {
+                if (usuario) {
+                    localStorage.removeItem(SESSION_PREFIX + usuario);
+                }
+                // Limpiar también el marcador de último usuario activo
+                const ultimo = localStorage.getItem(SESSION_ULTIMO);
+                if (!usuario || ultimo === usuario) {
+                    localStorage.removeItem(SESSION_ULTIMO);
+                }
+            } catch (e) {
+                console.error('Error limpiando sesión:', e);
+            }
+        }
+
+        /**
+         * Restaura la sesión al cargar la app (si existe una activa)
+         * No requiere volver a introducir usuario/contraseña.
+         */
+        function restaurarSesion() {
+            const usuarioRestaurado = obtenerSesionGuardada();
+            if (!usuarioRestaurado) {
+                // Sin sesión guardada: mostrar pantalla de login
+                loginContainer.classList.remove('hidden');
+                appContainer.classList.add('hidden');
+                return;
+            }
+            
+            // Sesión válida encontrada: reingresar automáticamente
+            usuarioLogueado = usuarioRestaurado;
+            loginError.classList.add('hidden');
+            loginContainer.classList.add('hidden');
+            appContainer.classList.remove('hidden');
+            currentUserDisplay.textContent = usuarioRestaurado;
+            
+            // Actualizar campo "Responsable" con el usuario restaurado
+            actualizarSelectsUsuarioLogueado();
+        }
+
         // Lista de usuarios disponibles para asignación (todos los defensores y secretarios)
         // IMPORTANTE: Debe coincidir exactamente con los nombres en asignados.html
         const users = [
@@ -1517,6 +1616,9 @@
             appContainer.classList.remove('hidden');
             currentUserDisplay.textContent = usuario;
             
+            // Persistir la sesión del usuario (individual por usuario)
+            guardarSesion(usuario);
+            
             // Actualizar campo "Responsable" con el usuario logueado
             actualizarSelectsUsuarioLogueado();
             
@@ -1527,6 +1629,9 @@
          * Maneja el logout
          */
         function manejarLogout() {
+            // Eliminar la sesión del usuario actual de localStorage
+            limpiarSesion(usuarioLogueado);
+            
             usuarioLogueado = null;
             appContainer.classList.add('hidden');
             loginContainer.classList.remove('hidden');
@@ -4553,6 +4658,9 @@
         inicializarCalendario();
         render();
         cambiarVista('dashboard');
+        
+        // Restaurar sesión guardada (si existe) — sesión individual por usuario
+        restaurarSesion();
         
         // Actualizar gráficos después de un breve retraso
         setTimeout(actualizarGraficos, 1000);
